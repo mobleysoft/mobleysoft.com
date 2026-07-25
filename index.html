@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobleysoft - Premium Full-Page Glassmorphism HTML/CSS</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #00ffcc;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .glassmorphism {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            animation: glassmorphism 5s infinite;
+        }
+        @keyframes glassmorphism {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .glassmorphism::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            animation: glassmorphism 5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="glassmorphism">
+        <div class="glassmorphism__inner">
+            <h1>Mobleysoft</h1>
+            <p>Welcome to Mobleysoft, the premium, full-page Glassmorphism HTML/CSS frontend for 'mobleysoft.com'. Our software development powerhouse creating AI-enhanced applications and development tools. We offer a sleek dark mode, micro-animations, and intense aesthetic absolutism. Let's explore the possibilities of your next project.</p>
+        </div>
+    </div>
+
+<!-- MOBCORP SYMBIOSIS MATRIX -->
+<style>
+.mobcorp-symbiosis-matrix {
+    margin-top: 80px;
+    padding: 40px 20px;
+    background: rgba(10, 10, 12, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+.symbiosis-header {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 24px;
+}
+.symbiosis-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.symbiosis-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    transition: all 0.3s ease;
+}
+.symbiosis-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+</style>
+<div class="mobcorp-symbiosis-matrix">
+    <div class="symbiosis-header">Part of the MobCorp Autonomous Conglomerate</div>
+    <div class="symbiosis-grid">
+        <a href="https://alhena.cc" class="symbiosis-link" target="_blank">Alhena.cc</a>
+<a href="https://pandorachat.cc" class="symbiosis-link" target="_blank">Pandorachat.cc</a>
+<a href="https://lovemaint.com" class="symbiosis-link" target="_blank">Lovemaint.com</a>
+<a href="https://patentkin.com" class="symbiosis-link" target="_blank">Patentkin.com</a>
+
+    </div>
+</div>
+
+
+<!-- MOBCORP MONETIZATION MEMBRANE -->
+<style>
+.mobcorp-monetization-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    padding: 14px 28px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, rgba(20, 20, 22, 0.9), rgba(10, 10, 12, 0.95));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    font-family: 'Inter', system-ui, sans-serif;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    overflow: hidden;
+}
+.mobcorp-monetization-fab::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.7s ease;
+}
+.mobcorp-monetization-fab:hover::before {
+    left: 150%;
+}
+.mobcorp-monetization-fab:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 255, 204, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(0, 255, 204, 0.3);
+}
+.fab-text {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+.fab-price {
+    color: #00ffcc;
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: rgba(0, 255, 204, 0.1);
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+@keyframes pulseGlow {
+    0% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); }
+    50% { box-shadow: 0 8px 40px rgba(0, 255, 204, 0.15); }
+    100% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); }
+}
+.mobcorp-monetization-fab {
+    animation: pulseGlow 4s infinite;
+}
+</style>
+<a href="http://localhost:18087/checkout?node=mobleysoft" class="mobcorp-monetization-fab">
+    <span class="fab-text">Upgrade Mobleysoft</span>
+    <span class="fab-price">$9.99/mo</span>
+</a>
+
+
+<!-- MOBCORP OMNI-SEARCH MEMBRANE -->
+<style>
+/* Omni-Search Global Membrane (Rule 12: Glassmorphism & Premium UI) */
+.mobcorp-search-fab {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 9998;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(20, 20, 25, 0.95), rgba(5, 5, 10, 0.98));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.mobcorp-search-fab:hover {
+    transform: translateY(-4px) scale(1.05) rotate(90deg);
+    box-shadow: 0 12px 40px rgba(100, 100, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    border-color: rgba(100, 100, 255, 0.4);
+}
+.mobcorp-search-fab svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.3s;
+}
+.mobcorp-search-fab:hover svg {
+    stroke: #8af;
+}
+
+/* Overlay */
+.mobcorp-search-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 15vh;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+.mobcorp-search-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+.mobcorp-search-close {
+    position: absolute;
+    top: 32px; right: 32px;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+.mobcorp-search-close:hover { opacity: 1; }
+
+/* Input */
+.mobcorp-search-input {
+    width: 80%;
+    max-width: 700px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 2.5rem;
+    padding: 10px 0;
+    outline: none;
+    transition: border-color 0.3s;
+    text-align: center;
+}
+.mobcorp-search-input:focus {
+    border-bottom-color: #8af;
+}
+.mobcorp-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+/* Results */
+.mobcorp-search-results {
+    margin-top: 40px;
+    width: 80%;
+    max-width: 700px;
+    max-height: 60vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 40px;
+}
+.mobcorp-search-results::-webkit-scrollbar { display: none; }
+.mobcorp-result-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.mobcorp-result-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(100, 100, 255, 0.3);
+    transform: translateX(8px);
+}
+.mobcorp-result-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #8af;
+}
+.mobcorp-result-desc {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.4;
+}
+</style>
+
+<div class="mobcorp-search-fab" onclick="document.getElementById('mobcorp-search-layer').classList.add('active'); document.getElementById('mobcorp-search-box').focus();">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+</div>
+
+<div class="mobcorp-search-overlay" id="mobcorp-search-layer">
+    <div class="mobcorp-search-close" onclick="document.getElementById('mobcorp-search-layer').classList.remove('active')">&times;</div>
+    <input type="text" class="mobcorp-search-input" id="mobcorp-search-box" placeholder="Search the Conglomerate..." autocomplete="off" spellcheck="false">
+    <div class="mobcorp-search-results" id="mobcorp-search-results"></div>
+</div>
+
+<script>
+(function(){
+    const catalog = [{"n": "accountdrac.com", "d": "AI-powered accounting automation platform maximizing tax efficiency and financial optimization throu...", "u": "https://accountdrac.com"}, {"n": "animetrope.com", "d": "AI-powered animation studio specializing in automated content generation for anime, manga, and relat...", "u": "https://animetrope.com"}, {"n": "devtoolai.com", "d": "Comprehensive AI development platform automating coding, testing, and deployment processes. Target v...", "u": "https://devtoolai.com"}, {"n": "marketingium.com", "d": "Full-stack marketing automation platform optimizing campaigns across all channels using AI. Target v...", "u": "https://marketingium.com"}, {"n": "singularityui.com", "d": "Post-singularity interface design platform creating human-AI interaction paradigms for the future. T...", "u": "https://singularityui.com"}, {"n": "taskgridai.com", "d": "Project management platform using AI to optimize task allocation and workflow efficiency. Target val...", "u": "https://taskgridai.com"}, {"n": "vendyai.com", "d": "Universal payment processing infrastructure supporting all MobCorp ventures with enterprise-grade ca...", "u": "https://vendyai.com"}, {"n": "abstergo.cc", "d": "An autonomous, AI-driven platform revolutionizing the abstergo space. Target valuation: $100M.", "u": "https://abstergo.cc"}, {"n": "agentropi.com", "d": "An autonomous, AI-driven platform revolutionizing the agentropi space. Target valuation: $100M.", "u": "https://agentropi.com"}, {"n": "agentzaar.com", "d": "An autonomous, AI-driven platform revolutionizing the agentzaar space. Target valuation: $100M.", "u": "https://agentzaar.com"}, {"n": "agewinder.com", "d": "An autonomous, AI-driven platform revolutionizing the agewinder space. Target valuation: $100M.", "u": "https://agewinder.com"}, {"n": "aicossic.com", "d": "An autonomous, AI-driven platform revolutionizing the aicossic space. Target valuation: $100M.", "u": "https://aicossic.com"}, {"n": "aiopencommerce.com", "d": "An autonomous, AI-driven platform revolutionizing the aiopencommerce space. Target valuation: $100M.", "u": "https://aiopencommerce.com"}, {"n": "alhena.cc", "d": "An autonomous, AI-driven platform revolutionizing the alhena space. Target valuation: $100M.", "u": "https://alhena.cc"}, {"n": "americanagi.cc", "d": "An autonomous, AI-driven platform revolutionizing the americanagi space. Target valuation: $100M.", "u": "https://americanagi.cc"}, {"n": "americnagi.cc", "d": "An autonomous, AI-driven platform revolutionizing the americnagi space. Target valuation: $100M.", "u": "https://americnagi.cc"}, {"n": "anattar.com", "d": "An autonomous, AI-driven platform revolutionizing the anattar space. Target valuation: $100M.", "u": "https://anattar.com"}, {"n": "areshiva.com", "d": "An autonomous, AI-driven platform revolutionizing the areshiva space. Target valuation: $100M.", "u": "https://areshiva.com"}, {"n": "audiovizai.com", "d": "An autonomous, AI-driven platform revolutionizing the audiovizai space. Target valuation: $100M.", "u": "https://audiovizai.com"}, {"n": "authfor.com", "d": "An autonomous, AI-driven platform revolutionizing the authfor space. Target valuation: $100M.", "u": "https://authfor.com"}, {"n": "bignice.cc", "d": "An autonomous, AI-driven platform revolutionizing the bignice space. Target valuation: $100M.", "u": "https://bignice.cc"}, {"n": "bitdoggo.com", "d": "An autonomous, AI-driven platform revolutionizing the bitdoggo space. Target valuation: $100M.", "u": "https://bitdoggo.com"}, {"n": "bloomagi.cc", "d": "An autonomous, AI-driven platform revolutionizing the bloomagi space. Target valuation: $100M.", "u": "https://bloomagi.cc"}, {"n": "bondwright.com", "d": "An autonomous, AI-driven platform revolutionizing the bondwright space. Target valuation: $100M.", "u": "https://bondwright.com"}, {"n": "book2film.cc", "d": "An autonomous, AI-driven platform revolutionizing the book2film space. Target valuation: $100M.", "u": "https://book2film.cc"}, {"n": "bookclubs.cc", "d": "An autonomous, AI-driven platform revolutionizing the bookclubs space. Target valuation: $100M.", "u": "https://bookclubs.cc"}, {"n": "bookeepr.cc", "d": "An autonomous, AI-driven platform revolutionizing the bookeepr space. Target valuation: $100M.", "u": "https://bookeepr.cc"}, {"n": "brynhildai.com", "d": "An autonomous, AI-driven platform revolutionizing the brynhildai space. Target valuation: $100M.", "u": "https://brynhildai.com"}, {"n": "conseiv.com", "d": "An autonomous, AI-driven platform revolutionizing the conseiv space. Target valuation: $100M.", "u": "https://conseiv.com"}, {"n": "consenta.cc", "d": "An autonomous, AI-driven platform revolutionizing the consenta space. Target valuation: $100M.", "u": "https://consenta.cc"}, {"n": "cryptosmart.cc", "d": "An autonomous, AI-driven platform revolutionizing the cryptosmart space. Target valuation: $100M.", "u": "https://cryptosmart.cc"}, {"n": "danzoa.com", "d": "An autonomous, AI-driven platform revolutionizing the danzoa space. Target valuation: $100M.", "u": "https://danzoa.com"}, {"n": "devducky.com", "d": "An autonomous, AI-driven platform revolutionizing the devducky space. Target valuation: $100M.", "u": "https://devducky.com"}, {"n": "devtoolbx.com", "d": "An autonomous, AI-driven platform revolutionizing the devtoolbx space. Target valuation: $100M.", "u": "https://devtoolbx.com"}, {"n": "dofura.com", "d": "An autonomous, AI-driven platform revolutionizing the dofura space. Target valuation: $100M.", "u": "https://dofura.com"}, {"n": "domainwombat.com", "d": "An autonomous, AI-driven platform revolutionizing the domainwombat space. Target valuation: $100M.", "u": "https://domainwombat.com"}, {"n": "draknir.com", "d": "An autonomous, AI-driven platform revolutionizing the draknir space. Target valuation: $100M.", "u": "https://draknir.com"}, {"n": "draugr.cc", "d": "An autonomous, AI-driven platform revolutionizing the draugr space. Target valuation: $100M.", "u": "https://draugr.cc"}, {"n": "ecofixai.com", "d": "An autonomous, AI-driven platform revolutionizing the ecofixai space. Target valuation: $100M.", "u": "https://ecofixai.com"}, {"n": "emissionhub.cc", "d": "An autonomous, AI-driven platform revolutionizing the emissionhub space. Target valuation: $100M.", "u": "https://emissionhub.cc"}, {"n": "enablinghomes.com", "d": "An autonomous, AI-driven platform revolutionizing the enablinghomes space. Target valuation: $100M.", "u": "https://enablinghomes.com"}, {"n": "encoverai.com", "d": "An autonomous, AI-driven platform revolutionizing the encoverai space. Target valuation: $100M.", "u": "https://encoverai.com"}, {"n": "entoolize.com", "d": "An autonomous, AI-driven platform revolutionizing the entoolize space. Target valuation: $100M.", "u": "https://entoolize.com"}, {"n": "equifiant.com", "d": "An autonomous, AI-driven platform revolutionizing the equifiant space. Target valuation: $100M.", "u": "https://equifiant.com"}, {"n": "extraterran.com", "d": "An autonomous, AI-driven platform revolutionizing the extraterran space. Target valuation: $100M.", "u": "https://extraterran.com"}, {"n": "fedbank.cc", "d": "An autonomous, AI-driven platform revolutionizing the fedbank space. Target valuation: $100M.", "u": "https://fedbank.cc"}, {"n": "fedtalent.cc", "d": "An autonomous, AI-driven platform revolutionizing the fedtalent space. Target valuation: $100M.", "u": "https://fedtalent.cc"}, {"n": "femptocom.com", "d": "An autonomous, AI-driven platform revolutionizing the femptocom space. Target valuation: $100M.", "u": "https://femptocom.com"}, {"n": "filmline.cc", "d": "An autonomous, AI-driven platform revolutionizing the filmline space. Target valuation: $100M.", "u": "https://filmline.cc"}, {"n": "firmcreate.com", "d": "An autonomous, AI-driven platform revolutionizing the firmcreate space. Target valuation: $100M.", "u": "https://firmcreate.com"}, {"n": "fundyai.com", "d": "An autonomous, AI-driven platform revolutionizing the fundyai space. Target valuation: $100M.", "u": "https://fundyai.com"}, {"n": "fystz.com", "d": "An autonomous, AI-driven platform revolutionizing the fystz space. Target valuation: $100M.", "u": "https://fystz.com"}, {"n": "galadul.com", "d": "An autonomous, AI-driven platform revolutionizing the galadul space. Target valuation: $100M.", "u": "https://galadul.com"}, {"n": "gamegob.com", "d": "An autonomous, AI-driven platform revolutionizing the gamegob space. Target valuation: $100M.", "u": "https://gamegob.com"}, {"n": "glcx.cc", "d": "An autonomous, AI-driven platform revolutionizing the glcx space. Target valuation: $100M.", "u": "https://glcx.cc"}, {"n": "glyphyai.com", "d": "An autonomous, AI-driven platform revolutionizing the glyphyai space. Target valuation: $100M.", "u": "https://glyphyai.com"}, {"n": "golfcad.cc", "d": "An autonomous, AI-driven platform revolutionizing the golfcad space. Target valuation: $100M.", "u": "https://golfcad.cc"}, {"n": "golfdad.cc", "d": "An autonomous, AI-driven platform revolutionizing the golfdad space. Target valuation: $100M.", "u": "https://golfdad.cc"}, {"n": "golflink.cc", "d": "An autonomous, AI-driven platform revolutionizing the golflink space. Target valuation: $100M.", "u": "https://golflink.cc"}, {"n": "golfmind.cc", "d": "An autonomous, AI-driven platform revolutionizing the golfmind space. Target valuation: $100M.", "u": "https://golfmind.cc"}, {"n": "gravnova.com", "d": "An autonomous, AI-driven platform revolutionizing the gravnova space. Target valuation: $100M.", "u": "https://gravnova.com"}, {"n": "greenhandcapital.com", "d": "An autonomous, AI-driven platform revolutionizing the greenhandcapital space. Target valuation: $100...", "u": "https://greenhandcapital.com"}, {"n": "greybeardai.com", "d": "An autonomous, AI-driven platform revolutionizing the greybeardai space. Target valuation: $100M.", "u": "https://greybeardai.com"}, {"n": "gurukle.com", "d": "An autonomous, AI-driven platform revolutionizing the gurukle space. Target valuation: $100M.", "u": "https://gurukle.com"}, {"n": "halside.com", "d": "An autonomous, AI-driven platform revolutionizing the halside space. Target valuation: $100M.", "u": "https://halside.com"}, {"n": "healspell.com", "d": "An autonomous, AI-driven platform revolutionizing the healspell space. Target valuation: $100M.", "u": "https://healspell.com"}, {"n": "helmcorp.cc", "d": "An autonomous, AI-driven platform revolutionizing the helmcorp space. Target valuation: $100M.", "u": "https://helmcorp.cc"}, {"n": "helmdir.com", "d": "An autonomous, AI-driven platform revolutionizing the helmdir space. Target valuation: $100M.", "u": "https://helmdir.com"}, {"n": "helmscorp.cc", "d": "An autonomous, AI-driven platform revolutionizing the helmscorp space. Target valuation: $100M.", "u": "https://helmscorp.cc"}, {"n": "hildrai.com", "d": "An autonomous, AI-driven platform revolutionizing the hildrai space. Target valuation: $100M.", "u": "https://hildrai.com"}, {"n": "industrize.com", "d": "An autonomous, AI-driven platform revolutionizing the industrize space. Target valuation: $100M.", "u": "https://industrize.com"}, {"n": "instantiability.com", "d": "An autonomous, AI-driven platform revolutionizing the instantiability space. Target valuation: $100M...", "u": "https://instantiability.com"}, {"n": "intfer.cc", "d": "An autonomous, AI-driven platform revolutionizing the intfer space. Target valuation: $100M.", "u": "https://intfer.cc"}, {"n": "kubaki.cc", "d": "An autonomous, AI-driven platform revolutionizing the kubaki space. Target valuation: $100M.", "u": "https://kubaki.cc"}, {"n": "lawyik.com", "d": "An autonomous, AI-driven platform revolutionizing the lawyik space. Target valuation: $100M.", "u": "https://lawyik.com"}, {"n": "leadersclub.cc", "d": "An autonomous, AI-driven platform revolutionizing the leadersclub space. Target valuation: $100M.", "u": "https://leadersclub.cc"}, {"n": "legibleweights.com", "d": "An autonomous, AI-driven platform revolutionizing the legibleweights space. Target valuation: $100M.", "u": "https://legibleweights.com"}, {"n": "legionicai.com", "d": "An autonomous, AI-driven platform revolutionizing the legionicai space. Target valuation: $100M.", "u": "https://legionicai.com"}, {"n": "literacraft.com", "d": "An autonomous, AI-driven platform revolutionizing the literacraft space. Target valuation: $100M.", "u": "https://literacraft.com"}, {"n": "lovemaint.com", "d": "An autonomous, AI-driven platform revolutionizing the lovemaint space. Target valuation: $100M.", "u": "https://lovemaint.com"}, {"n": "mailguyai.com", "d": "An autonomous, AI-driven platform revolutionizing the mailguyai space. Target valuation: $100M.", "u": "https://mailguyai.com"}, {"n": "malathor.com", "d": "An autonomous, AI-driven platform revolutionizing the malathor space. Target valuation: $100M.", "u": "https://malathor.com"}, {"n": "meeva.io", "d": "An autonomous, AI-driven platform revolutionizing the meeva space. Target valuation: $100M.", "u": "https://meeva.io"}, {"n": "mobcoin.cc", "d": "An autonomous, AI-driven platform revolutionizing the mobcoin space. Target valuation: $100M.", "u": "https://mobcoin.cc"}, {"n": "mobcorp.cc", "d": "An autonomous, AI-driven platform revolutionizing the mobcorp space. Target valuation: $100M.", "u": "https://mobcorp.cc"}, {"n": "mobleybooks.com", "d": "An autonomous, AI-driven platform revolutionizing the mobleybooks space. Target valuation: $100M.", "u": "https://mobleybooks.com"}, {"n": "mobleyhelms.com", "d": "An autonomous, AI-driven platform revolutionizing the mobleyhelms space. Target valuation: $100M.", "u": "https://mobleyhelms.com"}, {"n": "mobleymetal.com", "d": "An autonomous, AI-driven platform revolutionizing the mobleymetal space. Target valuation: $100M.", "u": "https://mobleymetal.com"}, {"n": "mobleyreport.com", "d": "An autonomous, AI-driven platform revolutionizing the mobleyreport space. Target valuation: $100M.", "u": "https://mobleyreport.com"}, {"n": "mobleysoft.com", "d": "An autonomous, AI-driven platform revolutionizing the mobleysoft space. Target valuation: $100M.", "u": "https://mobleysoft.com"}, {"n": "newgameplus.cc", "d": "An autonomous, AI-driven platform revolutionizing the newgameplus space. Target valuation: $100M.", "u": "https://newgameplus.cc"}, {"n": "ownschool.cc", "d": "An autonomous, AI-driven platform revolutionizing the ownschool space. Target valuation: $100M.", "u": "https://ownschool.cc"}, {"n": "paintedwhore.cc", "d": "An autonomous, AI-driven platform revolutionizing the paintedwhore space. Target valuation: $100M.", "u": "https://paintedwhore.cc"}, {"n": "pandorachat.cc", "d": "An autonomous, AI-driven platform revolutionizing the pandorachat space. Target valuation: $100M.", "u": "https://pandorachat.cc"}, {"n": "patentkin.com", "d": "An autonomous, AI-driven platform revolutionizing the patentkin space. Target valuation: $100M.", "u": "https://patentkin.com"}, {"n": "powerhost.cc", "d": "An autonomous, AI-driven platform revolutionizing the powerhost space. Target valuation: $100M.", "u": "https://powerhost.cc"}, {"n": "quanticfork.com", "d": "An autonomous, AI-driven platform revolutionizing the quanticfork space. Target valuation: $100M.", "u": "https://quanticfork.com"}, {"n": "reasontodate.com", "d": "An autonomous, AI-driven platform revolutionizing the reasontodate space. Target valuation: $100M.", "u": "https://reasontodate.com"}, {"n": "rebrief.me", "d": "An autonomous, AI-driven platform revolutionizing the rebrief space. Target valuation: $100M.", "u": "https://rebrief.me"}, {"n": "recovai.com", "d": "An autonomous, AI-driven platform revolutionizing the recovai space. Target valuation: $100M.", "u": "https://recovai.com"}, {"n": "roncorp.cc", "d": "An autonomous, AI-driven platform revolutionizing the roncorp space. Target valuation: $100M.", "u": "https://roncorp.cc"}, {"n": "ronhelms.cc", "d": "An autonomous, AI-driven platform revolutionizing the ronhelms space. Target valuation: $100M.", "u": "https://ronhelms.cc"}, {"n": "salesfactorai.com", "d": "An autonomous, AI-driven platform revolutionizing the salesfactorai space. Target valuation: $100M.", "u": "https://salesfactorai.com"}, {"n": "sanctuaryui.com", "d": "An autonomous, AI-driven platform revolutionizing the sanctuaryui space. Target valuation: $100M.", "u": "https://sanctuaryui.com"}, {"n": "scalarflux.com", "d": "An autonomous, AI-driven platform revolutionizing the scalarflux space. Target valuation: $100M.", "u": "https://scalarflux.com"}, {"n": "selfcoin.cc", "d": "An autonomous, AI-driven platform revolutionizing the selfcoin space. Target valuation: $100M.", "u": "https://selfcoin.cc"}, {"n": "sentiantai.com", "d": "An autonomous, AI-driven platform revolutionizing the sentiantai space. Target valuation: $100M.", "u": "https://sentiantai.com"}, {"n": "syncropy.com", "d": "An autonomous, AI-driven platform revolutionizing the syncropy space. Target valuation: $100M.", "u": "https://syncropy.com"}, {"n": "talkingmind.cc", "d": "An autonomous, AI-driven platform revolutionizing the talkingmind space. Target valuation: $100M.", "u": "https://talkingmind.cc"}, {"n": "tenancyai.com", "d": "An autonomous, AI-driven platform revolutionizing the tenancyai space. Target valuation: $100M.", "u": "https://tenancyai.com"}, {"n": "traceformer.com", "d": "An autonomous, AI-driven platform revolutionizing the traceformer space. Target valuation: $100M.", "u": "https://traceformer.com"}, {"n": "transcendantai.com", "d": "An autonomous, AI-driven platform revolutionizing the transcendantai space. Target valuation: $100M.", "u": "https://transcendantai.com"}, {"n": "valdring.com", "d": "An autonomous, AI-driven platform revolutionizing the valdring space. Target valuation: $100M.", "u": "https://valdring.com"}, {"n": "valkrai.com", "d": "An autonomous, AI-driven platform revolutionizing the valkrai space. Target valuation: $100M.", "u": "https://valkrai.com"}, {"n": "ventraleye.com", "d": "An autonomous, AI-driven platform revolutionizing the ventraleye space. Target valuation: $100M.", "u": "https://ventraleye.com"}, {"n": "warpdrive.cc", "d": "An autonomous, AI-driven platform revolutionizing the warpdrive space. Target valuation: $100M.", "u": "https://warpdrive.cc"}, {"n": "watchforce.cc", "d": "An autonomous, AI-driven platform revolutionizing the watchforce space. Target valuation: $100M.", "u": "https://watchforce.cc"}, {"n": "weylandai.com", "d": "An autonomous, AI-driven platform revolutionizing the weylandai space. Target valuation: $100M.", "u": "https://weylandai.com"}, {"n": "workshrinker.com", "d": "An autonomous, AI-driven platform revolutionizing the workshrinker space. Target valuation: $100M.", "u": "https://workshrinker.com"}, {"n": "youthmend.com", "d": "An autonomous, AI-driven platform revolutionizing the youthmend space. Target valuation: $100M.", "u": "https://youthmend.com"}, {"n": "yutaniai.com", "d": "An autonomous, AI-driven platform revolutionizing the yutaniai space. Target valuation: $100M.", "u": "https://yutaniai.com"}];
+    const input = document.getElementById('mobcorp-search-box');
+    const resultsDiv = document.getElementById('mobcorp-search-results');
+    
+    function render(results) {
+        resultsDiv.innerHTML = '';
+        results.forEach(r => {
+            const a = document.createElement('a');
+            a.className = 'mobcorp-result-item';
+            a.href = r.u;
+            a.innerHTML = `<div class="mobcorp-result-title">${r.n}</div><div class="mobcorp-result-desc">${r.d}</div>`;
+            resultsDiv.appendChild(a);
+        });
+    }
+    
+    input.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase();
+        if(!q) { render([]); return; }
+        const matches = catalog.filter(r => r.n.toLowerCase().includes(q) || r.d.toLowerCase().includes(q)).slice(0, 8);
+        render(matches);
+    });
+    
+    // Close on escape
+    document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape') document.getElementById('mobcorp-search-layer').classList.remove('active');
+    });
+})();
+</script>
+
+</body>
+</html>
