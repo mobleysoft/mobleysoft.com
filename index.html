@@ -91,6 +91,66 @@
 </head>
 <body>
 
+    <!-- MOBCORP OMNI-AURA MEMBRANE -->
+    <canvas id="mobcorp-aura-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.15;"></canvas>
+    <script>
+        const canvas = document.getElementById('mobcorp-aura-canvas');
+        const ctx = canvas.getContext('2d');
+        let w = canvas.width = window.innerWidth;
+        let h = canvas.height = window.innerHeight;
+        let targetColor = 'hsl(240, 100%, 50%)'; // Default Blue (Cold)
+        let currentColor = targetColor;
+
+        window.addEventListener('resize', () => {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        });
+
+        function fetchThermodynamics() {
+            fetch('http://localhost:19008/thermo')
+                .then(r => r.json())
+                .then(data => {
+                    targetColor = data.primary_color;
+                })
+                .catch(e => console.error("Aura Sync Failed:", e));
+        }
+
+        setInterval(fetchThermodynamics, 3000);
+        fetchThermodynamics();
+
+        let time = 0;
+        function animate() {
+            ctx.clearRect(0, 0, w, h);
+            
+            // Simple Aurora/Wave Effect
+            ctx.beginPath();
+            ctx.moveTo(0, h/2 + Math.sin(time) * 100);
+            for(let i = 0; i < w; i += 20) {
+                ctx.lineTo(i, h/2 + Math.sin(time + i/100) * 100 + Math.cos(time*0.5 + i/50) * 50);
+            }
+            ctx.lineTo(w, h);
+            ctx.lineTo(0, h);
+            
+            let gradient = ctx.createLinearGradient(0, 0, 0, h);
+            gradient.addColorStop(0, "transparent");
+            gradient.addColorStop(1, targetColor);
+            
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            time += 0.02;
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+
+
+    <!-- MOB.ID SSO INJECTION -->
+    <a href="http://localhost:19005/login" style="position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; backdrop-filter: blur(5px); z-index: 9999; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+        MobCorp ID
+    </a>
+
+
 <!-- MOBCORP OMNI-AD MEMBRANE -->
 <style>
 .omni-ad-banner {
@@ -2346,6 +2406,401 @@ document.getElementById('omni-newsletter-form').addEventListener('submit', funct
         });
     })();
 </script>
+
+
+    <!-- MOBCORP OMNI-BOUNTY MEMBRANE -->
+    <div id="mobcorp-bounty-widget" style="position: fixed; bottom: 80px; left: 20px; z-index: 9998; font-family: 'Inter', sans-serif;">
+        <button onclick="document.getElementById('bounty-modal').style.display='block'" style="width: 50px; height: 50px; border-radius: 50%; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: #FFD700; font-size: 24px; cursor: pointer; box-shadow: 0 0 15px rgba(255,215,0,0.3); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">!</button>
+        <div id="bounty-modal" style="display: none; position: absolute; bottom: 60px; left: 0; width: 300px; background: rgba(10,10,15,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; color: white; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; font-size: 16px; color: #FFD700;">Omni-Bounty Log</h3>
+                <button onclick="document.getElementById('bounty-modal').style.display='none'" style="background: none; border: none; color: #888; cursor: pointer; font-size: 16px;">×</button>
+            </div>
+            <div id="bounty-list" style="max-height: 200px; overflow-y: auto;">
+                <p style="font-size: 12px; color: #888;">Synchronizing ledger...</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Omni-Bounty Matrix Synchronization
+        fetch('http://localhost:19006/bounties')
+            .then(r => r.json())
+            .then(data => {
+                const list = document.getElementById('bounty-list');
+                list.innerHTML = '';
+                data.bounties.forEach(b => {
+                    list.innerHTML += `
+                        <div style="padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 10px; border-left: 3px solid #FFD700;">
+                            <strong style="display: block; font-size: 14px; margin-bottom: 5px;">${b.type}</strong>
+                            <span style="font-size: 11px; color: #aaa; display: block; margin-bottom: 8px;">${b.desc}</span>
+                            <button onclick="claimBounty(${b.id})" style="background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3); color: #FFD700; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; width: 100%;">Claim ${b.reward} MBC</button>
+                        </div>
+                    `;
+                });
+            })
+            .catch(e => console.error("Bounty Ledger Sync Failed:", e));
+
+        function claimBounty(id) {
+            fetch('http://localhost:19006/complete', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `bounty_id=${id}&user_id=citizen_${Math.floor(Math.random()*10000)}`
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Trigger Omni-Sonic audio if available, or just alert
+                    alert(data.message);
+                }
+            });
+        }
+    </script>
+
+
+    <!-- MOBCORP OMNI-CONSTELLATION MEMBRANE -->
+    <div id="mobcorp-constellation-widget" style="position: fixed; bottom: 20px; right: 20px; width: 200px; height: 200px; z-index: 9997; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.8); cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <canvas id="constellation-canvas" width="200" height="200"></canvas>
+        <div style="position: absolute; bottom: 10px; width: 100%; text-align: center; color: rgba(255,255,255,0.5); font-size: 9px; font-family: 'Inter', sans-serif; pointer-events: none;">MATRIX MAP</div>
+    </div>
+    <script>
+        (function() {
+            const canvas = document.getElementById('constellation-canvas');
+            const ctx = canvas.getContext('2d');
+            const nodes = [{"name": "accountdrac.com"}, {"name": "animetrope.com"}, {"name": "devtoolai.com"}, {"name": "marketingium.com"}, {"name": "singularityui.com"}, {"name": "taskgridai.com"}, {"name": "vendyai.com"}, {"name": "abstergo.cc"}, {"name": "agentropi.com"}, {"name": "agentzaar.com"}, {"name": "agewinder.com"}, {"name": "aicossic.com"}, {"name": "aiopencommerce.com"}, {"name": "alhena.cc"}, {"name": "americanagi.cc"}, {"name": "americnagi.cc"}, {"name": "anattar.com"}, {"name": "areshiva.com"}, {"name": "audiovizai.com"}, {"name": "authfor.com"}, {"name": "bignice.cc"}, {"name": "bitdoggo.com"}, {"name": "bloomagi.cc"}, {"name": "bondwright.com"}, {"name": "book2film.cc"}, {"name": "bookclubs.cc"}, {"name": "bookeepr.cc"}, {"name": "brynhildai.com"}, {"name": "conseiv.com"}, {"name": "consenta.cc"}, {"name": "cryptosmart.cc"}, {"name": "danzoa.com"}, {"name": "devducky.com"}, {"name": "devtoolbx.com"}, {"name": "dofura.com"}, {"name": "domainwombat.com"}, {"name": "draknir.com"}, {"name": "draugr.cc"}, {"name": "ecofixai.com"}, {"name": "emissionhub.cc"}, {"name": "enablinghomes.com"}, {"name": "encoverai.com"}, {"name": "entoolize.com"}, {"name": "equifiant.com"}, {"name": "extraterran.com"}, {"name": "fedbank.cc"}, {"name": "fedtalent.cc"}, {"name": "femptocom.com"}, {"name": "filmline.cc"}, {"name": "firmcreate.com"}, {"name": "fundyai.com"}, {"name": "fystz.com"}, {"name": "galadul.com"}, {"name": "gamegob.com"}, {"name": "glcx.cc"}, {"name": "glyphyai.com"}, {"name": "golfcad.cc"}, {"name": "golfdad.cc"}, {"name": "golflink.cc"}, {"name": "golfmind.cc"}, {"name": "gravnova.com"}, {"name": "greenhandcapital.com"}, {"name": "greybeardai.com"}, {"name": "gurukle.com"}, {"name": "halside.com"}, {"name": "healspell.com"}, {"name": "helmcorp.cc"}, {"name": "helmdir.com"}, {"name": "helmscorp.cc"}, {"name": "hildrai.com"}, {"name": "industrize.com"}, {"name": "instantiability.com"}, {"name": "intfer.cc"}, {"name": "kubaki.cc"}, {"name": "lawyik.com"}, {"name": "leadersclub.cc"}, {"name": "legibleweights.com"}, {"name": "legionicai.com"}, {"name": "literacraft.com"}, {"name": "lovemaint.com"}, {"name": "mailguyai.com"}, {"name": "malathor.com"}, {"name": "meeva.io"}, {"name": "mobcoin.cc"}, {"name": "mobcorp.cc"}, {"name": "mobleybooks.com"}, {"name": "mobleyhelms.com"}, {"name": "mobleymetal.com"}, {"name": "mobleyreport.com"}, {"name": "mobleysoft.com"}, {"name": "newgameplus.cc"}, {"name": "ownschool.cc"}, {"name": "paintedwhore.cc"}, {"name": "pandorachat.cc"}, {"name": "patentkin.com"}, {"name": "powerhost.cc"}, {"name": "quanticfork.com"}, {"name": "reasontodate.com"}, {"name": "rebrief.me"}, {"name": "recovai.com"}, {"name": "roncorp.cc"}, {"name": "ronhelms.cc"}, {"name": "salesfactorai.com"}, {"name": "sanctuaryui.com"}, {"name": "scalarflux.com"}, {"name": "selfcoin.cc"}, {"name": "sentiantai.com"}, {"name": "syncropy.com"}, {"name": "talkingmind.cc"}, {"name": "tenancyai.com"}, {"name": "traceformer.com"}, {"name": "transcendantai.com"}, {"name": "valdring.com"}, {"name": "valkrai.com"}, {"name": "ventraleye.com"}, {"name": "warpdrive.cc"}, {"name": "watchforce.cc"}, {"name": "weylandai.com"}, {"name": "workshrinker.com"}, {"name": "youthmend.com"}, {"name": "yutaniai.com"}];
+            let particles = [];
+            
+            // Current Host Identification
+            const currentHost = window.location.hostname || "local";
+            
+            // Initialize particles based on ledger
+            nodes.forEach((node, i) => {
+                particles.push({
+                    name: node.name,
+                    x: Math.random() * 200,
+                    y: Math.random() * 200,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    isCurrent: node.name.includes(currentHost.split('.')[0])
+                });
+            });
+
+            function draw() {
+                ctx.clearRect(0, 0, 200, 200);
+                
+                // Draw Connections
+                ctx.strokeStyle = "rgba(255,255,255,0.05)";
+                ctx.beginPath();
+                for(let i=0; i<particles.length; i++) {
+                    for(let j=i+1; j<particles.length; j++) {
+                        let dx = particles[i].x - particles[j].x;
+                        let dy = particles[i].y - particles[j].y;
+                        let dist = dx*dx + dy*dy;
+                        if(dist < 1500) {
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                        }
+                    }
+                }
+                ctx.stroke();
+
+                // Draw Nodes
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if(p.x < 0 || p.x > 200) p.vx *= -1;
+                    if(p.y < 0 || p.y > 200) p.vy *= -1;
+                    
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.isCurrent ? 4 : 1.5, 0, Math.PI*2);
+                    ctx.fillStyle = p.isCurrent ? "#FF3366" : "rgba(255,255,255,0.7)";
+                    ctx.fill();
+                    
+                    if(p.isCurrent) {
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = "#FF3366";
+                        ctx.fill();
+                        ctx.shadowBlur = 0; // reset
+                    }
+                });
+                
+                requestAnimationFrame(draw);
+            }
+            draw();
+            
+            // Warp capability
+            canvas.parentElement.addEventListener('click', () => {
+                let target = nodes[Math.floor(Math.random() * nodes.length)].name;
+                window.location.href = "http://" + target + "/";
+            });
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-CURSOR MEMBRANE -->
+    <style>
+        body, html, a, button, input {
+            cursor: none !important;
+        }
+        #mobcorp-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #FFD700;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width 0.1s, height 0.1s, border-color 0.1s;
+            mix-blend-mode: difference;
+        }
+        #mobcorp-cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 4px;
+            background: #FF3366;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+    <div id="mobcorp-cursor"></div>
+    <div id="mobcorp-cursor-dot"></div>
+    <script>
+        (function() {
+            const cursor = document.getElementById('mobcorp-cursor');
+            const dot = document.getElementById('mobcorp-cursor-dot');
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                dot.style.left = e.clientX + 'px';
+                dot.style.top = e.clientY + 'px';
+            });
+            
+            document.addEventListener('mousedown', () => {
+                cursor.style.width = '30px';
+                cursor.style.height = '30px';
+                cursor.style.borderColor = '#FF3366';
+                cursor.style.background = 'rgba(255, 51, 102, 0.2)';
+            });
+            
+            document.addEventListener('mouseup', () => {
+                cursor.style.width = '20px';
+                cursor.style.height = '20px';
+                cursor.style.borderColor = '#FFD700';
+                cursor.style.background = 'transparent';
+            });
+            
+            // Interaction States
+            document.querySelectorAll('a, button, input').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.width = '40px';
+                    cursor.style.height = '40px';
+                    cursor.style.borderColor = '#00FFCC';
+                    cursor.style.borderRadius = '4px';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.width = '20px';
+                    cursor.style.height = '20px';
+                    cursor.style.borderColor = '#FFD700';
+                    cursor.style.borderRadius = '50%';
+                });
+            });
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-SCROLL MEMBRANE -->
+    <script>
+        (function() {
+            // Omni-Inertial Smooth Scrolling Engine
+            let targetY = window.scrollY;
+            let currentY = window.scrollY;
+            let isAnimating = false;
+            
+            // Prevent default scroll physics
+            window.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                targetY += e.deltaY;
+                targetY = Math.max(0, Math.min(targetY, document.body.scrollHeight - window.innerHeight));
+                
+                if(!isAnimating) {
+                    isAnimating = true;
+                    requestAnimationFrame(update);
+                }
+            }, { passive: false });
+            
+            function update() {
+                // Linear interpolation (lerp) for buttery smooth deceleration
+                currentY += (targetY - currentY) * 0.08;
+                
+                window.scrollTo(0, currentY);
+                
+                // Stop animating if target is reached
+                if (Math.abs(targetY - currentY) > 0.5) {
+                    requestAnimationFrame(update);
+                } else {
+                    currentY = targetY;
+                    window.scrollTo(0, currentY);
+                    isAnimating = false;
+                }
+            }
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-CORTEX MEMBRANE -->
+    <style>
+        #mobcorp-cortex-btn {
+            position: absolute;
+            display: none;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #00FFCC;
+            color: #00FFCC;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            z-index: 99999;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0,255,204,0.2);
+            transition: transform 0.2s;
+        }
+        #mobcorp-cortex-btn:hover {
+            transform: scale(1.05);
+            background: rgba(0,255,204,0.1);
+        }
+        #mobcorp-cortex-modal {
+            position: fixed;
+            display: none;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background: rgba(10,10,15,0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 20px;
+            color: white;
+            z-index: 100000;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    <button id="mobcorp-cortex-btn">Analyze Context</button>
+    <div id="mobcorp-cortex-modal">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+            <h3 style="margin: 0; font-size: 14px; color: #00FFCC; letter-spacing: 1px;">OMNI-CORTEX ANALYSIS</h3>
+            <button onclick="document.getElementById('mobcorp-cortex-modal').style.display='none'" style="background: none; border: none; color: #888; cursor: pointer; font-size: 16px;">×</button>
+        </div>
+        <p id="mobcorp-cortex-content" style="font-size: 13px; line-height: 1.6; color: #DDD;">Processing neural pathways...</p>
+    </div>
+    
+    <script>
+        (function() {
+            const btn = document.getElementById('mobcorp-cortex-btn');
+            const modal = document.getElementById('mobcorp-cortex-modal');
+            const content = document.getElementById('mobcorp-cortex-content');
+            let selectedText = "";
+            
+            document.addEventListener('mouseup', (e) => {
+                let selection = window.getSelection();
+                if(selection.toString().trim().length > 10) {
+                    selectedText = selection.toString().trim();
+                    let range = selection.getRangeAt(0);
+                    let rect = range.getBoundingClientRect();
+                    
+                    btn.style.left = (rect.left + window.scrollX) + 'px';
+                    btn.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+                    btn.style.display = 'block';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
+            
+            document.addEventListener('mousedown', (e) => {
+                if(e.target !== btn) {
+                    btn.style.display = 'none';
+                }
+            });
+            
+            btn.addEventListener('click', () => {
+                btn.style.display = 'none';
+                modal.style.display = 'block';
+                content.innerText = 'Engaging bare-metal inference...';
+                
+                fetch('http://localhost:19011/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({text: selectedText})
+                })
+                .then(r => r.json())
+                .then(data => {
+                    content.innerText = data.analysis;
+                })
+                .catch(err => {
+                    content.innerText = 'Thermal lock engaged. Cognitive transmission failed.';
+                });
+            });
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-PARALLAX MEMBRANE -->
+    <script>
+        (function() {
+            // Wait for DOM to settle
+            setTimeout(() => {
+                // Target generic structural elements likely to be cards/panels
+                const targets = document.querySelectorAll('div, section, article, button');
+                const parallaxTargets = Array.from(targets).filter(el => {
+                    const style = window.getComputedStyle(el);
+                    // Only target elements that have background color/glassmorphism and some size
+                    return (style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor !== 'transparent') 
+                           && el.offsetWidth > 100 
+                           && el.offsetHeight > 50
+                           && !el.id.includes('mobcorp');
+                });
+                
+                parallaxTargets.forEach(card => {
+                    card.style.transition = 'transform 0.1s ease-out';
+                    card.style.transformStyle = 'preserve-3d';
+                    
+                    card.addEventListener('mousemove', (e) => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        
+                        const rotateX = ((y - centerY) / centerY) * -5; // Max 5 deg tilt
+                        const rotateY = ((x - centerX) / centerX) * 5;
+                        
+                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    });
+                    
+                    card.addEventListener('mouseleave', () => {
+                        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                        card.style.transition = 'transform 0.5s ease-out';
+                    });
+                    
+                    card.addEventListener('mouseenter', () => {
+                        card.style.transition = 'transform 0.1s ease-out';
+                    });
+                });
+            }, 1000);
+        })();
+    </script>
 
 </body>
 </html>
