@@ -1,0 +1,135 @@
+Example:
+     ```python
+     def execute_cowlick(payload: dict) -> dict:
+         # Your code here
+     ```
+     Example output:
+     ```python
+     def execute_cowlick(payload: dict) -> dict:
+         return {"result": "success"}
+     ```
+     DO NOT include any imports or code outside of the function body.
+    - Do not include any comments or code outside of the function body.
+    - DO NOT include any global variables or variables outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or code outside of the function body.
+    - DO NOT include any lambda functions or code outside of the function body.
+    - DO NOT include any function definitions or code outside of the function body.
+    - DO NOT include any function calls or code outside of the function body.
+    - DO NOT include any return statements or
