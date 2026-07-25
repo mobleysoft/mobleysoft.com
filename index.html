@@ -52,6 +52,42 @@
             animation: glassmorphism 5s infinite;
         }
     </style>
+
+<!-- MOBCORP OMNI-ANALYTICS MEMBRANE -->
+<script>
+// Sovereign Analytics Payload
+(function() {
+    const node = window.location.hostname || 'local_node';
+    const path = window.location.pathname;
+    
+    function sendTelemetry(type, meta) {
+        fetch('http://localhost:18099/track', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ node: node, event_type: type, path: path, metadata: meta })
+        }).catch(e => {});
+    }
+    
+    // Track Pageview
+    sendTelemetry('page_view', JSON.stringify({ referrer: document.referrer, userAgent: navigator.userAgent }));
+    
+    // Track Engagement Clicks
+    document.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+            sendTelemetry('click', JSON.stringify({ tag: e.target.tagName, text: e.target.innerText.substring(0,20), x: e.clientX, y: e.clientY }));
+        }
+    });
+    
+    // Track Dwell Time (Exit intent)
+    let startTime = Date.now();
+    window.addEventListener('beforeunload', () => {
+        let dwell = (Date.now() - startTime) / 1000;
+        sendTelemetry('dwell_time', JSON.stringify({ seconds: dwell }));
+    });
+})();
+</script>
+
 </head>
 <body>
     <div class="glassmorphism">
@@ -362,6 +398,503 @@
         if(e.key === 'Escape') document.getElementById('mobcorp-search-layer').classList.remove('active');
     });
 })();
+</script>
+
+
+<!-- MOBCORP OMNI-AUTH MEMBRANE -->
+<style>
+/* Omni-Auth Membrane (Rule 12: Premium Glassmorphism) */
+.mobcorp-auth-widget {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 9998;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(20, 20, 25, 0.85), rgba(5, 5, 10, 0.95));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.mobcorp-auth-widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(100, 255, 150, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    border-color: rgba(100, 255, 150, 0.4);
+}
+.mobcorp-auth-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0f0, #0aa);
+    box-shadow: 0 0 10px rgba(0, 255, 170, 0.5);
+}
+.mobcorp-auth-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+</style>
+
+<a href="http://localhost:18094/login?node=" id="mobcorp-auth-link" class="mobcorp-auth-widget">
+    <div class="mobcorp-auth-avatar"></div>
+    <span class="mobcorp-auth-text" id="mobcorp-auth-label">MobCorp ID</span>
+</a>
+
+<script>
+(function(){
+    const host = encodeURIComponent(window.location.hostname || "local");
+    const link = document.getElementById('mobcorp-auth-link');
+    link.href = "http://localhost:18094/login?node=" + host;
+    
+    // Check local auth state
+    const user = localStorage.getItem('mobcorp_user');
+    if (user) {
+        document.getElementById('mobcorp-auth-label').innerText = user;
+        link.href = "#"; // Disable redirect if logged in
+        link.onclick = (e) => {
+            e.preventDefault();
+            if(confirm("Sign out of MobCorp Matrix?")) {
+                localStorage.removeItem('mobcorp_user');
+                location.reload();
+            }
+        };
+    }
+})();
+</script>
+
+
+<!-- MOBCORP OMNI-SUPPORT MEMBRANE -->
+<style>
+/* Omni-Support Membrane (Rule 12: Premium Glassmorphism) */
+.mobcorp-support-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 240px; /* Offset from Monetization FAB */
+    z-index: 9998;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(5, 5, 15, 0.98));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.mobcorp-support-fab:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 40px rgba(0, 255, 150, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    border-color: rgba(0, 255, 150, 0.4);
+}
+.mobcorp-support-fab svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: #0f0;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.mobcorp-support-window {
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    width: 320px;
+    height: 400px;
+    background: rgba(15, 15, 20, 0.95);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: 'Inter', system-ui, sans-serif;
+}
+.mobcorp-support-window.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+.mobcorp-support-header {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.mobcorp-support-close {
+    cursor: pointer;
+    color: rgba(255,255,255,0.5);
+}
+.mobcorp-support-close:hover { color: #fff; }
+.mobcorp-support-body {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.mobcorp-support-body::-webkit-scrollbar { display: none; }
+.msg {
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    max-width: 80%;
+}
+.msg.ai {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.9);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+.msg.user {
+    background: linear-gradient(135deg, #0f0, #0aa);
+    color: #000;
+    font-weight: 500;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+.mobcorp-support-footer {
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    gap: 8px;
+}
+.mobcorp-support-input {
+    flex: 1;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.85rem;
+    outline: none;
+}
+.mobcorp-support-input:focus { border-color: #0f0; }
+.mobcorp-support-send {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #0f0;
+    border-radius: 8px;
+    padding: 0 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.mobcorp-support-send:hover {
+    background: rgba(0,255,150,0.1);
+}
+</style>
+
+<div class="mobcorp-support-fab" onclick="document.getElementById('mobcorp-support-win').classList.toggle('active')">
+    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+</div>
+
+<div class="mobcorp-support-window" id="mobcorp-support-win">
+    <div class="mobcorp-support-header">
+        <span id="support-title">AI Support</span>
+        <span class="mobcorp-support-close" onclick="document.getElementById('mobcorp-support-win').classList.remove('active')">✕</span>
+    </div>
+    <div class="mobcorp-support-body" id="mobcorp-support-body">
+        <div class="msg ai">Hello. How can I assist you with our platform today?</div>
+    </div>
+    <div class="mobcorp-support-footer">
+        <input type="text" class="mobcorp-support-input" id="mobcorp-support-inp" placeholder="Message..." onkeypress="if(event.key === 'Enter') sendSupportMsg()">
+        <button class="mobcorp-support-send" onclick="sendSupportMsg()">>_</button>
+    </div>
+</div>
+
+<script>
+async function sendSupportMsg() {
+    const inp = document.getElementById('mobcorp-support-inp');
+    const txt = inp.value.trim();
+    if(!txt) return;
+    inp.value = '';
+    
+    const body = document.getElementById('mobcorp-support-body');
+    body.innerHTML += `<div class="msg user">${txt}</div>`;
+    body.scrollTop = body.scrollHeight;
+    
+    const host = encodeURIComponent(window.location.hostname || "local");
+    
+    try {
+        const res = await fetch('http://localhost:18096/chat', {
+            method: 'POST',
+            body: JSON.stringify({ msg: txt, node: host })
+        });
+        const data = await res.json();
+        body.innerHTML += `<div class="msg ai">${data.reply}</div>`;
+    } catch(e) {
+        body.innerHTML += `<div class="msg ai">Systems are currently prioritizing thermal homeostasis. Please email support@${host}.</div>`;
+    }
+    body.scrollTop = body.scrollHeight;
+}
+</script>
+
+
+<!-- MOBCORP OMNI-BROADCAST MEMBRANE -->
+<style>
+/* Omni-Broadcast Membrane (Rule 12: Premium Glassmorphism) */
+.mobcorp-broadcast-toast {
+    position: fixed;
+    top: -100px; /* Hidden initially */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 12px 24px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(30, 20, 40, 0.95), rgba(15, 10, 25, 0.98));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 100, 255, 0.2);
+    box-shadow: 0 10px 40px rgba(255, 0, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #fff;
+    text-decoration: none;
+    transition: top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.mobcorp-broadcast-toast.visible {
+    top: 24px;
+}
+.mobcorp-broadcast-toast:hover {
+    box-shadow: 0 15px 50px rgba(255, 0, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 100, 255, 0.5);
+}
+.mobcorp-broadcast-pulse {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #f0f;
+    box-shadow: 0 0 15px #f0f;
+    animation: broadcast-pulse 2s infinite;
+}
+@keyframes broadcast-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 0, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0); }
+}
+.mobcorp-broadcast-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+.mobcorp-broadcast-close {
+    margin-left: 10px;
+    cursor: pointer;
+    opacity: 0.6;
+    font-size: 1.1rem;
+}
+.mobcorp-broadcast-close:hover { opacity: 1; }
+</style>
+
+<a href="#" id="mobcorp-broadcast-link" class="mobcorp-broadcast-toast">
+    <div class="mobcorp-broadcast-pulse"></div>
+    <span class="mobcorp-broadcast-text" id="mobcorp-broadcast-msg">Synchronizing...</span>
+    <span class="mobcorp-broadcast-close" onclick="event.preventDefault(); document.getElementById('mobcorp-broadcast-link').classList.remove('visible');">✕</span>
+</a>
+
+<script>
+(async function() {
+    const link = document.getElementById('mobcorp-broadcast-link');
+    const msg = document.getElementById('mobcorp-broadcast-msg');
+    
+    // Check if dismissed in session
+    if (sessionStorage.getItem('mobcorp_broadcast_dismissed')) return;
+    
+    try {
+        const res = await fetch('http://localhost:18097/poll');
+        const data = await res.json();
+        
+        if (data && data.active && data.message) {
+            msg.innerText = data.message;
+            if (data.link && data.link !== '#') {
+                link.href = data.link;
+            }
+            
+            // Slide down after 2 seconds
+            setTimeout(() => {
+                link.classList.add('visible');
+            }, 2000);
+            
+            // Mark dismissed if clicked close
+            link.querySelector('.mobcorp-broadcast-close').onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                link.classList.remove('visible');
+                sessionStorage.setItem('mobcorp_broadcast_dismissed', 'true');
+            };
+        }
+    } catch(e) {
+        // Silent fail if central beacon is offline
+    }
+})();
+</script>
+
+
+<!-- MOBCORP OMNI-PAYWALL MEMBRANE -->
+<style>
+/* Omni-Paywall Membrane (Rule 12: Premium Glassmorphism) */
+.mobcorp-paywall-btn {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 9998;
+    padding: 12px 24px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(40, 20, 30, 0.95), rgba(25, 10, 15, 0.98));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 150, 100, 0.2);
+    box-shadow: 0 10px 40px rgba(255, 100, 50, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.mobcorp-paywall-btn:hover {
+    box-shadow: 0 15px 50px rgba(255, 100, 50, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 150, 100, 0.5);
+    transform: translateY(-2px);
+}
+.mobcorp-paywall-icon {
+    font-size: 1.2rem;
+    color: #ff9933;
+    text-shadow: 0 0 10px #ff9933;
+}
+.mobcorp-paywall-text {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: -webkit-linear-gradient(#ffcc80, #ff9933);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Unified Modal */
+.mobcorp-paywall-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+.mobcorp-paywall-modal {
+    background: linear-gradient(135deg, rgba(30, 20, 40, 0.95), rgba(15, 10, 25, 0.98));
+    border: 1px solid rgba(255, 100, 255, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(255, 0, 255, 0.2);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #fff;
+    position: relative;
+}
+.mobcorp-paywall-close {
+    position: absolute;
+    top: 15px; right: 20px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    opacity: 0.6;
+}
+.mobcorp-paywall-close:hover { opacity: 1; }
+.mobcorp-paywall-modal h2 { margin-top: 0; margin-bottom: 15px; color: #ff9933; }
+.mobcorp-paywall-modal p { margin-bottom: 30px; font-size: 0.95rem; color: #ccc; line-height: 1.5; }
+.mobcorp-paywall-modal button {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(90deg, #ff9933, #ff5500);
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(255, 85, 0, 0.4);
+    transition: all 0.2s ease;
+}
+.mobcorp-paywall-modal button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 85, 0, 0.6);
+}
+</style>
+
+<div class="mobcorp-paywall-btn" id="mobcorp-paywall-trigger">
+    <span class="mobcorp-paywall-icon">✦</span>
+    <span class="mobcorp-paywall-text">UPGRADE TO PRO</span>
+</div>
+
+<div class="mobcorp-paywall-modal-overlay" id="mobcorp-paywall-overlay">
+    <div class="mobcorp-paywall-modal">
+        <span class="mobcorp-paywall-close" onclick="document.getElementById('mobcorp-paywall-overlay').style.display = 'none';">✕</span>
+        <h2>Unlock MobCorp Pro</h2>
+        <p>Gain sovereign access across the entire 120-node ecosystem. Unlimited generations, priority compute, and premium features.</p>
+        <button id="mobcorp-checkout-btn">Initialize Checkout</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('mobcorp-paywall-trigger').addEventListener('click', () => {
+        document.getElementById('mobcorp-paywall-overlay').style.display = 'flex';
+    });
+
+    document.getElementById('mobcorp-checkout-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('mobcorp-checkout-btn');
+        btn.innerText = "Securing Allocation...";
+        
+        try {
+            await fetch('http://localhost:18098/intent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ node: window.location.hostname || 'local_node' })
+            });
+            
+            setTimeout(() => {
+                btn.innerText = "Redirecting to Treasury...";
+                btn.style.background = "linear-gradient(90deg, #00ff00, #00aa00)";
+                // In production, this routes to Stripe checkout
+            }, 1500);
+            
+        } catch(e) {
+            btn.innerText = "Network Error";
+        }
+    });
 </script>
 
 </body>
