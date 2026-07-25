@@ -1,411 +1,183 @@
 Example:
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_cowlick(payload: dict) -> dict:
-        pass
-    ```
-    ```
-    def execute_c
+     ```python
+     def execute_cowlick(payload: dict) -> dict:
+         # Your code here
+     ```
+    - Do not use any external libraries or modules.
+    - Do not use any global variables.
+    - Do not use any function definitions.
+    - Do not use any loops.
+    - Do not use any classes.
+    - Do not use any functions.
+    - Do not use any `import` statements.
+    - Do not use any `print` statements.
+    - Do not use any `return` statements.
+    - Do not use any `if` statements.
+    - Do not use any `elif` statements.
+    - Do not use any `else` statements.
+    - Do not use any `for` loops.
+    - Do not use any `try` statements.
+    - Do not use any `except` statements.
+    - Do not use any `finally` statements.
+    - Do not use any `with` statements.
+    - Do not use any `yield` statements.
+    - Do not use any `async` statements.
+    - Do not use any `asyncio` statements.
+    - Do not use any `await` statements.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async` functions.
+    - Do not use any `asyncio` functions.
+    - Do not use any `async
