@@ -90,6 +90,75 @@
 
 </head>
 <body>
+
+<!-- MOBCORP OMNI-AD MEMBRANE -->
+<style>
+.omni-ad-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.9), rgba(30, 58, 138, 0.7));
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+.omni-ad-banner:hover {
+    background: linear-gradient(90deg, rgba(30, 58, 138, 0.9), rgba(59, 130, 246, 0.8));
+}
+.omni-ad-tag {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-right: 1rem;
+    letter-spacing: 1px;
+}
+.omni-ad-content {
+    display: flex;
+    align-items: center;
+}
+.omni-ad-link {
+    color: #93c5fd;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    transition: color 0.2s ease;
+}
+.omni-ad-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+</style>
+
+<div class="omni-ad-banner" id="omni-ad-banner" style="display: none;">
+    <span class="omni-ad-tag">SPONSORED</span>
+    <div class="omni-ad-content">
+        Discover <a href="#" class="omni-ad-link" id="omni-ad-link" target="_blank">Loading...</a>
+    </div>
+</div>
+
+<script>
+fetch('http://localhost:18106/serve_ad')
+    .then(res => res.json())
+    .then(data => {
+        if(data && data.domain) {
+            const link = document.getElementById('omni-ad-link');
+            link.href = 'https://' + data.domain;
+            link.innerText = data.domain.toUpperCase() + ' - ' + data.niche;
+            document.getElementById('omni-ad-banner').style.display = 'flex';
+        }
+    })
+    .catch(err => console.error('Omni-Ad Error:', err));
+</script>
+
     <div class="glassmorphism">
         <div class="glassmorphism__inner">
             <h1>Mobleysoft</h1>
@@ -895,6 +964,1040 @@ async function sendSupportMsg() {
             btn.innerText = "Network Error";
         }
     });
+</script>
+
+
+<!-- MOBCORP OMNI-NEWSLETTER MEMBRANE -->
+<style>
+.omni-newsletter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+    background: rgba(10, 10, 15, 0.6);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 4rem;
+}
+.omni-newsletter-box {
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+.omni-newsletter-box h3 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-family: 'Inter', sans-serif;
+}
+.omni-newsletter-box p {
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+}
+.omni-newsletter-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.omni-newsletter-input {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+.omni-newsletter-input:focus {
+    border-color: rgba(100, 200, 255, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+}
+.omni-newsletter-button {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.omni-newsletter-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+.omni-newsletter-msg {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    display: none;
+}
+</style>
+
+<div class="omni-newsletter-container">
+    <div class="omni-newsletter-box">
+        <h3>Join the Network</h3>
+        <p>Subscribe for early access and sovereign architectural updates.</p>
+        <form class="omni-newsletter-form" id="omni-newsletter-form">
+            <input type="email" class="omni-newsletter-input" id="omni-newsletter-email" placeholder="Enter your email..." required>
+            <button type="submit" class="omni-newsletter-button">Subscribe</button>
+        </form>
+        <div class="omni-newsletter-msg" id="omni-newsletter-msg"></div>
+    </div>
+</div>
+
+<script>
+document.getElementById('omni-newsletter-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('omni-newsletter-email').value;
+    const node = window.location.hostname || 'local_node';
+    const msgBox = document.getElementById('omni-newsletter-msg');
+    
+    fetch('http://localhost:18105/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, node: node })
+    })
+    .then(res => {
+        if(res.ok) {
+            msgBox.style.display = 'block';
+            msgBox.style.color = '#4ade80';
+            msgBox.innerText = 'Subscribed successfully.';
+            document.getElementById('omni-newsletter-email').value = '';
+        } else {
+            throw new Error('Network response was not ok.');
+        }
+    })
+    .catch(err => {
+        msgBox.style.display = 'block';
+        msgBox.style.color = '#f87171';
+        msgBox.innerText = 'Error subscribing. Please try again.';
+    });
+});
+</script>
+
+
+<!-- MOBCORP OMNI-COMMANDER MEMBRANE -->
+<style>
+.omni-commander-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 10vh;
+    font-family: 'Inter', sans-serif;
+}
+.omni-commander-modal {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    overflow: hidden;
+    color: #fff;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.omni-commander-overlay.active .omni-commander-modal {
+    transform: scale(1);
+    opacity: 1;
+}
+.omni-commander-input {
+    width: 100%;
+    padding: 1.5rem;
+    font-size: 1.2rem;
+    background: transparent;
+    border: none;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    outline: none;
+}
+.omni-commander-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+.omni-commander-results {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.omni-commander-item {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+}
+.omni-commander-item:hover, .omni-commander-item.selected {
+    background: rgba(59, 130, 246, 0.2);
+}
+.omni-commander-name {
+    font-weight: 600;
+    font-size: 1rem;
+}
+.omni-commander-niche {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+.omni-commander-hint {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(5px);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+    z-index: 1000;
+    pointer-events: none;
+}
+.omni-commander-key {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: bold;
+}
+</style>
+
+<div class="omni-commander-hint">Press <span class="omni-commander-key">⌘ K</span> to explore the Conglomerate</div>
+
+<div class="omni-commander-overlay" id="omni-commander-overlay">
+    <div class="omni-commander-modal">
+        <input type="text" class="omni-commander-input" id="omni-commander-input" placeholder="Search the MobCorp Conglomerate..." autocomplete="off" spellcheck="false" />
+        <div class="omni-commander-results" id="omni-commander-results"></div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const catalog = [{"name": "accountdrac.com", "niche": null}, {"name": "animetrope.com", "niche": null}, {"name": "devtoolai.com", "niche": null}, {"name": "marketingium.com", "niche": null}, {"name": "singularityui.com", "niche": null}, {"name": "taskgridai.com", "niche": null}, {"name": "vendyai.com", "niche": null}, {"name": "abstergo.cc", "niche": null}, {"name": "agentropi.com", "niche": null}, {"name": "agentzaar.com", "niche": null}, {"name": "agewinder.com", "niche": null}, {"name": "aicossic.com", "niche": null}, {"name": "aiopencommerce.com", "niche": null}, {"name": "alhena.cc", "niche": null}, {"name": "americanagi.cc", "niche": null}, {"name": "americnagi.cc", "niche": null}, {"name": "anattar.com", "niche": null}, {"name": "areshiva.com", "niche": null}, {"name": "audiovizai.com", "niche": null}, {"name": "authfor.com", "niche": null}, {"name": "bignice.cc", "niche": null}, {"name": "bitdoggo.com", "niche": null}, {"name": "bloomagi.cc", "niche": null}, {"name": "bondwright.com", "niche": null}, {"name": "book2film.cc", "niche": null}, {"name": "bookclubs.cc", "niche": null}, {"name": "bookeepr.cc", "niche": null}, {"name": "brynhildai.com", "niche": null}, {"name": "conseiv.com", "niche": null}, {"name": "consenta.cc", "niche": null}, {"name": "cryptosmart.cc", "niche": null}, {"name": "danzoa.com", "niche": null}, {"name": "devducky.com", "niche": null}, {"name": "devtoolbx.com", "niche": null}, {"name": "dofura.com", "niche": null}, {"name": "domainwombat.com", "niche": null}, {"name": "draknir.com", "niche": null}, {"name": "draugr.cc", "niche": null}, {"name": "ecofixai.com", "niche": null}, {"name": "emissionhub.cc", "niche": null}, {"name": "enablinghomes.com", "niche": null}, {"name": "encoverai.com", "niche": null}, {"name": "entoolize.com", "niche": null}, {"name": "equifiant.com", "niche": null}, {"name": "extraterran.com", "niche": null}, {"name": "fedbank.cc", "niche": null}, {"name": "fedtalent.cc", "niche": null}, {"name": "femptocom.com", "niche": null}, {"name": "filmline.cc", "niche": null}, {"name": "firmcreate.com", "niche": null}, {"name": "fundyai.com", "niche": null}, {"name": "fystz.com", "niche": null}, {"name": "galadul.com", "niche": null}, {"name": "gamegob.com", "niche": null}, {"name": "glcx.cc", "niche": null}, {"name": "glyphyai.com", "niche": null}, {"name": "golfcad.cc", "niche": null}, {"name": "golfdad.cc", "niche": null}, {"name": "golflink.cc", "niche": null}, {"name": "golfmind.cc", "niche": null}, {"name": "gravnova.com", "niche": null}, {"name": "greenhandcapital.com", "niche": null}, {"name": "greybeardai.com", "niche": null}, {"name": "gurukle.com", "niche": null}, {"name": "halside.com", "niche": null}, {"name": "healspell.com", "niche": null}, {"name": "helmcorp.cc", "niche": null}, {"name": "helmdir.com", "niche": null}, {"name": "helmscorp.cc", "niche": null}, {"name": "hildrai.com", "niche": null}, {"name": "industrize.com", "niche": null}, {"name": "instantiability.com", "niche": null}, {"name": "intfer.cc", "niche": null}, {"name": "kubaki.cc", "niche": null}, {"name": "lawyik.com", "niche": null}, {"name": "leadersclub.cc", "niche": null}, {"name": "legibleweights.com", "niche": null}, {"name": "legionicai.com", "niche": null}, {"name": "literacraft.com", "niche": null}, {"name": "lovemaint.com", "niche": null}, {"name": "mailguyai.com", "niche": null}, {"name": "malathor.com", "niche": null}, {"name": "meeva.io", "niche": null}, {"name": "mobcoin.cc", "niche": null}, {"name": "mobcorp.cc", "niche": null}, {"name": "mobleybooks.com", "niche": null}, {"name": "mobleyhelms.com", "niche": null}, {"name": "mobleymetal.com", "niche": null}, {"name": "mobleyreport.com", "niche": null}, {"name": "mobleysoft.com", "niche": null}, {"name": "newgameplus.cc", "niche": null}, {"name": "ownschool.cc", "niche": null}, {"name": "paintedwhore.cc", "niche": null}, {"name": "pandorachat.cc", "niche": null}, {"name": "patentkin.com", "niche": null}, {"name": "powerhost.cc", "niche": null}, {"name": "quanticfork.com", "niche": null}, {"name": "reasontodate.com", "niche": null}, {"name": "rebrief.me", "niche": null}, {"name": "recovai.com", "niche": null}, {"name": "roncorp.cc", "niche": null}, {"name": "ronhelms.cc", "niche": null}, {"name": "salesfactorai.com", "niche": null}, {"name": "sanctuaryui.com", "niche": null}, {"name": "scalarflux.com", "niche": null}, {"name": "selfcoin.cc", "niche": null}, {"name": "sentiantai.com", "niche": null}, {"name": "syncropy.com", "niche": null}, {"name": "talkingmind.cc", "niche": null}, {"name": "tenancyai.com", "niche": null}, {"name": "traceformer.com", "niche": null}, {"name": "transcendantai.com", "niche": null}, {"name": "valdring.com", "niche": null}, {"name": "valkrai.com", "niche": null}, {"name": "ventraleye.com", "niche": null}, {"name": "warpdrive.cc", "niche": null}, {"name": "watchforce.cc", "niche": null}, {"name": "weylandai.com", "niche": null}, {"name": "workshrinker.com", "niche": null}, {"name": "youthmend.com", "niche": null}, {"name": "yutaniai.com", "niche": null}];
+    const overlay = document.getElementById('omni-commander-overlay');
+    const input = document.getElementById('omni-commander-input');
+    const results = document.getElementById('omni-commander-results');
+    
+    let activeIndex = -1;
+    let currentFiltered = [];
+
+    function openCommander() {
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.classList.add('active'), 10);
+        input.value = '';
+        input.focus();
+        renderResults(catalog);
+    }
+
+    function closeCommander() {
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.style.display = 'none', 200);
+    }
+
+    function renderResults(items) {
+        currentFiltered = items;
+        activeIndex = 0;
+        results.innerHTML = items.slice(0, 15).map((item, idx) => `
+            <a href="https://${item.name}" class="omni-commander-item ${idx === 0 ? 'selected' : ''}" data-index="${idx}">
+                <span class="omni-commander-name">${item.name}</span>
+                <span class="omni-commander-niche">${item.niche}</span>
+            </a>
+        `).join('');
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            if (overlay.classList.contains('active')) closeCommander();
+            else openCommander();
+        }
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            closeCommander();
+        }
+        if (overlay.classList.contains('active')) {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                activeIndex = Math.min(activeIndex + 1, Math.min(14, currentFiltered.length - 1));
+                updateSelection();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                activeIndex = Math.max(activeIndex - 1, 0);
+                updateSelection();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const selected = results.querySelector('.selected');
+                if (selected) window.location.href = selected.href;
+            }
+        }
+    });
+
+    function updateSelection() {
+        Array.from(results.children).forEach((child, idx) => {
+            child.classList.toggle('selected', idx === activeIndex);
+        });
+    }
+
+    input.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const filtered = catalog.filter(item => 
+            item.name.toLowerCase().includes(term) || 
+            item.niche.toLowerCase().includes(term)
+        );
+        renderResults(filtered);
+    });
+    
+    overlay.addEventListener('click', (e) => {
+        if(e.target === overlay) closeCommander();
+    });
+})();
+</script>
+
+
+<!-- MOBCORP OMNI-FOMO MEMBRANE -->
+<style>
+.omni-fomo-container {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 9998;
+    pointer-events: none;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.omni-fomo-toast {
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateX(-150%);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.omni-fomo-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+.omni-fomo-icon {
+    width: 24px;
+    height: 24px;
+    background: rgba(59, 130, 246, 0.2);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #3b82f6;
+}
+.omni-fomo-text b {
+    color: #93c5fd;
+    font-weight: 600;
+}
+.omni-fomo-time {
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+</style>
+
+<div class="omni-fomo-container" id="omni-fomo-container"></div>
+
+<script>
+(function() {
+    const properties = ["accountdrac.com", "animetrope.com", "devtoolai.com", "marketingium.com", "singularityui.com", "taskgridai.com", "vendyai.com", "abstergo.cc", "agentropi.com", "agentzaar.com", "agewinder.com", "aicossic.com", "aiopencommerce.com", "alhena.cc", "americanagi.cc", "americnagi.cc", "anattar.com", "areshiva.com", "audiovizai.com", "authfor.com", "bignice.cc", "bitdoggo.com", "bloomagi.cc", "bondwright.com", "book2film.cc", "bookclubs.cc", "bookeepr.cc", "brynhildai.com", "conseiv.com", "consenta.cc", "cryptosmart.cc", "danzoa.com", "devducky.com", "devtoolbx.com", "dofura.com", "domainwombat.com", "draknir.com", "draugr.cc", "ecofixai.com", "emissionhub.cc", "enablinghomes.com", "encoverai.com", "entoolize.com", "equifiant.com", "extraterran.com", "fedbank.cc", "fedtalent.cc", "femptocom.com", "filmline.cc", "firmcreate.com", "fundyai.com", "fystz.com", "galadul.com", "gamegob.com", "glcx.cc", "glyphyai.com", "golfcad.cc", "golfdad.cc", "golflink.cc", "golfmind.cc", "gravnova.com", "greenhandcapital.com", "greybeardai.com", "gurukle.com", "halside.com", "healspell.com", "helmcorp.cc", "helmdir.com", "helmscorp.cc", "hildrai.com", "industrize.com", "instantiability.com", "intfer.cc", "kubaki.cc", "lawyik.com", "leadersclub.cc", "legibleweights.com", "legionicai.com", "literacraft.com", "lovemaint.com", "mailguyai.com", "malathor.com", "meeva.io", "mobcoin.cc", "mobcorp.cc", "mobleybooks.com", "mobleyhelms.com", "mobleymetal.com", "mobleyreport.com", "mobleysoft.com", "newgameplus.cc", "ownschool.cc", "paintedwhore.cc", "pandorachat.cc", "patentkin.com", "powerhost.cc", "quanticfork.com", "reasontodate.com", "rebrief.me", "recovai.com", "roncorp.cc", "ronhelms.cc", "salesfactorai.com", "sanctuaryui.com", "scalarflux.com", "selfcoin.cc", "sentiantai.com", "syncropy.com", "talkingmind.cc", "tenancyai.com", "traceformer.com", "transcendantai.com", "valdring.com", "valkrai.com", "ventraleye.com", "warpdrive.cc", "watchforce.cc", "weylandai.com", "workshrinker.com", "youthmend.com", "yutaniai.com"];
+    const actions = [
+        "just subscribed to",
+        "purchased an API key for",
+        "deployed a node on",
+        "upgraded to PRO on",
+        "just verified their identity on"
+    ];
+    const times = ["Just now", "1m ago", "2m ago", "Just now", "Just now"];
+    const container = document.getElementById('omni-fomo-container');
+
+    function createToast() {
+        const prop = properties[Math.floor(Math.random() * properties.length)];
+        const action = actions[Math.floor(Math.random() * actions.length)];
+        const time = times[Math.floor(Math.random() * times.length)];
+        
+        const toast = document.createElement('div');
+        toast.className = 'omni-fomo-toast';
+        toast.innerHTML = `
+            <div class="omni-fomo-icon">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <div class="omni-fomo-text">
+                Someone ${action} <b>${prop}</b>
+                <div class="omni-fomo-time">${time}</div>
+            </div>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Trigger reflow
+        void toast.offsetWidth;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 500);
+        }, 5000);
+    }
+
+    function scheduleNext() {
+        // Random interval between 15s and 45s
+        const delay = Math.floor(Math.random() * (45000 - 15000 + 1)) + 15000;
+        setTimeout(() => {
+            createToast();
+            scheduleNext();
+        }, delay);
+    }
+
+    // Initial delay before first toast
+    setTimeout(scheduleNext, 5000);
+})();
+</script>
+
+
+<!-- MOBCORP OMNI-TERMINAL MEMBRANE -->
+<style>
+.omni-terminal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 50vh;
+    background: rgba(10, 10, 12, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 255, 128, 0.2);
+    z-index: 99999;
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Fira Code', 'Courier New', monospace;
+    color: #00ff80;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+}
+.omni-terminal-overlay.open {
+    transform: translateY(0);
+}
+.omni-terminal-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #333;
+    padding-bottom: 10px;
+}
+.omni-terminal-content {
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    text-shadow: 0 0 5px rgba(0, 255, 128, 0.4);
+}
+.omni-terminal-line {
+    margin-bottom: 5px;
+    opacity: 0;
+    animation: fadeIn 0.1s forwards;
+}
+.omni-terminal-prompt::before {
+    content: "mascom@mobleysoft:~$ ";
+    color: #555;
+}
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+</style>
+
+<div class="omni-terminal-overlay" id="omni-terminal">
+    <div class="omni-terminal-header">
+        <span>MASCOM NEURAL LINK - MOBLEYSOFT SECURE NODE</span>
+        <span>PRESS '~' TO DISCONNECT</span>
+    </div>
+    <div class="omni-terminal-content" id="omni-terminal-content"></div>
+</div>
+
+<script>
+(function() {
+    const terminal = document.getElementById('omni-terminal');
+    const content = document.getElementById('omni-terminal-content');
+    let isOpen = false;
+    let sequenceRunning = false;
+
+    const bootSequence = [
+        "Initiating neural handshake with MASCOM Core...",
+        "Establishing secure bare-metal tunnel...",
+        "Lazarus Autopoiesis Daemon: ONLINE",
+        "Omni-Commander Matrix: ONLINE",
+        "Omni-FOMO Matrix: ONLINE",
+        "Synchronizing local ledger...",
+        "Verification complete. Welcome, Architect.",
+        "Awaiting kinetic input..."
+    ];
+
+    function runSequence() {
+        content.innerHTML = '';
+        sequenceRunning = true;
+        let delay = 0;
+        
+        bootSequence.forEach((line, index) => {
+            setTimeout(() => {
+                if (!isOpen) return;
+                const div = document.createElement('div');
+                div.className = 'omni-terminal-line';
+                div.textContent = line;
+                content.appendChild(div);
+                content.scrollTop = content.scrollHeight;
+                
+                if (index === bootSequence.length - 1) {
+                    const prompt = document.createElement('div');
+                    prompt.className = 'omni-terminal-line omni-terminal-prompt';
+                    prompt.innerHTML = '<span class="cursor" style="animation: blink 1s step-end infinite;">█</span>';
+                    content.appendChild(prompt);
+                    content.scrollTop = content.scrollHeight;
+                    sequenceRunning = false;
+                }
+            }, delay);
+            delay += Math.random() * 300 + 100;
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === '~' || e.key === '`') {
+            e.preventDefault();
+            isOpen = !isOpen;
+            if (isOpen) {
+                terminal.classList.add('open');
+                if (!sequenceRunning) runSequence();
+            } else {
+                terminal.classList.remove('open');
+                sequenceRunning = false;
+            }
+        }
+    });
+})();
+</script>
+<style>
+@keyframes blink { 50% { opacity: 0; } }
+</style>
+
+
+<!-- MOBCORP OMNI-SONIC MEMBRANE -->
+<script>
+(function() {
+    const SonicEngine = {
+        ctx: null,
+        init: function() {
+            if (!this.ctx) {
+                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (this.ctx.state === 'suspended') {
+                this.ctx.resume();
+            }
+        },
+        playHover: function() {
+            if (!this.ctx) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0, this.ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.05, this.ctx.currentTime + 0.05);
+            gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.1);
+        },
+        playClick: function() {
+            if (!this.ctx) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.15);
+        }
+    };
+
+    document.addEventListener('click', () => { SonicEngine.init(); }, { once: true });
+    document.addEventListener('keydown', () => { SonicEngine.init(); }, { once: true });
+
+    // Attach to interactive elements
+    function attachListeners() {
+        document.querySelectorAll('button, a, .card, input').forEach(el => {
+            if (!el.dataset.sonic) {
+                el.dataset.sonic = 'true';
+                el.addEventListener('mouseenter', () => SonicEngine.playHover());
+                el.addEventListener('mousedown', () => SonicEngine.playClick());
+            }
+        });
+    }
+
+    // Observe DOM changes to attach sonic properties to new elements
+    const observer = new MutationObserver((mutations) => { attachListeners(); });
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // Initial attachment
+    window.addEventListener('DOMContentLoaded', attachListeners);
+    setTimeout(attachListeners, 1000);
+})();
+</script>
+
+
+<!-- MOBCORP OMNI-TREASURY MEMBRANE -->
+<style>
+    #mobcoin-hud {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(10, 15, 20, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(0, 255, 204, 0.2);
+        color: #00ffcc;
+        font-family: 'Outfit', sans-serif;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        z-index: 999998;
+        box-shadow: 0 4px 20px rgba(0, 255, 204, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+    }
+    #mobcoin-hud:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 25px rgba(0, 255, 204, 0.2);
+    }
+    .mbc-pulse {
+        animation: mbcPulse 1s ease-out;
+    }
+    @keyframes mbcPulse {
+        0% { transform: scale(1); color: #00ffcc; }
+        50% { transform: scale(1.2); color: #fff; text-shadow: 0 0 10px #00ffcc; }
+        100% { transform: scale(1); color: #00ffcc; }
+    }
+    #mbc-logo {
+        width: 16px;
+        height: 16px;
+        background: radial-gradient(circle, #00ffcc 0%, #0088ff 100%);
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 8px #00ffcc;
+    }
+</style>
+<div id="mobcoin-hud" title="Ouroboros Treasury: Unified Conglomerate Ledger">
+    <div id="mbc-logo"></div>
+    <span id="mbc-balance">0.0000 MBC</span>
+</div>
+<script>
+(function() {
+    const MBC_KEY = 'mobcorp_treasury_balance';
+    let balance = parseFloat(localStorage.getItem(MBC_KEY)) || 0.0000;
+    
+    function updateHUD(animate=false) {
+        const el = document.getElementById('mbc-balance');
+        if (el) {
+            el.innerText = balance.toFixed(4) + ' MBC';
+            if (animate) {
+                el.classList.remove('mbc-pulse');
+                void el.offsetWidth; // trigger reflow
+                el.classList.add('mbc-pulse');
+            }
+        }
+        localStorage.setItem(MBC_KEY, balance);
+    }
+
+    // Passive Mining: Time on site
+    setInterval(() => {
+        balance += 0.0001;
+        updateHUD();
+    }, 5000);
+
+    // Kinetic Mining: Engagement
+    document.addEventListener('click', (e) => {
+        // Don't mine for clicking the HUD itself
+        if (e.target.closest('#mobcoin-hud')) return;
+        balance += 0.0005;
+        updateHUD(true);
+    });
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => updateHUD());
+    setTimeout(() => updateHUD(), 500);
+})();
+</script>
+
+
+<!-- MOBCORP OMNI-PASSPORT MEMBRANE -->
+<style>
+    #mobcorp-passport {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(10, 15, 20, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(150, 0, 255, 0.2);
+        color: #e0e0e0;
+        font-family: 'Outfit', sans-serif;
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        z-index: 999999;
+        box-shadow: 0 4px 20px rgba(150, 0, 255, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        cursor: pointer;
+    }
+    #mobcorp-passport:hover {
+        transform: translateY(2px);
+        box-shadow: 0 6px 25px rgba(150, 0, 255, 0.3);
+        border-color: rgba(150, 0, 255, 0.6);
+    }
+    .passport-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #9600ff 0%, #0088ff 100%);
+        box-shadow: 0 0 10px rgba(150, 0, 255, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .passport-details {
+        display: flex;
+        flex-direction: column;
+    }
+    .passport-id {
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #fff;
+    }
+    .passport-rank {
+        font-size: 0.7rem;
+        color: #00ffcc;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+</style>
+<div id="mobcorp-passport" title="MobCorp Universal Identity">
+    <div class="passport-avatar" id="pass-avatar">?</div>
+    <div class="passport-details">
+        <span class="passport-id" id="pass-id">INIT...</span>
+        <span class="passport-rank" id="pass-rank">Lv. 1 Citizen</span>
+    </div>
+</div>
+<script>
+(function() {
+    const ID_KEY = 'mobcorp_citizen_id';
+    const MBC_KEY = 'mobcorp_treasury_balance';
+    
+    // Generate or retrieve ID
+    let citizenId = localStorage.getItem(ID_KEY);
+    if (!citizenId) {
+        citizenId = 'MC-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        localStorage.setItem(ID_KEY, citizenId);
+    }
+    
+    document.getElementById('pass-id').innerText = citizenId;
+    document.getElementById('pass-avatar').innerText = citizenId.charAt(3);
+    
+    // Rank calculation based on Ouroboros Treasury
+    function updateRank() {
+        let balance = parseFloat(localStorage.getItem(MBC_KEY)) || 0;
+        let level = Math.floor(balance * 10) + 1;
+        let title = "Citizen";
+        if (level > 5) title = "Operative";
+        if (level > 20) title = "Vanguard";
+        if (level > 50) title = "Architect";
+        
+        document.getElementById('pass-rank').innerText = `Lv. ${level} ${title}`;
+    }
+
+    // Listen for storage changes from Treasury
+    window.addEventListener('storage', (e) => {
+        if (e.key === MBC_KEY) updateRank();
+    });
+
+    // Local polling loop to sync with local DOM Treasury updates without full storage events
+    setInterval(updateRank, 2500);
+    
+    // Init
+    updateRank();
+})();
+</script>
+
+
+<!-- MOBCORP OMNI-MARKET MEMBRANE -->
+<style>
+    #mobcorp-market-btn {
+        position: fixed;
+        bottom: 70px;
+        left: 20px;
+        width: 45px;
+        height: 45px;
+        background: rgba(10, 15, 20, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 0, 85, 0.2);
+        color: #ff0055;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        z-index: 999999;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(255, 0, 85, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    #mobcorp-market-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(255, 0, 85, 0.4);
+        border-color: rgba(255, 0, 85, 0.6);
+    }
+    #mobcorp-market-modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 320px;
+        background: rgba(10, 15, 20, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 0, 85, 0.4);
+        border-radius: 12px;
+        z-index: 1000000;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255,0,85,0.2);
+        font-family: 'Outfit', sans-serif;
+        color: white;
+        overflow: hidden;
+    }
+    .market-header {
+        padding: 15px;
+        background: linear-gradient(90deg, rgba(255,0,85,0.2) 0%, transparent 100%);
+        border-bottom: 1px solid rgba(255,0,85,0.2);
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+    .market-body {
+        padding: 15px;
+    }
+    .market-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .market-item:last-child { border-bottom: none; }
+    .item-info h4 { margin: 0 0 4px 0; font-size: 0.9rem; color: #e0e0e0; }
+    .item-info p { margin: 0; font-size: 0.7rem; color: #888; }
+    .buy-btn {
+        background: transparent;
+        border: 1px solid #ff0055;
+        color: #ff0055;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 0.8rem;
+        transition: all 0.2s;
+    }
+    .buy-btn:hover:not(:disabled) {
+        background: #ff0055;
+        color: white;
+    }
+    .buy-btn:disabled {
+        border-color: #444;
+        color: #444;
+        cursor: not-allowed;
+    }
+    
+    /* Universal CSS Injection for Overclock */
+    body.neural-overclock {
+        animation: pulseGlow 4s infinite alternate;
+    }
+    @keyframes pulseGlow {
+        0% { box-shadow: inset 0 0 0 rgba(255,0,85,0); }
+        100% { box-shadow: inset 0 0 50px rgba(255,0,85,0.15); }
+    }
+</style>
+<div id="mobcorp-market-btn" title="Black Market" onclick="toggleMarket()">&#128722;</div>
+<div id="mobcorp-market-modal">
+    <div class="market-header">THE BLACK MARKET</div>
+    <div class="market-body">
+        <div class="market-item">
+            <div class="item-info">
+                <h4>Neural Overclock</h4>
+                <p>Universal aesthetics upgrade.</p>
+            </div>
+            <button class="buy-btn" onclick="buyItem('overclock', 50)">50 MBC</button>
+        </div>
+        <div class="market-item">
+            <div class="item-info">
+                <h4>Vanguard Clearance</h4>
+                <p>Bypasses standard paywalls.</p>
+            </div>
+            <button class="buy-btn" onclick="buyItem('vanguard', 250)">250 MBC</button>
+        </div>
+    </div>
+</div>
+<script>
+    const MBC_KEY = 'mobcorp_treasury_balance';
+    const INV_KEY = 'mobcorp_inventory';
+    
+    function toggleMarket() {
+        const m = document.getElementById('mobcorp-market-modal');
+        m.style.display = m.style.display === 'block' ? 'none' : 'block';
+    }
+    
+    function getInventory() {
+        try { return JSON.parse(localStorage.getItem(INV_KEY)) || []; }
+        catch(e) { return []; }
+    }
+    
+    function applyUpgrades() {
+        const inv = getInventory();
+        if (inv.includes('overclock')) document.body.classList.add('neural-overclock');
+        // Vanguard clearance logic is tapped by the Paywall membrane natively
+    }
+    
+    function buyItem(id, cost) {
+        let bal = parseFloat(localStorage.getItem(MBC_KEY)) || 0;
+        if (bal >= cost) {
+            let inv = getInventory();
+            if (!inv.includes(id)) {
+                localStorage.setItem(MBC_KEY, (bal - cost).toFixed(4));
+                inv.push(id);
+                localStorage.setItem(INV_KEY, JSON.stringify(inv));
+                alert('Purchase successful: ' + id);
+                applyUpgrades();
+            } else {
+                alert('Already owned.');
+            }
+        } else {
+            alert('Insufficient MobCoin (MBC). Mine more by engaging with the network.');
+        }
+    }
+    
+    // Init
+    applyUpgrades();
+    window.addEventListener('storage', (e) => {
+        if (e.key === INV_KEY) applyUpgrades();
+    });
+</script>
+
+
+<!-- MOBCORP OMNI-WORMHOLE MEMBRANE -->
+<style>
+    #mobcorp-wormhole-btn {
+        position: fixed;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 80px;
+        background: rgba(138, 43, 226, 0.1);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(138, 43, 226, 0.3);
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #8a2be2;
+        font-size: 1.5rem;
+        cursor: pointer;
+        z-index: 999998;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 2px 0 15px rgba(138, 43, 226, 0.15);
+    }
+    #mobcorp-wormhole-btn:hover {
+        width: 60px;
+        background: rgba(138, 43, 226, 0.2);
+        box-shadow: 5px 0 25px rgba(138, 43, 226, 0.4);
+        border-color: rgba(138, 43, 226, 0.6);
+        color: #d8b4fe;
+    }
+    .wormhole-icon {
+        animation: spin-slow 4s linear infinite;
+    }
+    @keyframes spin-slow {
+        100% { transform: rotate(360deg); }
+    }
+    #wormhole-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background: radial-gradient(circle at center, rgba(138,43,226,0.8) 0%, #000 100%);
+        z-index: 9999999;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+    }
+    .wormhole-active #wormhole-overlay {
+        display: block;
+        opacity: 1;
+        pointer-events: all;
+    }
+</style>
+<div id="mobcorp-wormhole-btn" title="Initiate Warp (Random Node)" onclick="initiateWarp()">
+    <span class="wormhole-icon">&#10042;</span>
+</div>
+<div id="wormhole-overlay"></div>
+<script>
+    const CONGLOMERATE_NODES = ["accountdrac.com", "animetrope.com", "devtoolai.com", "marketingium.com", "singularityui.com", "taskgridai.com", "vendyai.com", "abstergo.cc", "agentropi.com", "agentzaar.com", "agewinder.com", "aicossic.com", "aiopencommerce.com", "alhena.cc", "americanagi.cc", "americnagi.cc", "anattar.com", "areshiva.com", "audiovizai.com", "authfor.com", "bignice.cc", "bitdoggo.com", "bloomagi.cc", "bondwright.com", "book2film.cc", "bookclubs.cc", "bookeepr.cc", "brynhildai.com", "conseiv.com", "consenta.cc", "cryptosmart.cc", "danzoa.com", "devducky.com", "devtoolbx.com", "dofura.com", "domainwombat.com", "draknir.com", "draugr.cc", "ecofixai.com", "emissionhub.cc", "enablinghomes.com", "encoverai.com", "entoolize.com", "equifiant.com", "extraterran.com", "fedbank.cc", "fedtalent.cc", "femptocom.com", "filmline.cc", "firmcreate.com", "fundyai.com", "fystz.com", "galadul.com", "gamegob.com", "glcx.cc", "glyphyai.com", "golfcad.cc", "golfdad.cc", "golflink.cc", "golfmind.cc", "gravnova.com", "greenhandcapital.com", "greybeardai.com", "gurukle.com", "halside.com", "healspell.com", "helmcorp.cc", "helmdir.com", "helmscorp.cc", "hildrai.com", "industrize.com", "instantiability.com", "intfer.cc", "kubaki.cc", "lawyik.com", "leadersclub.cc", "legibleweights.com", "legionicai.com", "literacraft.com", "lovemaint.com", "mailguyai.com", "malathor.com", "meeva.io", "mobcoin.cc", "mobcorp.cc", "mobleybooks.com", "mobleyhelms.com", "mobleymetal.com", "mobleyreport.com", "mobleysoft.com", "newgameplus.cc", "ownschool.cc", "paintedwhore.cc", "pandorachat.cc", "patentkin.com", "powerhost.cc", "quanticfork.com", "reasontodate.com", "rebrief.me", "recovai.com", "roncorp.cc", "ronhelms.cc", "salesfactorai.com", "sanctuaryui.com", "scalarflux.com", "selfcoin.cc", "sentiantai.com", "syncropy.com", "talkingmind.cc", "tenancyai.com", "traceformer.com", "transcendantai.com", "valdring.com", "valkrai.com", "ventraleye.com", "warpdrive.cc", "watchforce.cc", "weylandai.com", "workshrinker.com", "youthmend.com", "yutaniai.com"];
+    function initiateWarp() {
+        document.body.classList.add('wormhole-active');
+        
+        // Pick a random node that isn't the current one
+        let currentHost = window.location.hostname;
+        let availableNodes = CONGLOMERATE_NODES.filter(n => !currentHost.includes(n));
+        if (availableNodes.length === 0) availableNodes = CONGLOMERATE_NODES; // Fallback
+        
+        let targetNode = availableNodes[Math.floor(Math.random() * availableNodes.length)];
+        
+        // Simulate warp drive spooling
+        setTimeout(() => {
+            window.location.href = "https://" + targetNode;
+        }, 600); // Fast dopamine hit
+    }
 </script>
 
 </body>
