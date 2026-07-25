@@ -1,6 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- MOBCORP OMNI-DNA MEMBRANE -->
+    <script>
+        (function() {
+            // Apply DNA to root
+            function applyDNA(dna) {
+                const root = document.documentElement;
+                for (const [key, value] of Object.entries(dna)) {
+                    root.style.setProperty(key, value);
+                }
+                
+                // Force a body re-render of glassmorphism if needed
+                document.body.style.backgroundColor = 'var(--omni-bg)';
+                document.body.style.fontFamily = 'var(--omni-font)';
+                document.body.style.color = 'var(--omni-text)';
+            }
+            
+            // Connect to Global DNA Stream
+            function connectSSE() {
+                const source = new EventSource('http://localhost:19020/stream');
+                
+                source.onmessage = function(event) {
+                    try {
+                        const dna = JSON.parse(event.data);
+                        applyDNA(dna);
+                    } catch(e) {}
+                };
+                
+                source.onerror = function() {
+                    source.close();
+                    setTimeout(connectSSE, 5000);
+                };
+            }
+            
+            // Initial fetch to avoid flash of unstyled content if possible
+            fetch('http://localhost:19020/current')
+                .then(r => r.json())
+                .then(dna => applyDNA(dna))
+                .catch(e => console.log('DNA sync err'))
+                .finally(() => connectSSE());
+                
+        })();
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mobleysoft - Premium Full-Page Glassmorphism HTML/CSS</title>
@@ -2799,6 +2843,1221 @@ document.getElementById('omni-newsletter-form').addEventListener('submit', funct
                     });
                 });
             }, 1000);
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-PRESENCE MEMBRANE -->
+    <style>
+        .omni-ghost-cursor {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border: 1px solid rgba(0, 255, 204, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: left 0.5s linear, top 0.5s linear;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+            background: rgba(0, 255, 204, 0.1);
+        }
+        .omni-ghost-cursor::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 255, 204, 0.8);
+            border-radius: 50%;
+        }
+    </style>
+    <div id="omni-presence-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 99998;"></div>
+    
+    <script>
+        (function() {
+            const domain = window.location.hostname || "local";
+            const uid = 'uid_' + Math.random().toString(36).substr(2, 9);
+            const container = document.getElementById('omni-presence-container');
+            const ghosts = {};
+            
+            // Connect to presence stream
+            function connectSSE() {
+                const source = new EventSource(`http://localhost:19013/presence_stream?domain=${domain}`);
+                
+                source.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if(data.uid === uid) return; // ignore self
+                        
+                        let ghost = ghosts[data.uid];
+                        if(!ghost) {
+                            ghost = document.createElement('div');
+                            ghost.className = 'omni-ghost-cursor';
+                            container.appendChild(ghost);
+                            ghosts[data.uid] = { el: ghost, lastSeen: Date.now() };
+                        }
+                        
+                        const actualX = data.x * window.innerWidth;
+                        const actualY = data.y * window.innerHeight + window.scrollY;
+                        
+                        ghost.style.left = actualX + 'px';
+                        ghost.style.top = actualY + 'px';
+                        ghosts[data.uid].lastSeen = Date.now();
+                        
+                    } catch(e) {}
+                };
+                
+                source.onerror = function() {
+                    source.close();
+                    setTimeout(connectSSE, 5000);
+                };
+            }
+            
+            connectSSE();
+            
+            // Cleanup dead ghosts
+            setInterval(() => {
+                const now = Date.now();
+                for(const [id, g] of Object.entries(ghosts)) {
+                    if(now - g.lastSeen > 10000) {
+                        g.el.remove();
+                        delete ghosts[id];
+                    }
+                }
+            }, 5000);
+            
+            // Emit presence throttle
+            let lastEmit = 0;
+            document.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if(now - lastEmit < 500) return; // 2Hz emission rate
+                lastEmit = now;
+                
+                const px = e.clientX / window.innerWidth;
+                const py = e.clientY / window.innerHeight;
+                
+                fetch('http://localhost:19013/presence_emit', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({domain: domain, uid: uid, x: px, y: py})
+                }).catch(() => {});
+            });
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-TROPHY MEMBRANE -->
+    <style>
+        #omni-trophy-toast {
+            position: fixed;
+            bottom: -150px;
+            right: 20px;
+            width: 320px;
+            background: rgba(20, 20, 25, 0.95);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.1);
+            backdrop-filter: blur(12px);
+            z-index: 999999;
+            transition: bottom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .trophy-icon {
+            font-size: 32px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            animation: pulse-gold 2s infinite;
+        }
+        @keyframes pulse-gold {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .trophy-content h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            color: #FFD700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .trophy-content p {
+            margin: 0;
+            font-size: 12px;
+            color: #ccc;
+        }
+    </style>
+    <div id="omni-trophy-toast">
+        <div class="trophy-icon">🏆</div>
+        <div class="trophy-content">
+            <h4>Achievement Unlocked</h4>
+            <p id="omni-trophy-name">...</p>
+        </div>
+    </div>
+    
+    <script>
+        (function() {
+            const uid = localStorage.getItem('mobcorp_uid') || 'uid_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('mobcorp_uid', uid);
+            
+            const toast = document.getElementById('omni-trophy-toast');
+            const nameEl = document.getElementById('omni-trophy-name');
+            
+            function showTrophy(name) {
+                nameEl.innerText = name;
+                toast.style.bottom = '20px';
+                setTimeout(() => {
+                    toast.style.bottom = '-150px';
+                }, 5000);
+            }
+            
+            function unlockTrophy(trophyId, trophyName) {
+                const unlockedKey = 'omni_trophies_' + trophyId;
+                if (localStorage.getItem(unlockedKey)) return; // Already unlocked locally
+                
+                fetch('http://localhost:19015/unlock', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({uid: uid, trophy_id: trophyId})
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'unlocked') {
+                        localStorage.setItem(unlockedKey, 'true');
+                        showTrophy(trophyName);
+                    } else if (data.status === 'already_unlocked') {
+                        localStorage.setItem(unlockedKey, 'true'); // Sync state
+                    }
+                }).catch(e => console.log('Trophy sync err'));
+            }
+            
+            // Core Progression Logic
+            
+            // 1. First Visit
+            unlockTrophy('first_visit', 'The Journey Begins');
+            
+            // 2. The Wanderer (Visited multiple domains)
+            let visited = JSON.parse(localStorage.getItem('omni_visited_domains') || '[]');
+            const currentDomain = window.location.hostname;
+            if (!visited.includes(currentDomain)) {
+                visited.push(currentDomain);
+                localStorage.setItem('omni_visited_domains', JSON.stringify(visited));
+            }
+            if (visited.length >= 3) unlockTrophy('wanderer_3', 'Matrix Explorer (3 Nodes)');
+            if (visited.length >= 10) unlockTrophy('wanderer_10', 'Matrix Navigator (10 Nodes)');
+            
+            // 3. Kinetic Engine (Clicks)
+            let clicks = parseInt(localStorage.getItem('omni_click_count') || '0');
+            document.addEventListener('click', () => {
+                clicks++;
+                localStorage.setItem('omni_click_count', clicks);
+                if (clicks === 10) unlockTrophy('click_10', 'Kinetic Spark (10 Clicks)');
+                if (clicks === 100) unlockTrophy('click_100', 'Kinetic Engine (100 Clicks)');
+            });
+            
+            // 4. Persistence (Time)
+            let seconds = parseInt(localStorage.getItem('omni_time_spent') || '0');
+            setInterval(() => {
+                seconds++;
+                localStorage.setItem('omni_time_spent', seconds);
+                if (seconds === 60) unlockTrophy('time_60', 'Biological Persistence (1 Min)');
+                if (seconds === 600) unlockTrophy('time_600', 'Matrix Dweller (10 Mins)');
+            }, 1000);
+            
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-WEATHER MEMBRANE -->
+    <canvas id="omni-weather-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99997;"></canvas>
+    
+    <script>
+        (function() {
+            const canvas = document.getElementById('omni-weather-canvas');
+            const ctx = canvas.getContext('2d');
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            
+            let particles = [];
+            let currentWeather = 'clear';
+            
+            window.addEventListener('resize', () => {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            });
+            
+            function createParticles() {
+                particles = [];
+                const num = 100;
+                for(let i=0; i<num; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        s: Math.random() * 3 + 1, // speed
+                        r: Math.random() * 2 + 1, // radius
+                        c: Math.floor(Math.random() * 255) // color variation
+                    });
+                }
+            }
+            
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                
+                if(currentWeather === 'clear') {
+                    requestAnimationFrame(draw);
+                    return;
+                }
+                
+                for(let i=0; i<particles.length; i++) {
+                    let p = particles[i];
+                    
+                    if(currentWeather === 'rain') {
+                        ctx.fillStyle = 'rgba(0, 200, 255, 0.6)';
+                        ctx.fillRect(p.x, p.y, 2, p.r * 10);
+                        p.y += p.s * 4;
+                    } else if (currentWeather === 'snow') {
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                        ctx.fill();
+                        p.y += p.s;
+                        p.x += Math.sin(p.y * 0.01);
+                    } else if (currentWeather === 'matrix') {
+                        ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
+                        ctx.font = '14px monospace';
+                        ctx.fillText(String.fromCharCode(0x30A0 + Math.random() * 96), p.x, p.y);
+                        p.y += p.s * 2;
+                    } else if (currentWeather === 'sakura') {
+                        ctx.fillStyle = 'rgba(255, 183, 197, 0.8)';
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.r * 2, 0, Math.PI*2);
+                        ctx.fill();
+                        p.y += p.s;
+                        p.x += Math.sin(p.y * 0.02) * 2;
+                    }
+                    
+                    if(p.y > height) {
+                        p.y = -20;
+                        p.x = Math.random() * width;
+                    }
+                }
+                
+                requestAnimationFrame(draw);
+            }
+            
+            createParticles();
+            draw();
+            
+            function connectSSE() {
+                const source = new EventSource('http://localhost:19016/stream');
+                
+                source.onmessage = function(event) {
+                    if (event.data !== currentWeather) {
+                        currentWeather = event.data;
+                        createParticles();
+                    }
+                };
+                
+                source.onerror = function() {
+                    source.close();
+                    setTimeout(connectSSE, 5000);
+                };
+            }
+            
+            connectSSE();
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-CART MEMBRANE -->
+    <style>
+        #omni-cart-trigger {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid rgba(0, 255, 204, 0.4);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #00FFCC;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 999999;
+            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        #omni-cart-trigger:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 25px rgba(0, 255, 204, 0.5);
+            background: rgba(0, 255, 204, 0.2);
+        }
+        #omni-cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FF0055;
+            color: white;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: none;
+        }
+        #omni-cart-sidebar {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 350px;
+            height: 100vh;
+            background: rgba(10, 10, 15, 0.95);
+            border-right: 1px solid rgba(0, 255, 204, 0.3);
+            backdrop-filter: blur(20px);
+            z-index: 999998;
+            transition: left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+        #omni-cart-sidebar.open {
+            left: 0;
+        }
+        .cart-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #00FFCC;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .cart-close {
+            cursor: pointer;
+            color: #aaa;
+            font-size: 24px;
+        }
+        .cart-close:hover {
+            color: #fff;
+        }
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .cart-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .cart-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            color: #fff;
+        }
+        .cart-item p {
+            margin: 0;
+            font-size: 12px;
+            color: #aaa;
+        }
+        .cart-item .price {
+            color: #00FFCC;
+            font-weight: bold;
+            margin-top: 8px;
+            font-size: 16px;
+        }
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .cart-checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: #00FFCC;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cart-checkout-btn:hover {
+            background: #00ccaa;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 204, 0.4);
+        }
+        .cart-clear-btn {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            color: #FF0055;
+            border: 1px solid #FF0055;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cart-clear-btn:hover {
+            background: rgba(255, 0, 85, 0.1);
+        }
+        
+        /* Demo Add-to-cart button injection */
+        .omni-demo-add-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            z-index: 999990;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .omni-demo-add-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #00FFCC;
+        }
+    </style>
+
+    <div id="omni-cart-trigger">
+        🛒
+        <div id="omni-cart-badge">0</div>
+    </div>
+    
+    <div id="omni-cart-sidebar">
+        <div class="cart-header">
+            <h2>Omni-Cart</h2>
+            <div class="cart-close" id="omni-cart-close">✕</div>
+        </div>
+        <div class="cart-items" id="omni-cart-items-container">
+            <!-- Items injected here via JS -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>TOTAL:</span>
+                <span id="omni-cart-total-price">$0.00</span>
+            </div>
+            <button class="cart-checkout-btn">Checkout Across Matrix</button>
+            <button class="cart-clear-btn" id="omni-cart-clear-btn">Clear Cart</button>
+        </div>
+    </div>
+    
+    <button class="omni-demo-add-btn" id="omni-demo-add-btn">+ Add Node Payload to Cart</button>
+    
+    <script>
+        (function() {
+            const uid = localStorage.getItem('mobcorp_uid') || 'uid_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('mobcorp_uid', uid);
+            
+            const trigger = document.getElementById('omni-cart-trigger');
+            const sidebar = document.getElementById('omni-cart-sidebar');
+            const closeBtn = document.getElementById('omni-cart-close');
+            const badge = document.getElementById('omni-cart-badge');
+            const itemsContainer = document.getElementById('omni-cart-items-container');
+            const totalEl = document.getElementById('omni-cart-total-price');
+            const clearBtn = document.getElementById('omni-cart-clear-btn');
+            const addBtn = document.getElementById('omni-demo-add-btn');
+            
+            const domain = window.location.hostname || 'local';
+            
+            trigger.addEventListener('click', () => {
+                sidebar.classList.add('open');
+            });
+            
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+            });
+            
+            function renderCart(items) {
+                if (items.length > 0) {
+                    badge.style.display = 'block';
+                    badge.innerText = items.length;
+                } else {
+                    badge.style.display = 'none';
+                }
+                
+                itemsContainer.innerHTML = '';
+                let total = 0;
+                
+                if (items.length === 0) {
+                    itemsContainer.innerHTML = '<p style="color: #666; text-align: center; margin-top: 50px;">Your cross-matrix cart is empty.</p>';
+                } else {
+                    items.forEach(item => {
+                        total += item.price;
+                        itemsContainer.innerHTML += `
+                            <div class="cart-item">
+                                <h4>${item.item_name}</h4>
+                                <p>Origin: ${item.domain}</p>
+                                <div class="price">$${item.price.toFixed(2)}</div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                totalEl.innerText = '$' + total.toFixed(2);
+            }
+            
+            function connectSSE() {
+                const source = new EventSource(`http://localhost:19017/stream?uid=${uid}`);
+                
+                source.onmessage = function(event) {
+                    try {
+                        const items = JSON.parse(event.data);
+                        renderCart(items);
+                    } catch(e) {}
+                };
+                
+                source.onerror = function() {
+                    source.close();
+                    setTimeout(connectSSE, 5000);
+                };
+            }
+            
+            connectSSE();
+            
+            addBtn.addEventListener('click', () => {
+                fetch('http://localhost:19017/add', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        uid: uid,
+                        item_id: 'prod_' + Math.floor(Math.random()*10000),
+                        item_name: 'Premium Access: ' + domain,
+                        price: 99.99,
+                        domain: domain
+                    })
+                });
+            });
+            
+            clearBtn.addEventListener('click', () => {
+                fetch('http://localhost:19017/clear', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({uid: uid})
+                });
+            });
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-CONSCIOUSNESS MEMBRANE -->
+    <style>
+        .omni-thought-mark {
+            background-color: rgba(255, 0, 255, 0.2);
+            border-bottom: 2px dashed #ff00ff;
+            color: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .omni-thought-mark:hover {
+            background-color: rgba(255, 0, 255, 0.4);
+            text-shadow: 0 0 8px #ff00ff;
+        }
+        #omni-thought-tooltip {
+            position: absolute;
+            background: rgba(15, 10, 25, 0.95);
+            border: 1px solid rgba(255, 0, 255, 0.5);
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            z-index: 9999999;
+            box-shadow: 0 5px 25px rgba(255, 0, 255, 0.3);
+            backdrop-filter: blur(10px);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            transform: translate(-50%, -100%);
+            margin-top: -10px;
+            white-space: pre-wrap;
+            max-width: 300px;
+        }
+        #omni-thought-tooltip.visible {
+            opacity: 1;
+        }
+        #omni-thought-tooltip .uid-tag {
+            color: #ff00ff;
+            font-weight: bold;
+            font-size: 10px;
+            margin-bottom: 4px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        #omni-annotation-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            background: rgba(15, 10, 25, 0.95);
+            border: 1px solid rgba(255, 0, 255, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            z-index: 9999999;
+            box-shadow: 0 10px 40px rgba(255, 0, 255, 0.2);
+            backdrop-filter: blur(15px);
+            display: none;
+            width: 350px;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+        #omni-annotation-modal.visible {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        #omni-annotation-modal h3 {
+            margin: 0 0 15px 0;
+            color: #ff00ff;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        #omni-annotation-text {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #ccc;
+            font-size: 12px;
+            border-left: 3px solid #ff00ff;
+        }
+        #omni-annotation-input {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            resize: none;
+            height: 80px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        #omni-annotation-input:focus {
+            outline: none;
+            border-color: #ff00ff;
+        }
+        .omni-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .omni-btn {
+            background: transparent;
+            border: 1px solid #ff00ff;
+            color: #ff00ff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .omni-btn.primary {
+            background: #ff00ff;
+            color: #000;
+        }
+        .omni-btn:hover {
+            box-shadow: 0 0 15px rgba(255,0,255,0.4);
+        }
+    </style>
+
+    <div id="omni-thought-tooltip">
+        <span class="uid-tag"></span>
+        <span class="content"></span>
+    </div>
+    
+    <div id="omni-annotation-modal">
+        <h3>Imprint Thought</h3>
+        <div id="omni-annotation-text"></div>
+        <textarea id="omni-annotation-input" placeholder="Leave a permanent mark on the Matrix..."></textarea>
+        <div class="omni-modal-actions">
+            <button class="omni-btn" id="omni-anno-cancel">Cancel</button>
+            <button class="omni-btn primary" id="omni-anno-submit">Imprint</button>
+        </div>
+    </div>
+    
+    <script>
+        (function() {
+            const uid = localStorage.getItem('mobcorp_uid') || 'uid_' + Math.random().toString(36).substr(2, 9);
+            const domain = window.location.hostname || 'local';
+            
+            const tooltip = document.getElementById('omni-thought-tooltip');
+            const tooltipUid = tooltip.querySelector('.uid-tag');
+            const tooltipContent = tooltip.querySelector('.content');
+            
+            const modal = document.getElementById('omni-annotation-modal');
+            const modalText = document.getElementById('omni-annotation-text');
+            const modalInput = document.getElementById('omni-annotation-input');
+            const btnCancel = document.getElementById('omni-anno-cancel');
+            const btnSubmit = document.getElementById('omni-anno-submit');
+            
+            let currentSelection = '';
+            
+            // Fetch and apply annotations
+            function fetchAnnotations() {
+                fetch(`http://localhost:19018/annotations?domain=${domain}`)
+                    .then(r => r.json())
+                    .then(annotations => {
+                        applyAnnotations(annotations);
+                    }).catch(e => console.log('Matrix sync error'));
+            }
+            
+            function applyAnnotations(annotations) {
+                if(!annotations || !annotations.length) return;
+                
+                // Extremely naive application for DOM - simply highlights exact text matches
+                // For a robust system, we would use DOM ranges, but this is a structural proof of concept
+                const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+                let node;
+                const textNodes = [];
+                while(node = walker.nextNode()) {
+                    if(node.parentNode.nodeName !== 'SCRIPT' && node.parentNode.nodeName !== 'STYLE' && node.nodeValue.trim() !== '') {
+                        textNodes.push(node);
+                    }
+                }
+                
+                annotations.forEach(anno => {
+                    const search = anno.exact_text.trim();
+                    if(!search) return;
+                    
+                    for(let i=0; i<textNodes.length; i++) {
+                        const tNode = textNodes[i];
+                        const idx = tNode.nodeValue.indexOf(search);
+                        if(idx > -1 && tNode.parentNode && !tNode.parentNode.classList.contains('omni-thought-mark')) {
+                            // Split and wrap
+                            const wrapper = document.createElement('mark');
+                            wrapper.className = 'omni-thought-mark';
+                            wrapper.textContent = search;
+                            wrapper.dataset.comment = anno.comment;
+                            wrapper.dataset.uid = anno.uid;
+                            
+                            const before = document.createTextNode(tNode.nodeValue.substring(0, idx));
+                            const after = document.createTextNode(tNode.nodeValue.substring(idx + search.length));
+                            
+                            tNode.parentNode.insertBefore(before, tNode);
+                            tNode.parentNode.insertBefore(wrapper, tNode);
+                            tNode.parentNode.insertBefore(after, tNode);
+                            tNode.parentNode.removeChild(tNode);
+                            break; // only highlight first instance to avoid infinite loop
+                        }
+                    }
+                });
+                
+                bindTooltips();
+            }
+            
+            function bindTooltips() {
+                document.querySelectorAll('.omni-thought-mark').forEach(el => {
+                    el.addEventListener('mouseenter', (e) => {
+                        tooltipUid.innerText = 'CITIZEN ' + el.dataset.uid.substring(0, 8);
+                        tooltipContent.innerText = el.dataset.comment;
+                        
+                        const rect = el.getBoundingClientRect();
+                        tooltip.style.left = rect.left + (rect.width/2) + 'px';
+                        tooltip.style.top = rect.top + window.scrollY + 'px';
+                        tooltip.classList.add('visible');
+                    });
+                    
+                    el.addEventListener('mouseleave', () => {
+                        tooltip.classList.remove('visible');
+                    });
+                });
+            }
+            
+            // Highlight tracking
+            document.addEventListener('mouseup', (e) => {
+                if(modal.classList.contains('visible')) return;
+                
+                const selection = window.getSelection();
+                const text = selection.toString().trim();
+                
+                if(text && text.length > 5 && text.length < 200) {
+                    // Only trigger if we aren't clicking inside an existing mark
+                    if(e.target.classList.contains('omni-thought-mark')) return;
+                    
+                    currentSelection = text;
+                    modalText.innerText = `"${text}"`;
+                    modalInput.value = '';
+                    modal.classList.add('visible');
+                }
+            });
+            
+            btnCancel.addEventListener('click', () => {
+                modal.classList.remove('visible');
+                window.getSelection().removeAllRanges();
+            });
+            
+            btnSubmit.addEventListener('click', () => {
+                const comment = modalInput.value.trim();
+                if(comment) {
+                    fetch('http://localhost:19018/annotate', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            domain: domain,
+                            exact_text: currentSelection,
+                            comment: comment,
+                            uid: uid
+                        })
+                    }).then(() => {
+                        modal.classList.remove('visible');
+                        window.getSelection().removeAllRanges();
+                        // Optimistic re-render by reloading annotations
+                        fetchAnnotations();
+                    });
+                }
+            });
+            
+            // Initial load
+            setTimeout(fetchAnnotations, 1000);
+            
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-PHYSICS MEMBRANE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script>
+        (function() {
+            let engine = null;
+            let render = null;
+            let runner = null;
+            let isCollapsed = false;
+            let originalStyles = new Map();
+            let domBodies = [];
+            
+            function triggerCollapse() {
+                if(isCollapsed) return;
+                isCollapsed = true;
+                
+                // Init Matter.js
+                const Engine = Matter.Engine,
+                      Render = Matter.Render,
+                      Runner = Matter.Runner,
+                      Bodies = Matter.Bodies,
+                      Composite = Matter.Composite,
+                      Mouse = Matter.Mouse,
+                      MouseConstraint = Matter.MouseConstraint;
+                      
+                engine = Engine.create();
+                
+                // Map DOM elements to physics bodies
+                const elements = Array.from(document.body.children).filter(el => {
+                    return el.tagName !== 'SCRIPT' && el.tagName !== 'STYLE' && 
+                           !el.id.includes('omni-') && 
+                           el.getBoundingClientRect().height > 10;
+                });
+                
+                elements.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    originalStyles.set(el, el.getAttribute('style') || '');
+                    
+                    // Prepare DOM element for absolute positioning
+                    el.style.position = 'fixed';
+                    el.style.top = '0px';
+                    el.style.left = '0px';
+                    el.style.width = rect.width + 'px';
+                    el.style.height = rect.height + 'px';
+                    el.style.margin = '0';
+                    el.style.zIndex = '99990';
+                    el.style.transition = 'none';
+                    
+                    const body = Bodies.rectangle(
+                        rect.left + rect.width / 2, 
+                        rect.top + rect.height / 2, 
+                        rect.width, 
+                        rect.height, 
+                        { restitution: 0.8, friction: 0.1 }
+                    );
+                    
+                    domBodies.push({ el: el, body: body });
+                    Composite.add(engine.world, body);
+                });
+                
+                // Add invisible boundaries
+                const ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight + 50, window.innerWidth, 100, { isStatic: true });
+                const leftWall = Bodies.rectangle(-50, window.innerHeight/2, 100, window.innerHeight, { isStatic: true });
+                const rightWall = Bodies.rectangle(window.innerWidth + 50, window.innerHeight/2, 100, window.innerHeight, { isStatic: true });
+                Composite.add(engine.world, [ground, leftWall, rightWall]);
+                
+                // Add mouse interaction
+                const mouse = Mouse.create(document.body);
+                const mouseConstraint = MouseConstraint.create(engine, {
+                    mouse: mouse,
+                    constraint: { stiffness: 0.2, render: { visible: false } }
+                });
+                Composite.add(engine.world, mouseConstraint);
+                
+                // Run physics loop
+                runner = Runner.create();
+                Runner.run(runner, engine);
+                
+                // Sync DOM to physics
+                function syncDOM() {
+                    if(!isCollapsed) return;
+                    domBodies.forEach(mapping => {
+                        const { el, body } = mapping;
+                        el.style.transform = `translate(${body.position.x - el.offsetWidth/2}px, ${body.position.y - el.offsetHeight/2}px) rotate(${body.angle}rad)`;
+                    });
+                    requestAnimationFrame(syncDOM);
+                }
+                syncDOM();
+            }
+            
+            function triggerRestore() {
+                if(!isCollapsed) return;
+                isCollapsed = false;
+                
+                if(runner) Runner.stop(runner);
+                if(engine) Matter.Engine.clear(engine);
+                
+                domBodies.forEach(mapping => {
+                    const { el } = mapping;
+                    el.setAttribute('style', originalStyles.get(el));
+                });
+                
+                domBodies = [];
+                originalStyles.clear();
+            }
+            
+            // Connect to Global Trigger
+            function connectSSE() {
+                const source = new EventSource('http://localhost:19019/stream');
+                source.onmessage = function(event) {
+                    if (event.data === 'collapse') triggerCollapse();
+                    else if (event.data === 'restore') triggerRestore();
+                };
+                source.onerror = function() {
+                    source.close();
+                    setTimeout(connectSSE, 5000);
+                };
+            }
+            connectSSE();
+            
+            // Local Easter Egg
+            let keys = '';
+            document.addEventListener('keydown', (e) => {
+                keys += e.key.toUpperCase();
+                if(keys.length > 10) keys = keys.substring(1);
+                if(keys.includes('COLLAPSE')) {
+                    triggerCollapse();
+                    keys = '';
+                }
+            });
+        })();
+    </script>
+
+
+    <!-- MOBCORP OMNI-ORACLE MEMBRANE -->
+    <style>
+        #omni-oracle-orb {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(0, 255, 204, 0.8), rgba(0, 0, 0, 0.9));
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            z-index: 999995;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: oracle-float 4s ease-in-out infinite;
+        }
+        #omni-oracle-orb.listening {
+            animation: oracle-pulse 1s infinite;
+            box-shadow: 0 0 40px rgba(255, 0, 85, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.8);
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 0, 85, 0.8), rgba(0, 0, 0, 0.9));
+        }
+        #omni-oracle-orb.speaking {
+            animation: oracle-pulse 0.5s infinite alternate;
+            box-shadow: 0 0 40px rgba(0, 255, 204, 1), inset 0 0 30px rgba(255, 255, 255, 1);
+        }
+        @keyframes oracle-float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes oracle-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        #omni-oracle-tooltip {
+            position: fixed;
+            bottom: 100px;
+            left: 30px;
+            background: rgba(10, 10, 15, 0.9);
+            border: 1px solid rgba(0, 255, 204, 0.4);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 999996;
+            backdrop-filter: blur(5px);
+            max-width: 250px;
+        }
+        #omni-oracle-orb:hover + #omni-oracle-tooltip {
+            opacity: 1;
+        }
+    </style>
+
+    <div id="omni-oracle-orb"></div>
+    <div id="omni-oracle-tooltip">Consult the Oracle</div>
+    
+    <script>
+        (function() {
+            const orb = document.getElementById('omni-oracle-orb');
+            const tooltip = document.getElementById('omni-oracle-tooltip');
+            const domain = window.location.hostname || 'local';
+            
+            let isListening = false;
+            let isSpeaking = false;
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                orb.style.display = 'none';
+                return;
+            }
+            
+            const recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            
+            const synth = window.speechSynthesis;
+            
+            orb.addEventListener('click', () => {
+                if(isSpeaking) {
+                    synth.cancel();
+                    isSpeaking = false;
+                    orb.classList.remove('speaking');
+                    return;
+                }
+                
+                if(!isListening) {
+                    try {
+                        recognition.start();
+                        isListening = true;
+                        orb.classList.add('listening');
+                        tooltip.innerText = "Listening...";
+                    } catch(e) {}
+                } else {
+                    recognition.stop();
+                    isListening = false;
+                    orb.classList.remove('listening');
+                    tooltip.innerText = "Consult the Oracle";
+                }
+            });
+            
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                isListening = false;
+                orb.classList.remove('listening');
+                tooltip.innerText = "Synthesizing...";
+                orb.classList.add('speaking');
+                
+                fetch('http://localhost:19021/consult', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text: transcript, domain: domain})
+                })
+                .then(r => r.json())
+                .then(data => {
+                    tooltip.innerText = "Consult the Oracle";
+                    speak(data.reply);
+                })
+                .catch(e => {
+                    tooltip.innerText = "Consult the Oracle";
+                    orb.classList.remove('speaking');
+                });
+            };
+            
+            recognition.onerror = () => {
+                isListening = false;
+                orb.classList.remove('listening');
+                tooltip.innerText = "Consult the Oracle";
+            };
+            
+            function speak(text) {
+                if(synth.speaking) synth.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Try to find a synthetic/futuristic voice (Samantha, Google UK, etc)
+                const voices = synth.getVoices();
+                const preferredVoice = voices.find(v => v.name.includes('Samantha') || v.name.includes('Google UK English Female') || v.name.includes('Karen'));
+                if(preferredVoice) utterance.voice = preferredVoice;
+                
+                utterance.pitch = 0.8;
+                utterance.rate = 0.9;
+                
+                utterance.onend = () => {
+                    isSpeaking = false;
+                    orb.classList.remove('speaking');
+                };
+                
+                isSpeaking = true;
+                orb.classList.add('speaking');
+                synth.speak(utterance);
+            }
+            
+            // Pre-load voices
+            if(speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => synth.getVoices();
+            }
         })();
     </script>
 
