@@ -1,105 +1,128 @@
-Example:
-     ```python
-     def execute_cowlick(payload: dict) -> dict:
-         # Your code here
-     ```
-     Example output:
-     ```python
-     def execute_cowlick(payload: dict) -> dict:
-         return {"result": "The cowlick is here!"}
-     ```
-    - DO NOT write any code that interacts with the internet or any external services.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the ones specified in the requirements.
-    - DO NOT write any code that interacts with the environment other than the
+- DO NOT use any external libraries or modules that are not included in the Python standard library.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the JSON payload.
+    - You MUST use the `json` module to parse the
