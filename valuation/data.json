@@ -1,0 +1,907 @@
+{
+  "capabilities": [
+    {
+      "depends_on": [
+        "memory.normalize"
+      ],
+      "domain": "memory",
+      "evidence": [
+        {
+          "assertions": {
+            "content_top_hit": true,
+            "decoy_excluded": true,
+            "filename_top_hit": true,
+            "fixture_indexed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": null,
+          "test_id": null,
+          "test_source_sha256": null
+        },
+        {
+          "assertions": {
+            "content_top_hit": true,
+            "decoy_excluded": true,
+            "filename_top_hit": true,
+            "fixture_indexed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": null,
+          "test_id": null,
+          "test_source_sha256": null
+        }
+      ],
+      "id": "memory.exact-search",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Exact and metadata search",
+      "observations": 8,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [],
+      "domain": "evolution",
+      "evidence": [
+        {
+          "assertions": {
+            "candidate_hash_matches": true,
+            "genes_discovered": true,
+            "reported_hash_matches": true,
+            "source_unchanged": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": null,
+          "test_id": null,
+          "test_source_sha256": null
+        },
+        {
+          "assertions": {
+            "candidate_hash_matches": true,
+            "genes_discovered": true,
+            "reported_hash_matches": true,
+            "source_unchanged": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": null,
+          "test_id": null,
+          "test_source_sha256": null
+        }
+      ],
+      "id": "evolution.self-inspection",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Runtime source self-inspection",
+      "observations": 8,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [
+        "evolution.self-inspection"
+      ],
+      "domain": "evolution",
+      "evidence": [
+        {
+          "assertions": {
+            "canonical_genome_immutable": true,
+            "generation_persisted": true,
+            "mutation_persisted": true,
+            "parent_recorded": true,
+            "replacement_hash_matches": true,
+            "running_file_changed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": null,
+          "test_id": null,
+          "test_source_sha256": null
+        },
+        {
+          "assertions": {
+            "canonical_genome_immutable": true,
+            "generation_persisted": true,
+            "mutation_persisted": true,
+            "parent_recorded": true,
+            "replacement_hash_matches": true,
+            "running_file_changed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": null,
+          "test_id": null,
+          "test_source_sha256": null
+        }
+      ],
+      "id": "evolution.self-replacement",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Atomic running-file self-replacement",
+      "observations": 8,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [],
+      "domain": "memory",
+      "evidence": [
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_connector_contract_and_discovery_are_non_mutating",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        },
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_connector_contract_and_discovery_are_non_mutating",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        }
+      ],
+      "id": "memory.discovery",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Source discovery",
+      "observations": 6,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [
+        "memory.discovery"
+      ],
+      "domain": "memory",
+      "evidence": [
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_build_find_resolve_and_cache",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        },
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_build_find_resolve_and_cache",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        }
+      ],
+      "id": "memory.ingest",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Incremental ingestion",
+      "observations": 6,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [
+        "memory.ingest"
+      ],
+      "domain": "memory",
+      "evidence": [
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_mbox_connector_participates_in_global_search",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        },
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_mbox_connector_participates_in_global_search",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        }
+      ],
+      "id": "memory.normalize",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Content normalization",
+      "observations": 6,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [
+        "memory.discovery",
+        "memory.exact-search"
+      ],
+      "domain": "memory",
+      "evidence": [
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_find_federates_an_independent_shard",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        },
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_find_federates_an_independent_shard",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        }
+      ],
+      "id": "memory.federation",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Federated cross-source search",
+      "observations": 6,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [
+        "memory.provenance"
+      ],
+      "domain": "memory",
+      "evidence": [
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_hydrate_archive_member",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        },
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_hydrate_archive_member",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        }
+      ],
+      "id": "memory.hydration",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "On-demand hydration",
+      "observations": 6,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [
+        "memory.exact-search"
+      ],
+      "domain": "memory",
+      "evidence": [
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_rclone_inventory_indexes_pointers_without_downloading_bodies",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        },
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_rclone_inventory_indexes_pointers_without_downloading_bodies",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        }
+      ],
+      "id": "memory.provenance",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Citation and provenance",
+      "observations": 6,
+      "passed": true,
+      "target_score": 0.85
+    },
+    {
+      "depends_on": [
+        "memory.ingest"
+      ],
+      "domain": "memory",
+      "evidence": [
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_apple_notes_sync_indexes_plaintext_without_emitting_it",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        },
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_apple_notes_sync_indexes_plaintext_without_emitting_it",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        }
+      ],
+      "id": "memory.privacy",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Credential and privacy boundaries",
+      "observations": 6,
+      "passed": true,
+      "target_score": 0.9
+    },
+    {
+      "depends_on": [
+        "memory.ingest"
+      ],
+      "domain": "memory",
+      "evidence": [
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_source_node_emits_idempotent_create_rename_delete_deltas",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        },
+        {
+          "assertions": {
+            "single_test_executed": true,
+            "test_exit_zero": true,
+            "unittest_passed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": null,
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "test_id": "tests.test_unlost.UnlostTests.test_source_node_emits_idempotent_create_rename_delete_deltas",
+          "test_source_sha256": "ad3a79fd4da7e6b214890068c242852c6710f666f2e613f996008c1cfd2cc151"
+        }
+      ],
+      "id": "memory.freshness",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Delta freshness and invalidation",
+      "observations": 6,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [
+        "evolution.self-inspection",
+        "evolution.self-replacement"
+      ],
+      "domain": "evolution",
+      "evidence": [
+        {
+          "assertions": {
+            "all_genes_within_declared_bounds": true,
+            "candidate_identity_is_immutable_hash": true,
+            "suite_exit_zero": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        },
+        {
+          "assertions": {
+            "all_genes_within_declared_bounds": true,
+            "candidate_identity_is_immutable_hash": true,
+            "suite_exit_zero": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        }
+      ],
+      "id": "evolution.bounded-mutation",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Bounded mutation",
+      "observations": 4,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [
+        "evolution.bounded-mutation"
+      ],
+      "domain": "evolution",
+      "evidence": [
+        {
+          "assertions": {
+            "suite_exit_zero": true,
+            "two_distinct_parents_observed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        },
+        {
+          "assertions": {
+            "suite_exit_zero": true,
+            "two_distinct_parents_observed": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        }
+      ],
+      "id": "evolution.crossover",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Genome crossover",
+      "observations": 4,
+      "passed": true,
+      "target_score": 0.75
+    },
+    {
+      "depends_on": [
+        "evolution.self-inspection"
+      ],
+      "domain": "evolution",
+      "evidence": [
+        {
+          "assertions": {
+            "judge_and_contract_hashes_unchanged": true,
+            "suite_exit_zero": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        },
+        {
+          "assertions": {
+            "judge_and_contract_hashes_unchanged": true,
+            "suite_exit_zero": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        }
+      ],
+      "id": "evolution.judge-isolation",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Immutable external judge isolation",
+      "observations": 4,
+      "passed": true,
+      "target_score": 0.9
+    },
+    {
+      "depends_on": [
+        "evolution.self-replacement",
+        "evolution.crossover"
+      ],
+      "domain": "evolution",
+      "evidence": [
+        {
+          "assertions": {
+            "event_hash_chain_valid": true,
+            "multiple_lineage_events_observed": true,
+            "suite_exit_zero": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        },
+        {
+          "assertions": {
+            "event_hash_chain_valid": true,
+            "multiple_lineage_events_observed": true,
+            "suite_exit_zero": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        }
+      ],
+      "id": "evolution.lineage",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Tamper-evident lineage",
+      "observations": 4,
+      "passed": true,
+      "target_score": 0.85
+    },
+    {
+      "depends_on": [
+        "evolution.self-inspection",
+        "evolution.self-replacement"
+      ],
+      "domain": "evolution",
+      "evidence": [
+        {
+          "assertions": {
+            "production_gate_blocked": true,
+            "protected_regression_blocked": true,
+            "suite_exit_zero": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        },
+        {
+          "assertions": {
+            "production_gate_blocked": true,
+            "protected_regression_blocked": true,
+            "suite_exit_zero": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        }
+      ],
+      "id": "evolution.retention",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Capability retention gating",
+      "observations": 6,
+      "passed": true,
+      "target_score": 0.9
+    },
+    {
+      "depends_on": [
+        "evolution.self-inspection",
+        "evolution.self-replacement"
+      ],
+      "domain": "evolution",
+      "evidence": [
+        {
+          "assertions": {
+            "rollback_restored_active_genome": true,
+            "suite_exit_zero": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:02:46+00:00-1-3578bf82",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        },
+        {
+          "assertions": {
+            "rollback_restored_active_genome": true,
+            "suite_exit_zero": true
+          },
+          "evaluation_id": "quick-private-2026-07-29T02:03:00+00:00-2-f963f654",
+          "evaluator_sha256": "a7ccaf467f8999a3b15340152577bbd2b8b701cbf2d17299dc477d859447ba94",
+          "evidence_class": "first-party-deterministic",
+          "hard_constraints_passed": true,
+          "module_source_sha256": "4a72014028a69c00b07ede2034f794bbbe405c2111bbec5cf603450b299c81bf",
+          "normalized_score": 1.0,
+          "split": "private",
+          "stdout_sha256": "2a5b96b899d7c2d5c17bf66307d8077f2ebe9ba7445347a25d2b11bea33f7b07",
+          "test_id": null,
+          "test_source_sha256": "80e35ff7321ba37effd96fa896a72b5c19cb23df3c659c76325693ef7aea6f93"
+        }
+      ],
+      "id": "evolution.rollback",
+      "latest_score": 1.0,
+      "minimum_recent_score": 1.0,
+      "minimum_required_observations": 2,
+      "name": "Verified rollback",
+      "observations": 6,
+      "passed": true,
+      "target_score": 0.9
+    }
+  ],
+  "coverage": {
+    "evidence_class": "first-party-deterministic",
+    "measured": 17,
+    "observations_per_capability": 2,
+    "passing": 17,
+    "ratio": 0.33333333,
+    "required": 51
+  },
+  "generated_at": "2026-07-29T02:06:29+00:00",
+  "product": "Mobley",
+  "remaining": {
+    "external_gaps": [
+      "independent benchmark evidence",
+      "independent security review",
+      "paid customer validation"
+    ],
+    "next": [
+      "evolution.bounded-mutation",
+      "evolution.crossover",
+      "evolution.judge-isolation",
+      "evolution.lineage"
+    ]
+  },
+  "schema_version": "1.0",
+  "valuation": {
+    "base_midpoint": 1750000,
+    "classification": "internal evidence-weighted acquisition estimate",
+    "currency": "USD",
+    "disclaimer": "Not a certified appraisal. Revenue, external benchmarks, and independent security review remain unpriced.",
+    "first_party_capability_premium_each": 50000,
+    "high": 3200000,
+    "low": 2200000,
+    "midpoint": 2600000,
+    "strategic_ask": 3700000
+  },
+  "verification": {
+    "clean_home_install": "passed",
+    "evidence_commit": "e3c00a65905b9fffa90061904e89811f99bcb9c4",
+    "public_scrub": "passed",
+    "record_sha256": "de6b3752f485c419e9a96cc89e9452984b40a95c44dcd07961a2452f263fc555",
+    "release_sha256": "e2489f7143fea8c7216ae4d6c3641002f76aa68ee9380b096595a5b5a60f8073",
+    "source_commit": "d23c51d83d7b54526547f64b816c78fdccde0fb9",
+    "source_tree_sha256": "5fc006ae045fd7ba82edf2b0a5e6a113ef3937842123751406ea7859ef5fe12b",
+    "source_working_tree_clean": true,
+    "status": "passed",
+    "tests_passed": 78
+  },
+  "version": "0.5.0"
+}

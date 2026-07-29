@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.mobleysoft.valuation</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/johnmobley/mobleysoft/.venv-valuation/bin/python</string>
+    <string>/Users/johnmobley/mobleysoft/tools/valuation_server.py</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/johnmobley/mobleysoft</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>5</integer>
+  <key>StandardOutPath</key>
+  <string>/Users/johnmobley/.local/logs/mobleysoft-valuation.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/johnmobley/.local/logs/mobleysoft-valuation.err.log</string>
+</dict>
+</plist>

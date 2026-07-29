@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080907">
+  <title>Mobley // Sovereign Virtual Twin</title>
+  <meta name="description" content="Try Mobley, a sovereign virtual twin, then inspect its live capability and valuation evidence.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true"><span></span><span></span><span></span></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Mobleysoft home">
+      <img src="/assets/logos/MobleysoftGothicLogoBarWithM.png" alt="Mobleysoft">
+    </a>
+    <div class="live"><i></i><span id="topLiveLabel">CONNECTING TO MOBLEY</span></div>
+    <div class="stamp" id="updatedAt">CONNECTING</div>
+  </header>
+
+  <main>
+    <section class="demo-hero">
+      <div class="demo-intro">
+        <div class="eyebrow">MOBLEY / SOVEREIGN VIRTUAL TWIN</div>
+        <h1>Meet the twin<br>that works <em>as you.</em></h1>
+        <p>Mobley carries your context, memory, preferences, tools, and operating patterns across models and devices. It collaborates with you when you are present and represents you within bounded authority when you are away.</p>
+        <div class="presence" id="presence"><i></i><span>ESTABLISHING EPHEMERAL SESSION</span></div>
+      </div>
+
+      <div class="demo-shell" id="demoShell">
+        <section class="conversation" aria-label="Try Mobley">
+          <div class="console-head">
+            <span>ONE CONVERSATION</span>
+            <div><span id="sessionStatus">COOKIE SESSION / CONNECTING</span><button type="button" id="passkeyButton">KEEP WITH PASSKEY</button></div>
+          </div>
+          <div class="messages" id="messages" aria-live="polite">
+            <article class="message mobley">
+              <b>MOBLEY</b>
+              <p>Ask me to explain an idea, design a product surface, structure a decision, or turn a concept into a working mini-page. I will build the result beside our conversation.</p>
+            </article>
+          </div>
+          <form class="prompt-form" id="promptForm">
+            <label for="prompt">What should your virtual twin make?</label>
+            <textarea id="prompt" name="prompt" maxlength="1200" rows="3" placeholder="Design a launch surface for a memory concierge that searches everything I own…" required></textarea>
+            <div class="prompt-actions">
+              <span id="promptMeta">EPHEMERAL · BOUNDED · NO MACHINE AUTHORITY</span>
+              <button type="submit" id="submitPrompt">MAKE IT <span>↗</span></button>
+            </div>
+          </form>
+          <div class="suggestions" aria-label="Example prompts">
+            <button type="button" data-prompt="Design a launch surface for Unlost, a context concierge that searches everything I own.">LAUNCH A PRODUCT</button>
+            <button type="button" data-prompt="Turn the idea of a sovereign virtual twin into a concise visual manifesto.">MAKE A MANIFESTO</button>
+            <button type="button" data-prompt="Create a decision dashboard comparing private local intelligence with cloud-only AI.">STRUCTURE A DECISION</button>
+          </div>
+        </section>
+
+        <section class="workspace" aria-label="Mobley generated workspace">
+          <div class="workspace-head">
+            <div>
+              <span>GENERATED WORKSPACE</span>
+              <b id="workspaceTitle">WAITING FOR A PROMPT</b>
+            </div>
+            <div class="view-switch" role="group" aria-label="Workspace view">
+              <button class="active" type="button" data-view="preview">PREVIEW</button>
+              <button type="button" data-view="source">HTML</button>
+            </div>
+          </div>
+          <div class="workspace-empty" id="workspaceEmpty">
+            <strong>M</strong>
+            <p>Mobley generates structured HTML here on every turn. Output is escaped, allowlisted, and isolated from this page and the host machine.</p>
+          </div>
+          <iframe id="workspaceFrame" title="Mobley generated HTML preview" sandbox hidden></iframe>
+          <pre id="workspaceSource" hidden><code>Generated HTML will appear here.</code></pre>
+          <div class="workspace-foot">
+            <span id="workspaceBoundary">SANDBOX: SCRIPTS / FORMS / NETWORK DISABLED</span>
+            <span id="ticket">SOURCE · MOBLEYSOFT VALUATION DEMO</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="what-is-mobley">
+      <div class="section-head">
+        <div><span>WHAT MOBLEY IS</span><h2>A persistent operating identity,<br>not another model wrapper.</h2></div>
+        <p>The reasoning model is replaceable. Mobley owns continuity: what you know, how you work, which capabilities are attached, and what authority may be exercised.</p>
+      </div>
+      <div class="identity-grid">
+        <article><b>01</b><h3>YOUR VIRTUAL TWIN</h3><p>Models your context and working patterns while preserving provenance and user control.</p></article>
+        <article><b>02</b><h3>UNLOST MEMORY</h3><p>Retrieves across the user’s estate instead of trapping context inside one chat or vendor.</p></article>
+        <article><b>03</b><h3>TENTACULAR CAPABILITY</h3><p>Discovers and composes tools, models, devices, and services through governed adapters.</p></article>
+        <article><b>04</b><h3>CONTROLLED EVOLUTION</h3><p>Inspects, improves, tests, retains, and rolls back itself under evidence gates.</p></article>
+      </div>
+    </section>
+
+    <section class="valuation-hero">
+      <div class="eyebrow">ACQUISITION READINESS / LIVE EVIDENCE LEDGER</div>
+      <div class="hero-grid">
+        <div class="value-block">
+          <p class="label">CURRENT WORKING MIDPOINT</p>
+          <h1 id="midpoint">$2.4M</h1>
+          <div class="range"><span id="range">$2.0M–$3.0M</span><b id="ask">STRATEGIC ASK $3.5M</b></div>
+          <p class="thesis">This is an internal evidence-weighted acquisition estimate for the current Mobley software, IP, and transition package. It is not Mobleysoft’s venture target and it is not a formal appraisal.</p>
+        </div>
+        <div class="coverage-block">
+          <div class="coverage-ring" id="coverageRing">
+            <div><strong id="coveragePassing">13</strong><span>/ <b id="coverageRequired">51</b></span></div>
+          </div>
+          <p><strong id="coveragePercent">25.49%</strong> of the core contract is currently proven.</p>
+          <small>Two private deterministic observations are required for every counted capability.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics" aria-label="Verification summary">
+      <article><span>TESTS</span><strong id="testsPassed">78</strong><small>passing</small></article>
+      <article><span>PROOF RECORD</span><strong id="proofStatus">PASSED</strong><small>integrity checked</small></article>
+      <article><span>RELEASE</span><strong id="releaseVersion">0.5.0</strong><small>clean-home install</small></article>
+      <article><span>SOURCE</span><strong id="sourceCommit">d23c51d</strong><small>immutable commit</small></article>
+    </section>
+
+    <section class="proof-chain">
+      <div class="section-head">
+        <div><span>COMPOUNDING EVIDENCE</span><h2>Primitive proofs become platform proofs.</h2></div>
+        <p>A dependency accelerates the next evaluation. It never substitutes for that capability's own evidence.</p>
+      </div>
+      <div class="chain" id="proofChain"></div>
+    </section>
+
+    <section class="capability-section">
+      <div class="section-head">
+        <div><span>DEMONSTRABLE NOW</span><h2>Inspect all proven capabilities.</h2></div>
+        <p>Select any capability to replay its assertions and inspect both hashed observations.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filter capabilities">
+        <button class="active" data-domain="all">ALL</button>
+        <button data-domain="memory">MEMORY / UNLOST</button>
+        <button data-domain="evolution">MORPHOGENESIS</button>
+      </div>
+      <div class="capabilities" id="capabilities"></div>
+    </section>
+
+    <section class="methodology">
+      <div>
+        <span>VALUATION MODEL</span>
+        <h2 id="valuationEquation">$1.75M base + 13 × $50K evidence premium</h2>
+      </div>
+      <div class="method-bars">
+        <p><i style="--width:73%"></i><span>Verified product and release foundation</span></p>
+        <p><i style="--width:25.49%"></i><span>Core capability evidence</span></p>
+        <p><i style="--width:0%"></i><span>External benchmark premium — not yet claimed</span></p>
+        <p><i style="--width:0%"></i><span>Revenue premium — not yet claimed</span></p>
+      </div>
+      <p class="disclaimer" id="disclaimer"></p>
+    </section>
+  </main>
+
+  <footer>
+    <span>MOBLEY // SOVEREIGN AGENT PLATFORM</span>
+    <span id="integrity">VERIFYING DATA INTEGRITY…</span>
+  </footer>
+
+  <dialog id="proofDialog">
+    <button class="close" aria-label="Close proof">×</button>
+    <div class="dialog-domain" id="dialogDomain"></div>
+    <h2 id="dialogTitle"></h2>
+    <div class="dialog-score" id="dialogScore"></div>
+    <div class="dependencies" id="dialogDependencies"></div>
+    <button class="replay" id="replayProof">REPLAY BOTH OBSERVATIONS</button>
+    <div class="terminal" id="proofTerminal"><p>Ready to replay recorded evidence.</p></div>
+    <div class="observations" id="observations"></div>
+  </dialog>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
