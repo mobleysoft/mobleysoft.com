@@ -1,44 +1,224 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-build="mobleysoft-eventwake-slice-r3-20260727">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mobleysoft.com</title>
-    <style>
-        body {
-            background-color: #111111;
-            color: #00FFCC;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            line-height: 1.6;
-            padding: 10px;
-            margin: 0;
-            background-image: url("glassmorphism.jpg");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            animation: glassmorphism 1s infinite;
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#02060a">
+  <meta name="description" content="Mobleysoft builds sovereign software products, including Unlost: private search across the information you own.">
+  <meta property="og:title" content="Mobleysoft | Sovereign software, recovered">
+  <meta property="og:description" content="Products that put capability back in the hands of the person using them.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mobleysoft.com/">
+  <title>Mobleysoft | Sovereign software, recovered</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css?v=eventwake-slice-r3">
+  <link rel="stylesheet" href="/game/eventwake.css?v=eventwake-slice-r3">
+  <script src="/assets/vendor/three-r128.min.js?v=eventwake-slice-r3" defer></script>
+  <script src="/blackhole-bootstrap.js?v=eventwake-slice-r3" defer></script>
+  <script src="/blackhole.js?v=417b9edc" defer></script>
+  <script src="/game/input-core.js?v=eventwake-slice-r3" defer></script>
+  <script src="/game/input.js?v=eventwake-slice-r3" defer></script>
+  <script type="module" src="/game/client.mjs?v=eventwake-slice-r3"></script>
+  <script src="/assets/authfor.js" defer></script>
+  <script src="/app.js?v=eventwake-slice-r3" defer></script>
 
-        .glassmorphism {
-            animation-delay: 0s;
-        }
+  <!-- Skeleton King Core Integrations -->
+  <meta name="venture-division" content="corporate">
+  <script src="./assets/resident_agent.js" defer></script>
+  <script type="module">
+    import { AuthForStandard } from './assets/authfor-integration-standard.js';
+    const auth = new AuthForStandard({
+      clientId: 'af_mobleysoft_com',
+      ventureName: 'mobleysoft.com',
+      redirectUrl: window.location.origin
+    });
+    auth.init().then(res => {
+      const el = document.getElementById('auth-status');
+      if (el && res.authenticated) {
+        el.textContent = `CONNECTED: ${res.user.email.toUpperCase()}`;
+        el.className = 'status online';
+      }
+    });
+  </script>
 
-        @keyframes glassmorphism {
-            0% {
-                opacity: 0;
-                transform: scale(1);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-    </style>
 </head>
 <body>
-    <h1>mobleysoft.com</h1>
-    <p>Autonomous AI-driven platform revolutionizing the mobleysoft space.</p>
-    <p>Target valuation: $100M.</p>
+  <canvas id="blackhole-canvas" aria-hidden="true"></canvas>
+  <canvas id="encounter-canvas" aria-label="Playable investigation of an unclassified anomaly"></canvas>
+  <div class="void-grain" aria-hidden="true"></div>
+
+  <aside class="background-player" aria-label="Playable background controls">
+    <div class="background-state"><span>CANON A / 417B9EDC</span><strong id="background-status">LOADING</strong></div>
+    <button id="background-toggle" type="button" aria-pressed="false"><span class="play-symbol">&#9654;</span><span id="background-toggle-label">Play encounter</span></button>
+    <button id="background-replay" type="button">Replay</button>
+    <a class="background-story" href="/eventwake/">Read EVENTWAKE</a>
+    <small>Space thrust / Control reverse / E scan / Shift fire / WASD or arrows steer / P pause</small>
+  </aside>
+
+  <aside class="flight-hud" id="flight-hud" aria-live="polite">
+    <div class="flight-hud-primary">
+      <span>EVENTWAKE / FIXED TICK</span>
+      <strong id="flight-objective">ESTABLISH AN APPROACH VECTOR</strong>
+      <em id="flight-observation">NO TEMPORAL RETURN</em>
+    </div>
+    <dl class="flight-hud-stat"><dt>Velocity</dt><dd id="flight-velocity">19</dd></dl>
+    <dl class="flight-hud-stat"><dt>Range</dt><dd id="flight-distance">249</dd></dl>
+    <dl class="flight-hud-stat"><dt>State</dt><dd id="flight-state">APPROACH</dd></dl>
+    <dl class="flight-hud-stat"><dt>Phase</dt><dd id="flight-phase">0%</dd></dl>
+    <dl class="flight-hud-stat"><dt>Scan</dt><dd id="flight-scan">0/6</dd></dl>
+    <dl class="flight-hud-stat"><dt>Time</dt><dd id="flight-temporal">--</dd></dl>
+    <dl class="flight-hud-stat flight-hud-diagnostic"><dt>Input</dt><dd id="flight-input-source">IDLE</dd></dl>
+    <dl class="flight-hud-stat flight-hud-diagnostic"><dt>Render</dt><dd id="flight-render-rate">60</dd></dl>
+  </aside>
+
+  <section class="flight-controls" id="flight-controls" aria-label="Touch flight controls">
+    <div class="flight-stick" id="flight-stick" role="group" aria-label="Bank and pitch control">
+      <div class="flight-stick-knob" id="flight-stick-knob" aria-hidden="true"></div>
+    </div>
+    <div class="flight-actions">
+      <button type="button" data-flight-hold="reverse" aria-pressed="false">Reverse</button>
+      <button type="button" data-flight-hold="scan" aria-pressed="false">Scan</button>
+      <button type="button" data-flight-hold="fire" aria-pressed="false">Fire</button>
+      <button type="button" data-flight-hold="thrust" aria-pressed="false">Thrust</button>
+    </div>
+  </section>
+
+  <button class="reveal-hint" id="reveal-hint" type="button" aria-controls="site-shell">
+    <span>Move, type, or touch</span>
+    <strong>Reveal Mobleysoft</strong>
+  </button>
+
+  <main class="site-shell" id="site-shell">
+    <div class="shell-frame">
+      <header class="masthead">
+        <a class="brand" href="#unlost" aria-label="Mobleysoft home" style="display: flex; align-items: center; gap: 14px;">
+          <img src="https://jmobleyworks.github.io/Assets/Images/MobleysoftGothicLogoBarWithM.png" alt="Mobleysoft" style="height: 52px; width: auto; filter: invert(0);">
+        </a>
+        <div class="masthead-meta" aria-label="System status">
+          <span><i class="status-light"></i> Local first</span>
+          <span class="desktop-only">123 venture fleet</span>
+          <button class="timeline-link" id="timeline-link" type="button">Evolution archive</button>
+        </div>
+      </header>
+
+      <section class="conversational-theater" aria-label="Sovereign Conversational AI">
+        <!-- Conversational Interface -->
+        <div class="chat-wrapper" id="chat-wrapper">
+          <div class="chat-header">
+            <div class="model-badge">
+              <span class="status-dot green"></span>
+              <strong>Mobley (digital twin)</strong>
+            </div>
+            <div class="auth-status-bar" id="auth-status-bar">
+              <!-- Dynamically populated auth indicator -->
+            </div>
+          </div>
+
+          <!-- Drag and Drop Overlay Indicator -->
+          <div id="drag-drop-overlay" style="display:none; position:absolute; inset:48px 0 0 0; background:rgba(217,164,65,0.15); border:2px dashed var(--gold); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); z-index:9; align-items:center; justify-content:center; flex-direction:column; pointer-events:none;">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">📥</div>
+            <strong style="color:var(--gold-bright); font-family:var(--mono); font-size:0.9rem; text-transform:uppercase;">Drop assets to ingest</strong>
+          </div>
+
+          <!-- Message History Stream -->
+          <div class="chat-history" id="chat-history" aria-live="polite">
+            <div class="chat-message assistant">
+              <div class="message-meta">MOBLEY</div>
+              <div class="message-content">I am Mobley, your synthetic digital twin. The estate is ready for parallel construction. What strategy or codebase vectors are we executing today?</div>
+            </div>
+          </div>
+
+          <!-- Upload Preview Indicator -->
+          <div id="attachment-preview-bar" style="display:none; padding:0.5rem 1.5rem; background:rgba(7, 16, 21, 0.4); border-top:1px solid var(--line); align-items:center; gap:1rem;">
+            <div id="preview-thumbnail" style="width:40px; height:40px; border-radius:4px; border:1px solid var(--line); background-size:cover; background-position:center;"></div>
+            <div style="flex:1;">
+              <div id="attachment-name" style="font-size:0.8rem; font-family:var(--mono); color:var(--bone); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">file.png</div>
+              <div id="attachment-size" style="font-size:0.75rem; font-family:var(--mono); color:var(--muted);">0 KB</div>
+            </div>
+            <button id="btn-remove-attachment" type="button" style="background:transparent; border:none; color:var(--muted); font-size:1.2rem; cursor:pointer; font-family:var(--mono);">&times;</button>
+          </div>
+
+          <!-- Input Footer -->
+          <div class="chat-input-bar">
+            <input type="file" id="chat-file-picker" style="display:none;" accept="image/*,text/*,application/json">
+            <button id="chat-attach-btn" type="button" style="background:transparent; border:1px solid var(--line); color:var(--bone); padding:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease;" title="Attach file or image">📎</button>
+            <textarea class="chat-input" id="chat-input" placeholder="Ask Sovereign Agent or drop files here..." rows="1"></textarea>
+            <button class="chat-send-btn" id="chat-send-btn" type="button">Send</button>
+          </div>
+        </div>
+
+        <!-- Auth Dialog Form Overlay (Hidden by Default) -->
+        <dialog class="auth-dialog" id="auth-dialog">
+          <div class="auth-dialog-content">
+            <button class="auth-dialog-close" id="auth-dialog-close" type="button" aria-label="Close">&times;</button>
+            <h3 id="auth-dialog-title">Upgrade to Sovereign Plan</h3>
+            <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1.2rem;">Your free trial computation quota has expired. Please authenticate via AuthFor to unlock unlimited edge compute.</p>
+            <form id="auth-form">
+              <div class="form-group" id="name-group" style="display:none;">
+                <label for="auth-name">Full Name</label>
+                <input type="text" id="auth-name" placeholder="John Mobley" autocomplete="name">
+              </div>
+              <div class="form-group">
+                <label for="auth-email">Email Address</label>
+                <input type="email" id="auth-email" placeholder="architect@mobleysoft.com" required autocomplete="email">
+              </div>
+              <div class="form-group">
+                <label for="auth-password">Password</label>
+                <input type="password" id="auth-password" placeholder="••••••••" required autocomplete="current-password">
+              </div>
+              <div id="auth-error-message" class="auth-error" style="display:none;"></div>
+              <button class="primary-action" id="auth-submit-btn" type="submit">Unlock Unlimited</button>
+            </form>
+            <div class="auth-dialog-footer">
+              <a href="#" id="auth-toggle-mode">Need an account? Sign up</a>
+            </div>
+          </div>
+        </dialog>
+      </section>
+    </div>
+  </main>
+
+  <button class="pi-trigger" id="pi-trigger" type="button" aria-label="Open site evolution playback">&#960;</button>
+
+  <section class="timeline-panel" id="timeline-panel" role="dialog" aria-modal="true" aria-labelledby="timeline-title" aria-hidden="true">
+    <div class="timeline-shell">
+      <header class="timeline-header">
+        <div><p class="eyebrow"><span>CTRL SHIFT ~</span> Site lineage</p><h2 id="timeline-title">Evolution playback</h2></div>
+        <button id="timeline-close" type="button" aria-label="Close evolution playback">Close</button>
+      </header>
+      <div class="timeline-body">
+        <div class="timeline-screen">
+          <video id="timeline-video" src="/genetic_timelapse/evolution_timelapse.mp4" controls muted playsinline preload="metadata"></video>
+          <img id="timeline-frame" alt="Selected Mobleysoft historical version">
+        </div>
+        <aside class="timeline-inspector">
+          <p class="timeline-kicker">Selected checkpoint</p>
+          <h3 id="timeline-frame-title">Loading archive</h3>
+          <p id="timeline-frame-meta"></p>
+          <p id="timeline-frame-note">The initial archive records the automated mutation era. New verified releases become subsequent checkpoints.</p>
+          <div class="timeline-mode" role="group" aria-label="Playback mode">
+            <button class="is-active" data-timeline-mode="movie" type="button">Movie</button>
+            <button data-timeline-mode="frames" type="button">Frames</button>
+          </div>
+        </aside>
+      </div>
+      <div class="timeline-scrubber">
+        <button id="timeline-previous" type="button" aria-label="Previous checkpoint">&#8592;</button>
+        <input id="timeline-range" type="range" min="0" max="0" value="0" step="1" aria-label="Select site checkpoint">
+        <button id="timeline-next" type="button" aria-label="Next checkpoint">&#8594;</button>
+      </div>
+    </div>
+  </section>
+
+  <dialog class="access-dialog" id="access-dialog">
+    <button class="dialog-close" id="access-close" type="button" aria-label="Close">&#215;</button>
+    <p class="eyebrow"><span>UNLOST</span> Private alpha</p>
+    <h2>The search engine is in active local use. Distribution is not ready.</h2>
+    <p>The current index covers local and federated artifacts, but this build does not contain a verified signed release archive, entitlement delivery, or public checkout path.</p>
+    <a class="primary-action" href="/products/unlost/">Read the technical contract</a>
+    <small>Payment status: disconnected. Product status: source alpha.</small>
+  </dialog>
+
+  <noscript><div class="noscript">Mobleysoft.com requires JavaScript for the blackhole background, product carousel, fleet browser, and evolution playback.</div></noscript>
 </body>
 </html>

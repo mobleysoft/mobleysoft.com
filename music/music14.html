@@ -1,0 +1,3429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Mobius Music Generator - Auto-Diagnostic</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: monospace;
+    }
+    body {
+      background: #111;
+      color: #0fc;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    canvas {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      opacity: 0.8;
+    }
+    #ui {
+      position: relative;
+      padding: 20px;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #0fc;
+      text-align: center;
+      margin: 20px 0;
+      text-shadow: 0 0 10px #0fc;
+    }
+    button {
+      background: #0a0a0a;
+      color: #0fc;
+      border: 1px solid #0fc;
+      padding: 8px 16px;
+      margin: 5px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #0fc;
+      transition: all 0.2s;
+    }
+    button:hover:not(:disabled) {
+      background: #0fc;
+      color: #000;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #controls {
+      display: flex;
+      flex-direction: column;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #0fc;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,255,200,0.3);
+    }
+    #progress {
+      width: 100%;
+      height: 20px;
+      background: #000;
+      margin: 10px 0;
+      box-shadow: 0 0 5px #0fc inset;
+    }
+    #progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #0fc;
+      transition: width 0.3s;
+    }
+    .slider-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    input[type=range] {
+      width: 100%;
+      margin: 10px 0;
+    }
+    input[type=text] {
+      background: #000;
+      border: 1px solid #0fc;
+      color: #0fc;
+      padding: 10px;
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    #log {
+      color: #0fc;
+      height: 120px;
+      overflow-y: auto;
+      border: 1px solid #0fc;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+      background: rgba(0,0,0,0.5);
+    }
+    #log div {
+      border-bottom: 1px solid #050;
+      padding: 4px 0;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      margin: 15px 0;
+    }
+    #permission-notice {
+      color: #0fc;
+      text-align: center;
+      margin: 10px 0;
+      font-weight: bold;
+      padding: 10px;
+      background: rgba(0, 255, 200, 0.1);
+      border: 1px dashed #0fc;
+    }
+    #instruments {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      background: rgba(0,0,0,0.4);
+      padding: 10px;
+      border: 1px solid #077;
+    }
+    .instrument {
+      display: inline-block;
+      padding: 5px 8px;
+      margin: 3px;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid #0fc;
+      font-size: 12px;
+    }
+    .instrument.active {
+      background: rgba(0,255,200,0.2);
+    }
+    #loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      flex-direction: column;
+      color: #0fc;
+      display: none;
+    }
+    #loading.active {
+      display: flex;
+    }
+    .spinner {
+      border: 5px solid #111;
+      border-top: 5px solid #0fc;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Debug Panel Styles */
+    #debug-panel {
+      background: rgba(0,0,0,0.8);
+      border: 2px solid #f00;
+      padding: 15px;
+      margin-top: 20px;
+      color: #fff;
+      width: 100%;
+    }
+    #debug-panel h2 {
+      color: #f00;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .debug-section {
+      border: 1px solid #555;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .debug-section h3 {
+      color: #f00;
+      margin-bottom: 5px;
+    }
+    .debug-row {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dotted #333;
+      padding: 4px 0;
+    }
+    .debug-label {
+      font-weight: bold;
+      color: #0fc;
+    }
+    .debug-value {
+      color: #ff0;
+    }
+    .debug-value.success {
+      color: #0f0;
+    }
+    .debug-value.error {
+      color: #f00;
+    }
+    .debug-value.warning {
+      color: #fa0;
+    }
+    #debug-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .debug-btn {
+      background: #300;
+      color: #f66;
+      border: 1px solid #f00;
+      padding: 6px 12px;
+      margin: 5px;
+      font-size: 12px;
+    }
+    .debug-btn:hover {
+      background: #f00;
+      color: #fff;
+    }
+    #audio-debug-output {
+      height: 150px;
+      overflow-y: auto;
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 5px;
+      font-size: 12px;
+      margin-top: 10px;
+      white-space: pre;
+      border: 1px solid #555;
+    }
+    .audio-sample {
+      width: 100%;
+      height: 120px;
+      background: #000;
+      margin-top: 10px;
+      position: relative;
+    }
+    .audio-sample-line {
+      position: absolute;
+      width: 1px;
+      background: #0f0;
+      bottom: 60px;
+    }
+    
+    /* Diagnostic Panel */
+    #diagnostic-panel {
+      background: rgba(0,0,0,0.8);
+      border: 2px solid #00f;
+      padding: 15px;
+      margin-top: 20px;
+      color: #fff;
+      width: 100%;
+    }
+    #diagnostic-panel h2 {
+      color: #0af;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    #diagnostic-report {
+      background: #000;
+      color: #0af;
+      font-family: monospace;
+      padding: 10px;
+      margin: 10px 0;
+      height: 300px;
+      overflow-y: auto;
+      white-space: pre;
+      border: 1px solid #0af;
+      font-size: 12px;
+    }
+    #copy-report-btn {
+      background: #002;
+      color: #0af;
+      border: 1px solid #0af;
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    #copy-report-btn:hover {
+      background: #0af;
+      color: #000;
+    }
+    
+    @media (max-width: 600px) {
+      .slider-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="visualizer"></canvas>
+  <div id="ui">
+    <h1>Quantum Mobius Music Generator</h1>
+    <div id="controls">
+      <input type="text" id="seed" value="Quantum Symphony" placeholder="Enter a seed phrase...">
+      
+      <div class="slider-group">
+        <div>
+          <label for="dimensions">Mobius Dimensions: <span id="dimensions-value">24</span></label>
+          <input type="range" id="dimensions" min="16" max="32" value="24">
+        </div>
+        <div>
+          <label for="twist">Twist Factor: <span id="twist-value">0.75</span></label>
+          <input type="range" id="twist" min="0.1" max="2.0" step="0.05" value="0.75">
+        </div>
+        <div>
+          <label for="quantum">Quantum States: <span id="quantum-value">16</span></label>
+          <input type="range" id="quantum" min="8" max="24" value="16">
+        </div>
+        <div>
+          <label for="evolution">Evolution Steps: <span id="evolution-value">8</span></label>
+          <input type="range" id="evolution" min="2" max="12" value="8">
+        </div>
+        <div>
+          <label for="complexity">Song Complexity: <span id="complexity-value">7</span></label>
+          <input type="range" id="complexity" min="3" max="10" value="7">
+        </div>
+        <div>
+          <label for="duration">Song Duration: <span id="duration-value">30</span>s</label>
+          <input type="range" id="duration" min="15" max="60" step="5" value="30">
+        </div>
+      </div>
+      
+      <div id="instruments">
+        <div class="instrument active" data-instrument="bass">Bass</div>
+        <div class="instrument active" data-instrument="pads">Pads</div>
+        <div class="instrument active" data-instrument="lead">Lead</div>
+        <div class="instrument active" data-instrument="pluck">Pluck</div>
+        <div class="instrument active" data-instrument="percussion">Percussion</div>
+      </div>
+      
+      <div id="permission-notice">
+        Click Generate then Play to enable audio
+      </div>
+      
+      <div class="buttons">
+        <button id="generate">Generate Music</button>
+        <button id="play" disabled>Play</button>
+        <button id="stop" disabled>Stop</button>
+        <button id="run-diagnostics">Run Full Diagnostics</button>
+      </div>
+      
+      <div id="progress"><div id="progress-bar"></div></div>
+    </div>
+    
+    <div id="log"></div>
+    
+    <!-- Diagnostic Panel -->
+    <div id="diagnostic-panel">
+      <h2>📊 Auto-Diagnostic Report</h2>
+      <p style="color:#0af;text-align:center;margin-bottom:10px;">
+        Automatic diagnostics will run tests to identify audio playback issues.<br>
+        Press "Run Full Diagnostics" to run all tests and generate a report.
+      </p>
+      <textarea id="diagnostic-report" readonly>
+Diagnostic report will appear here when tests are complete...
+      </textarea>
+      <button id="copy-report-btn">Copy Full Report</button>
+    </div>
+    
+    <!-- Debug Panel -->
+    <div id="debug-panel">
+      <h2>Audio Debug Panel</h2>
+      
+      <div class="debug-section">
+        <h3>System Info</h3>
+        <div class="debug-row">
+          <span class="debug-label">Browser:</span>
+          <span class="debug-value" id="debug-browser"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Web Audio Support:</span>
+          <span class="debug-value" id="debug-audio-support"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">AudioContext Sample Rate:</span>
+          <span class="debug-value" id="debug-sample-rate"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Max Channels:</span>
+          <span class="debug-value" id="debug-max-channels"></span>
+        </div>
+      </div>
+      
+      <div class="debug-section">
+        <h3>Audio Context State</h3>
+        <div class="debug-row">
+          <span class="debug-label">Current State:</span>
+          <span class="debug-value" id="debug-audio-state"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">AudioContext Created:</span>
+          <span class="debug-value" id="debug-audio-created"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">State Changes:</span>
+          <span class="debug-value" id="debug-state-changes"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Error Count:</span>
+          <span class="debug-value" id="debug-error-count"></span>
+        </div>
+      </div>
+      
+      <div class="debug-section">
+        <h3>Audio Generation Status</h3>
+        <div class="debug-row">
+          <span class="debug-label">Generated Buffer:</span>
+          <span class="debug-value" id="debug-buffer-status"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Buffer Duration:</span>
+          <span class="debug-value" id="debug-buffer-duration"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Buffer Channels:</span>
+          <span class="debug-value" id="debug-buffer-channels"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Buffer Size (samples):</span>
+          <span class="debug-value" id="debug-buffer-size"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Audio Signal Present:</span>
+          <span class="debug-value" id="debug-signal-present"></span>
+        </div>
+      </div>
+      
+      <div class="debug-section">
+        <h3>Audio Playback Status</h3>
+        <div class="debug-row">
+          <span class="debug-label">Source Node Created:</span>
+          <span class="debug-value" id="debug-source-created"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Gain Node Created:</span>
+          <span class="debug-value" id="debug-gain-created"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Nodes Connected:</span>
+          <span class="debug-value" id="debug-nodes-connected"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Playback Started:</span>
+          <span class="debug-value" id="debug-playback-started"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Current Time:</span>
+          <span class="debug-value" id="debug-current-time"></span>
+        </div>
+        <div class="debug-row">
+          <span class="debug-label">Output Volume:</span>
+          <span class="debug-value" id="debug-output-volume"></span>
+        </div>
+      </div>
+      
+      <div id="debug-actions">
+        <button class="debug-btn" id="test-simple-tone">Test Simple Tone</button>
+        <button class="debug-btn" id="check-audio-state">Check AudioContext</button>
+        <button class="debug-btn" id="force-resume-context">Force Resume Context</button>
+        <button class="debug-btn" id="inspect-buffer">Inspect Audio Buffer</button>
+        <button class="debug-btn" id="test-audio-chain">Test Audio Chain</button>
+        <button class="debug-btn" id="check-permissions">Check Audio Permissions</button>
+      </div>
+      
+      <h3>Audio Debug Output</h3>
+      <div id="audio-debug-output">Audio debug information will appear here...</div>
+      
+      <h3>Buffer Visualization</h3>
+      <div class="audio-sample" id="buffer-visualization"></div>
+    </div>
+  </div>
+  
+  <div id="loading">
+    <div class="spinner"></div>
+    <div id="loading-text">Generating quantum music...</div>
+  </div>
+
+<script>
+(function() {
+  // Constants and utilities
+  const PI = Math.PI;
+  const TAU = PI * 2;
+  
+  // DOM elements
+  const canvas = document.getElementById('visualizer');
+  const ctx = canvas.getContext('2d');
+  const logEl = document.getElementById('log');
+  const seedEl = document.getElementById('seed');
+  const genBtn = document.getElementById('generate');
+  const playBtn = document.getElementById('play');
+  const stopBtn = document.getElementById('stop');
+  const progressBar = document.getElementById('progress-bar');
+  const loadingEl = document.getElementById('loading');
+  const loadingText = document.getElementById('loading-text');
+  const runDiagnosticsBtn = document.getElementById('run-diagnostics');
+  const diagnosticReport = document.getElementById('diagnostic-report');
+  const copyReportBtn = document.getElementById('copy-report-btn');
+  
+  // Debug elements
+  const debugBrowser = document.getElementById('debug-browser');
+  const debugAudioSupport = document.getElementById('debug-audio-support');
+  const debugSampleRate = document.getElementById('debug-sample-rate');
+  const debugMaxChannels = document.getElementById('debug-max-channels');
+  const debugAudioState = document.getElementById('debug-audio-state');
+  const debugAudioCreated = document.getElementById('debug-audio-created');
+  const debugStateChanges = document.getElementById('debug-state-changes');
+  const debugErrorCount = document.getElementById('debug-error-count');
+  const debugBufferStatus = document.getElementById('debug-buffer-status');
+  const debugBufferDuration = document.getElementById('debug-buffer-duration');
+  const debugBufferChannels = document.getElementById('debug-buffer-channels');
+  const debugBufferSize = document.getElementById('debug-buffer-size');
+  const debugSignalPresent = document.getElementById('debug-signal-present');
+  const debugSourceCreated = document.getElementById('debug-source-created');
+  const debugGainCreated = document.getElementById('debug-gain-created');
+  const debugNodesConnected = document.getElementById('debug-nodes-connected');
+  const debugPlaybackStarted = document.getElementById('debug-playback-started');
+  const debugCurrentTime = document.getElementById('debug-current-time');
+  const debugOutputVolume = document.getElementById('debug-output-volume');
+  const audioDebugOutput = document.getElementById('audio-debug-output');
+  const bufferVisualization = document.getElementById('buffer-visualization');
+  
+  // Debug buttons
+  const testSimpleToneBtn = document.getElementById('test-simple-tone');
+  const checkAudioStateBtn = document.getElementById('check-audio-state');
+  const forceResumeContextBtn = document.getElementById('force-resume-context');
+  const inspectBufferBtn = document.getElementById('inspect-buffer');
+  const testAudioChainBtn = document.getElementById('test-audio-chain');
+  const checkPermissionsBtn = document.getElementById('check-permissions');
+  
+  // Instrument toggles
+  const instrumentElements = document.querySelectorAll('.instrument');
+  const activeInstruments = {
+    bass: true,
+    pads: true,
+    lead: true,
+    pluck: true,
+    percussion: true
+  };
+  
+  // Set up instrument toggle
+  instrumentElements.forEach(el => {
+    el.addEventListener('click', () => {
+      const instrument = el.getAttribute('data-instrument');
+      if (el.classList.contains('active')) {
+        el.classList.remove('active');
+        activeInstruments[instrument] = false;
+      } else {
+        el.classList.add('active');
+        activeInstruments[instrument] = true;
+      }
+    });
+  });
+  
+  // Sliders
+  const dimensionsSlider = document.getElementById('dimensions');
+  const dimensionsValue = document.getElementById('dimensions-value');
+  const twistSlider = document.getElementById('twist');
+  const twistValue = document.getElementById('twist-value');
+  const quantumSlider = document.getElementById('quantum');
+  const quantumValue = document.getElementById('quantum-value');
+  const evolutionSlider = document.getElementById('evolution');
+  const evolutionValue = document.getElementById('evolution-value');
+  const complexitySlider = document.getElementById('complexity');
+  const complexityValue = document.getElementById('complexity-value');
+  const durationSlider = document.getElementById('duration');
+  const durationValue = document.getElementById('duration-value');
+  
+  // Debug and diagnostic state
+  const debugState = {
+    stateChanges: [],
+    errors: [],
+    audioPermission: null,
+    signalVerified: false,
+    testToneWorked: false,
+    audioChainTestWorked: false,
+    bufferHasSignal: false,
+    diagnosticResults: {}
+  };
+  
+  // Initialize audio context with tracking
+  let audioCtx;
+  try {
+    // Try WebAudio API constructor
+    if (window.AudioContext) {
+      audioCtx = new window.AudioContext();
+      debugAudioLog("Created AudioContext using window.AudioContext constructor");
+      debugAudioCreated.textContent = "Yes (AudioContext)";
+      debugAudioCreated.className = "debug-value success";
+    } 
+    // Fall back to webkit prefix if needed
+    else if (window.webkitAudioContext) {
+      audioCtx = new window.webkitAudioContext();
+      debugAudioLog("Created AudioContext using window.webkitAudioContext constructor");
+      debugAudioCreated.textContent = "Yes (webkitAudioContext)";
+      debugAudioCreated.className = "debug-value success";
+    } 
+    // No Web Audio support
+    else {
+      throw new Error("WebAudio API not supported by this browser");
+    }
+    
+    // Update debug panel with AudioContext details
+    debugSampleRate.textContent = audioCtx.sampleRate + " Hz";
+    debugSampleRate.className = "debug-value success";
+    debugMaxChannels.textContent = "2 (stereo)";
+    debugMaxChannels.className = "debug-value success";
+    
+    // Set up state change listener
+    trackAudioContextState();
+  } catch (e) {
+    // Record failure
+    debugAudioLog("ERROR: Failed to create AudioContext: " + e.message);
+    debugState.errors.push("AudioContext creation: " + e.message);
+    debugAudioCreated.textContent = "No - " + e.message;
+    debugAudioCreated.className = "debug-value error";
+    debugErrorCount.textContent = debugState.errors.length;
+    debugErrorCount.className = "debug-value error";
+    log('AudioContext not supported in this browser: ' + e.message);
+  }
+  
+  // Setup Web Audio API status
+  if (window.AudioContext || window.webkitAudioContext) {
+    debugAudioSupport.textContent = "Yes";
+    debugAudioSupport.className = "debug-value success";
+  } else {
+    debugAudioSupport.textContent = "No";
+    debugAudioSupport.className = "debug-value error";
+  }
+  
+  // Track browser information
+  debugBrowser.textContent = navigator.userAgent;
+  
+  // State
+  let isPlaying = false;
+  let isGenerating = false;
+  let lineCount = 0;
+  let audioBuffer = null;
+  let startTime = 0;
+  let audioNodes = {
+    source: null,
+    gain: null
+  };
+  
+  // Musical information
+  let songData = {
+    duration: 30,
+    bpm: 120,
+    instruments: {},
+    sections: [],
+    currentTime: 0
+  };
+  
+  // Canvas setup
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+  
+  // Update slider displays
+  function updateSliders() {
+    dimensionsValue.textContent = dimensionsSlider.value;
+    twistValue.textContent = twistSlider.value;
+    quantumValue.textContent = quantumSlider.value;
+    evolutionValue.textContent = evolutionSlider.value;
+    complexityValue.textContent = complexitySlider.value;
+    durationValue.textContent = durationSlider.value;
+  }
+  
+  // Attach events to sliders
+  [dimensionsSlider, twistSlider, quantumSlider, evolutionSlider, complexitySlider, durationSlider].forEach(slider => {
+    slider.addEventListener('input', updateSliders);
+  });
+  
+  // Initial update
+  updateSliders();
+  
+  // Logging function
+  function log(msg) {
+    const line = document.createElement('div');
+    line.textContent = `${++lineCount}: ${msg}`;
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  
+  // Debug audio log function
+  function debugAudioLog(msg) {
+    const timestamp = new Date().toISOString().substring(11, 23);
+    audioDebugOutput.textContent += `[${timestamp}] ${msg}\n`;
+    audioDebugOutput.scrollTop = audioDebugOutput.scrollHeight;
+    console.log(`[AUDIO DEBUG] ${msg}`);
+  }
+  
+  // Track AudioContext state changes
+  function trackAudioContextState() {
+    if (!audioCtx) return;
+    
+    // Initial state
+    updateAudioContextStateDisplay(audioCtx.state);
+    debugAudioLog(`Initial AudioContext state: ${audioCtx.state}`);
+    debugState.stateChanges.push(`Initial: ${audioCtx.state}`);
+    
+    // Setup state change listener
+    audioCtx.addEventListener('statechange', () => {
+      updateAudioContextStateDisplay(audioCtx.state);
+      debugAudioLog(`AudioContext state changed: ${audioCtx.state}`);
+      debugState.stateChanges.push(`${new Date().toISOString().substring(11, 19)}: ${audioCtx.state}`);
+      debugStateChanges.textContent = debugState.stateChanges.length;
+    });
+  }
+  
+  // Update audio context state display
+  function updateAudioContextStateDisplay(state) {
+    if (!debugAudioState) return;
+    
+    debugAudioState.textContent = state || "unknown";
+    
+    // Set appropriate class based on state
+    if (state === "running") {
+      debugAudioState.className = "debug-value success";
+    } else if (state === "suspended") {
+      debugAudioState.className = "debug-value warning";
+    } else {
+      debugAudioState.className = "debug-value error";
+    }
+  }
+  
+  // Check audio permissions
+  async function checkAudioPermissions() {
+    debugAudioLog("Checking audio permissions...");
+    
+    try {
+      // Navigator.permissions is not universally supported, check for existence
+      if (navigator.permissions && navigator.permissions.query) {
+        const result = await navigator.permissions.query({ name: 'microphone' });
+        debugState.audioPermission = result.state;
+        debugAudioLog(`Audio permission status: ${result.state}`);
+        
+        // Non-standard, but audio output sometimes follows input permissions
+        return result.state;
+      } else {
+        debugAudioLog("Permissions API not supported by this browser");
+        return "unknown";
+      }
+    } catch (err) {
+      debugAudioLog(`Error checking permissions: ${err.message}`);
+      return "error";
+    }
+  }
+  
+  // Test simple tone
+  function playTestTone() {
+    if (!audioCtx) {
+      debugAudioLog("Cannot play test tone - AudioContext not available");
+      return false;
+    }
+    
+    try {
+      debugAudioLog("Attempting to play test tone...");
+      
+      // Try to resume AudioContext first
+      audioCtx.resume().then(() => {
+        // Create oscillator for test tone
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        // Configure oscillator
+        osc.type = 'sine';
+        osc.frequency.value = 440; // A4
+        
+        // Configure gain to avoid loud sound and include fade out
+        gainNode.gain.value = 0.2;
+        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
+        
+        // Connect nodes
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        // Start and stop
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1);
+        
+        debugAudioLog("Test tone started - you should hear a 1-second 440Hz tone");
+        
+        // Clean up
+        osc.onended = function() {
+          debugAudioLog("Test tone finished");
+          osc.disconnect();
+          gainNode.disconnect();
+          debugState.testToneWorked = true;
+        };
+      }).catch(err => {
+        debugAudioLog(`ERROR resuming context for test tone: ${err.message}`);
+        return false;
+      });
+      
+      return true;
+    } catch (err) {
+      debugAudioLog(`ERROR playing test tone: ${err.message}`);
+      debugState.errors.push("Test tone: " + err.message);
+      debugErrorCount.textContent = debugState.errors.length;
+      return false;
+    }
+  }
+  
+  // Test complete audio chain
+  function testAudioChain() {
+    if (!audioCtx) {
+      debugAudioLog("Cannot test audio chain - AudioContext not available");
+      return false;
+    }
+    
+    try {
+      debugAudioLog("Testing complete audio chain...");
+      
+      // Try to resume AudioContext first
+      audioCtx.resume().then(() => {
+        // 1. Create a simple test buffer (1 second of audio)
+        const sampleRate = audioCtx.sampleRate;
+        const testBuffer = audioCtx.createBuffer(2, sampleRate, sampleRate);
+        
+        // 2. Fill buffer with sine wave (440Hz)
+        const leftChannel = testBuffer.getChannelData(0);
+        const rightChannel = testBuffer.getChannelData(1);
+        
+        for (let i = 0; i < sampleRate; i++) {
+          const value = Math.sin(440 * Math.PI * 2 * i / sampleRate);
+          leftChannel[i] = value * 0.2; // 20% amplitude
+          rightChannel[i] = value * 0.2;
+        }
+        
+        debugAudioLog("Created test buffer with 440Hz sine wave");
+        visualizeBuffer(testBuffer, "Test Buffer");
+        
+        // 3. Create source node
+        const sourceNode = audioCtx.createBufferSource();
+        sourceNode.buffer = testBuffer;
+        
+        // 4. Create gain node
+        const gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.5;
+        
+        // 5. Connect the nodes
+        sourceNode.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        debugAudioLog("Audio nodes created and connected");
+        
+        // 6. Start playback
+        sourceNode.start();
+        debugAudioLog("Test audio chain started - you should hear a 1-second 440Hz tone");
+        
+        // 7. Clean up
+        sourceNode.onended = function() {
+          debugAudioLog("Test audio chain completed");
+          sourceNode.disconnect();
+          gainNode.disconnect();
+          debugState.audioChainTestWorked = true;
+        };
+      }).catch(err => {
+        debugAudioLog(`ERROR resuming context for audio chain test: ${err.message}`);
+        return false;
+      });
+      
+      return true;
+    } catch (err) {
+      debugAudioLog(`ERROR testing audio chain: ${err.message}`);
+      debugState.errors.push("Audio chain: " + err.message);
+      debugErrorCount.textContent = debugState.errors.length;
+      return false;
+    }
+  }
+  
+  // Inspect audio buffer
+  function inspectAudioBuffer() {
+    if (!audioBuffer) {
+      debugAudioLog("No audio buffer to inspect");
+      return null;
+    }
+    
+    try {
+      debugAudioLog("Inspecting audio buffer...");
+      
+      // Basic buffer properties
+      const duration = audioBuffer.duration;
+      const channels = audioBuffer.numberOfChannels;
+      const sampleRate = audioBuffer.sampleRate;
+      const length = audioBuffer.length;
+      
+      debugAudioLog(`Buffer properties: duration=${duration.toFixed(2)}s, channels=${channels}, sampleRate=${sampleRate}Hz, length=${length} samples`);
+      
+      // Check for silence or very low signal
+      let signalFound = false;
+      let maxAmplitude = 0;
+      let totalSamples = 0;
+      let nonZeroSamples = 0;
+      let totalSum = 0;
+      
+      for (let c = 0; c < channels; c++) {
+        const channelData = audioBuffer.getChannelData(c);
+        
+        for (let i = 0; i < length; i += 100) { // Check every 100th sample for efficiency
+          totalSamples++;
+          const absoluteValue = Math.abs(channelData[i]);
+          totalSum += absoluteValue;
+          
+          if (absoluteValue > 0.00001) { // More than absolute silence
+            nonZeroSamples++;
+          }
+          
+          if (absoluteValue > maxAmplitude) {
+            maxAmplitude = absoluteValue;
+          }
+          
+          if (absoluteValue > 0.01) { // Significant audio signal
+            signalFound = true;
+          }
+        }
+      }
+      
+      const nonZeroPercentage = (nonZeroSamples / totalSamples * 100).toFixed(2);
+      const averageAmplitude = (totalSum / totalSamples).toFixed(6);
+      
+      if (signalFound) {
+        debugState.signalVerified = true;
+        debugState.bufferHasSignal = true;
+        debugAudioLog(`Audio signal present: Max amplitude = ${maxAmplitude.toFixed(4)}, ${nonZeroPercentage}% non-silent samples`);
+        debugSignalPresent.textContent = `Yes (max amp: ${maxAmplitude.toFixed(2)})`;
+        debugSignalPresent.className = "debug-value success";
+      } else if (maxAmplitude > 0) {
+        debugAudioLog(`WARNING: Very low level signal detected. Max amplitude = ${maxAmplitude.toFixed(4)}, Avg amplitude = ${averageAmplitude}, ${nonZeroPercentage}% non-silent samples`);
+        debugSignalPresent.textContent = `Low (max amp: ${maxAmplitude.toFixed(4)})`;
+        debugSignalPresent.className = "debug-value warning";
+      } else {
+        debugAudioLog(`ERROR: No audio signal present in buffer. Buffer contains only zeros or silence.`);
+        debugSignalPresent.textContent = "No (silence)";
+        debugSignalPresent.className = "debug-value error";
+      }
+      
+      // Visualize the buffer
+      visualizeBuffer(audioBuffer);
+      
+      return {
+        duration,
+        channels,
+        sampleRate,
+        length,
+        maxAmplitude,
+        averageAmplitude,
+        signalFound,
+        nonZeroPercentage
+      };
+    } catch (err) {
+      debugAudioLog(`ERROR inspecting buffer: ${err.message}`);
+      debugState.errors.push("Buffer inspection: " + err.message);
+      debugErrorCount.textContent = debugState.errors.length;
+      return null;
+    }
+  }
+  
+  // Visualize buffer
+  function visualizeBuffer(buffer, label) {
+    if (!buffer || !bufferVisualization) return;
+    
+    try {
+      // Clear previous visualization
+      bufferVisualization.innerHTML = '';
+      
+      // Get left channel data (or first available channel)
+      const channelData = buffer.getChannelData(0);
+      const width = bufferVisualization.clientWidth;
+      const height = bufferVisualization.clientHeight;
+      
+      // Sample the buffer at regular intervals for visualization
+      const sampleSize = Math.max(1, Math.floor(channelData.length / width));
+      
+      for (let i = 0; i < width; i++) {
+        const startSample = i * sampleSize;
+        let max = 0;
+        
+        // Find the max amplitude in this block
+        for (let j = 0; j < sampleSize && startSample + j < channelData.length; j++) {
+          const absoluteValue = Math.abs(channelData[startSample + j]);
+          if (absoluteValue > max) {
+            max = absoluteValue;
+          }
+        }
+        
+        // Create a line representing the amplitude
+        const line = document.createElement('div');
+        line.className = 'audio-sample-line';
+        line.style.left = i + 'px';
+        line.style.height = max * height + 'px';
+        line.style.top = ((height / 2) - (max * height / 2)) + 'px';
+        
+        bufferVisualization.appendChild(line);
+      }
+      
+      // Add label if provided
+      if (label) {
+        const labelEl = document.createElement('div');
+        labelEl.style.position = 'absolute';
+        labelEl.style.top = '5px';
+        labelEl.style.left = '5px';
+        labelEl.style.color = '#fff';
+        labelEl.style.fontSize = '12px';
+        labelEl.style.background = 'rgba(0,0,0,0.5)';
+        labelEl.style.padding = '2px 5px';
+        labelEl.textContent = label;
+        bufferVisualization.appendChild(labelEl);
+      }
+    } catch (err) {
+      debugAudioLog(`ERROR visualizing buffer: ${err.message}`);
+    }
+  }
+  
+  // Seed-based random number generator
+  function createRNG(seed) {
+    let s = hashCode(seed);
+    return function() {
+      s = (s * 9301 + 49297) % 233280;
+      return s / 233280;
+    };
+  }
+  
+  function hashCode(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  }
+
+  // Simple music generators for different instruments
+  function generateSimpleEvents(type, bars, seed) {
+    const seedRNG = createRNG(seed + type);
+    const events = [];
+    const secondsPerBar = 4 * (60 / 120); // Simple 120 BPM
+    
+    // Basic parameters
+    const intensity = 0.4 + seedRNG() * 0.6;
+    const density = 0.3 + seedRNG() * 0.7;
+    
+    // Add some basic events
+    if (activeInstruments.bass) {
+      // Simple bass line
+      for (let bar = 0; bar < bars; bar++) {
+        const note = 36 + Math.floor(seedRNG() * 12); // C2 to C3
+        events.push({
+          instrument: 'bass',
+          note: note,
+          time: bar * secondsPerBar,
+          duration: secondsPerBar * 0.8,
+          velocity: 0.7 * intensity
+        });
+      }
+    }
+    
+    if (activeInstruments.pads) {
+      // Simple pads
+      for (let bar = 0; bar < bars; bar += 2) {
+        const note = 48 + Math.floor(seedRNG() * 24); // C3 to C5
+        events.push({
+          instrument: 'pads',
+          note: note,
+          time: bar * secondsPerBar,
+          duration: secondsPerBar * 2,
+          velocity: 0.5 * intensity
+        });
+      }
+    }
+    
+    if (activeInstruments.lead) {
+      // Simple lead melody
+      for (let bar = 0; bar < bars; bar++) {
+        if (seedRNG() < density) {
+          const note = 60 + Math.floor(seedRNG() * 24); // C4 to C6
+          events.push({
+            instrument: 'lead',
+            note: note,
+            time: bar * secondsPerBar + seedRNG() * secondsPerBar,
+            duration: 0.2 + seedRNG() * 0.5,
+            velocity: 0.6 * intensity
+          });
+        }
+      }
+    }
+    
+    if (activeInstruments.pluck) {
+      // Simple plucks
+      for (let bar = 0; bar < bars; bar++) {
+        for (let beat = 0; beat < 4; beat++) {
+          if (seedRNG() < density * 0.5) {
+            const note = 72 + Math.floor(seedRNG() * 12); // C5 to C6
+            events.push({
+              instrument: 'pluck',
+              note: note,
+              time: bar * secondsPerBar + beat * (60/120),
+              duration: 0.1 + seedRNG() * 0.2,
+              velocity: 0.4 * intensity
+            });
+          }
+        }
+      }
+    }
+    
+    if (activeInstruments.percussion) {
+      // Simple percussion
+      for (let bar = 0; bar < bars; bar++) {
+        // Kick on beat 1
+        events.push({
+          instrument: 'percussion',
+          note: 36, // Kick
+          time: bar * secondsPerBar,
+          duration: 0.1,
+          velocity: 0.8 * intensity
+        });
+        
+        // Snare on beats 2 and 4
+        events.push({
+          instrument: 'percussion',
+          note: 38, // Snare
+          time: bar * secondsPerBar + 1 * (60/120),
+          duration: 0.1,
+          velocity: 0.6 * intensity
+        });
+        events.push({
+          instrument: 'percussion',
+          note: 38, // Snare
+          time: bar * secondsPerBar + 3 * (60/120),
+          duration: 0.1,
+          velocity: 0.6 * intensity
+        });
+        
+        // Hi-hats
+        for (let eighth = 0; eighth < 8; eighth++) {
+          if (seedRNG() < 0.8) {
+            events.push({
+              instrument: 'percussion',
+              note: 42, // Hi-hat
+              time: bar * secondsPerBar + eighth * 0.5 * (60/120),
+              duration: 0.05,
+              velocity: 0.4 * intensity
+            });
+          }
+        }
+      }
+    }
+    
+    return events;
+  }
+  
+  // Generate a section of a song (simplified version)
+  function generateSection(type, seed, scale, chords, duration, bpm) {
+    try {
+      const seedRNG = createRNG(seed + type);
+      const sectionDuration = duration;
+      const beatsPerBar = 4;
+      const secondsPerBeat = 60 / bpm;
+      const totalBeats = sectionDuration / secondsPerBeat;
+      const totalBars = Math.floor(totalBeats / beatsPerBar);
+      
+      // Generate simple events
+      const events = generateSimpleEvents(type, totalBars, seed);
+      
+      return {
+        type,
+        duration: sectionDuration,
+        events: events
+      };
+    } catch (err) {
+      debugAudioLog(`Error in generateSection (${type}): ${err.message}`);
+      log(`Error in generateSection (${type}): ${err.message}`);
+      debugState.errors.push(`Section generation (${type}): ${err.message}`);
+      debugErrorCount.textContent = debugState.errors.length;
+      
+      // Return a valid object with an empty events array
+      return {
+        type,
+        duration,
+        events: []
+      };
+    }
+  }
+  
+  // Create song structure (simplified)
+  function generateSongStructure(seed, duration, complexity) {
+    try {
+      const seedRNG = createRNG(seed + 'structure');
+      
+      // Determine BPM based on seed
+      const bpm = 90 + Math.floor(seedRNG() * 40); // 90-130 BPM
+      
+      // Placeholder for musical scale and chords
+      const scale = [];
+      const chords = [];
+      
+      // Structure based on complexity
+      let sections = [];
+      const totalBars = Math.floor(duration / (4 * 60 / bpm)); // convert to bars
+      
+      // Allocation percentages (simplified)
+      const allocation = {
+        intro: 0.15,
+        verse: 0.25,
+        chorus: 0.3,
+        bridge: 0.15,
+        outro: 0.15
+      };
+      
+      // Calculate bars for each section
+      const introBars = Math.max(4, Math.floor(totalBars * allocation.intro));
+      const verseBars = Math.max(8, Math.floor(totalBars * allocation.verse));
+      const chorusBars = Math.max(8, Math.floor(totalBars * allocation.chorus));
+      const bridgeBars = Math.max(4, Math.floor(totalBars * allocation.bridge));
+      const outroBars = Math.max(4, Math.floor(totalBars * allocation.outro));
+      
+      // Create section objects
+      const introSection = {
+        type: 'intro',
+        bars: introBars,
+        duration: introBars * 4 * (60 / bpm)
+      };
+      
+      const verseSection = {
+        type: 'verse',
+        bars: verseBars,
+        duration: verseBars * 4 * (60 / bpm)
+      };
+      
+      const chorusSection = {
+        type: 'chorus',
+        bars: chorusBars,
+        duration: chorusBars * 4 * (60 / bpm)
+      };
+      
+      const bridgeSection = {
+        type: 'bridge',
+        bars: bridgeBars,
+        duration: bridgeBars * 4 * (60 / bpm)
+      };
+      
+      const outroSection = {
+        type: 'outro',
+        bars: outroBars,
+        duration: outroBars * 4 * (60 / bpm)
+      };
+      
+      // Build song structure
+      sections = [
+        introSection,
+        verseSection,
+        chorusSection,
+        bridgeSection,
+        outroSection
+      ];
+      
+      // Render section events
+      let currentTime = 0;
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        section.startTime = currentTime;
+        
+        // Generate events for each section
+        const sectionData = generateSection(
+          section.type, 
+          seed + section.type, 
+          scale, 
+          chords, 
+          section.duration, 
+          bpm
+        );
+        
+        // Ensure events is always an array
+        section.events = Array.isArray(sectionData.events) ? sectionData.events : [];
+        
+        currentTime += section.duration;
+      }
+      
+      return {
+        bpm,
+        scale,
+        chords,
+        duration: currentTime, // Actual total duration
+        sections
+      };
+    } catch (err) {
+      debugAudioLog(`Error in generateSongStructure: ${err.message}`);
+      log(`Error in generateSongStructure: ${err.message}`);
+      debugState.errors.push(`Song structure: ${err.message}`);
+      debugErrorCount.textContent = debugState.errors.length;
+      
+      // Return a minimal valid structure
+      return {
+        bpm: 120,
+        scale: [],
+        chords: [],
+        duration: duration,
+        sections: []
+      };
+    }
+  }
+  
+  // FIXED: Synthesize bass sound with proper timing and connections
+  function createBassSynth(attack = 0.01, decay = 0.2, sustain = 0.3, release = 0.4) {
+    return function(offlineCtx, time, note, duration, velocity) {
+      try {
+        const osc = offlineCtx.createOscillator();
+        const gainEnv = offlineCtx.createGain();
+        const filter = offlineCtx.createBiquadFilter();
+        
+        // Convert MIDI note to frequency
+        const freq = 440 * Math.pow(2, (note - 69) / 12);
+        
+        // Configure oscillator
+        osc.type = 'sawtooth';
+        osc.frequency.value = freq;
+        
+        // Configure filter
+        filter.type = 'lowpass';
+        filter.frequency.value = 500; // Heavy filtering for bass
+        filter.Q.value = 2;
+        
+        // Configure envelope - FIXED: Set initial gain to 0
+        gainEnv.gain.value = 0;
+        
+        // ADSR envelope - FIXED: using explicit time values
+        gainEnv.gain.setValueAtTime(0, time);
+        gainEnv.gain.linearRampToValueAtTime(velocity, time + attack);
+        gainEnv.gain.linearRampToValueAtTime(velocity * sustain, time + attack + decay);
+        gainEnv.gain.linearRampToValueAtTime(0, time + duration + release);
+        
+        // Sub-oscillator for extra bass
+        const subOsc = offlineCtx.createOscillator();
+        subOsc.type = 'sine';
+        subOsc.frequency.value = freq / 2; // One octave below
+        
+        const subGain = offlineCtx.createGain();
+        subGain.gain.value = velocity * 0.5;
+        
+        // Connect everything - FIXED: proper connections
+        osc.connect(filter);
+        subOsc.connect(subGain);
+        subGain.connect(filter);
+        filter.connect(gainEnv);
+        
+        // Start and stop - FIXED: explicit start/stop times
+        osc.start(time);
+        osc.stop(time + duration + release + 0.1);
+        
+        subOsc.start(time);
+        subOsc.stop(time + duration + release + 0.1);
+        
+        // Debug for verification
+        if (note === 36) { // Log only the first note to avoid excessive logs
+          debugAudioLog(`Created bass note: ${note}, freq: ${freq}Hz, time: ${time.toFixed(2)}, dur: ${duration.toFixed(2)}`);
+        }
+        
+        return {
+          oscillators: [osc, subOsc],
+          gains: [gainEnv, subGain],
+          output: gainEnv
+        };
+      } catch (err) {
+        debugAudioLog(`Error in bass synth: ${err.message}`);
+        return null;
+      }
+    };
+  }
+  
+  // FIXED: Synthesize pad sound with proper connections
+  function createPadSynth(attack = 0.5, decay = 0.5, sustain = 0.8, release = 1.0) {
+    return function(offlineCtx, time, note, duration, velocity) {
+      try {
+        const voices = [];
+        const gainEnv = offlineCtx.createGain();
+        const filter = offlineCtx.createBiquadFilter();
+        
+        // Convert MIDI note to frequency
+        const freq = 440 * Math.pow(2, (note - 69) / 12);
+        
+        // Create detuned voices for chorus effect
+        const detuneAmounts = [-10, -5, 0, 5, 10]; // cents
+        
+        detuneAmounts.forEach(detune => {
+          const osc = offlineCtx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          osc.detune.value = detune;
+          voices.push(osc);
+        });
+        
+        // Configure filter
+        filter.type = 'lowpass';
+        filter.frequency.value = 1500;
+        filter.Q.value = 1;
+        
+        // Configure envelope - FIXED: Set initial gain to 0
+        gainEnv.gain.value = 0;
+        
+        // ADSR envelope - FIXED: using explicit time values
+        gainEnv.gain.setValueAtTime(0, time);
+        gainEnv.gain.linearRampToValueAtTime(velocity * 0.8, time + attack);
+        gainEnv.gain.linearRampToValueAtTime(velocity * sustain * 0.8, time + attack + decay);
+        gainEnv.gain.linearRampToValueAtTime(0, time + duration + release);
+        
+        // Connect everything - FIXED: proper connections
+        voices.forEach(osc => osc.connect(filter));
+        filter.connect(gainEnv);
+        
+        // Start and stop - FIXED: explicit start/stop times
+        voices.forEach(osc => {
+          osc.start(time);
+          osc.stop(time + duration + release + 0.1);
+        });
+        
+        // Debug for verification
+        if (note === 48) { // Log only the first note to avoid excessive logs
+          debugAudioLog(`Created pad note: ${note}, freq: ${freq}Hz, time: ${time.toFixed(2)}, dur: ${duration.toFixed(2)}`);
+        }
+        
+        return {
+          oscillators: voices,
+          gains: [gainEnv],
+          output: gainEnv
+        };
+      } catch (err) {
+        debugAudioLog(`Error in pad synth: ${err.message}`);
+        return null;
+      }
+    };
+  }
+  
+  // FIXED: Synthesize lead sound with proper connections
+  function createLeadSynth(attack = 0.05, decay = 0.2, sustain = 0.6, release = 0.4) {
+    return function(offlineCtx, time, note, duration, velocity) {
+      try {
+        const osc = offlineCtx.createOscillator();
+        const gainEnv = offlineCtx.createGain();
+        const filter = offlineCtx.createBiquadFilter();
+        
+        // Convert MIDI note to frequency
+        const freq = 440 * Math.pow(2, (note - 69) / 12);
+        
+        // Configure oscillator
+        osc.type = 'sawtooth';
+        osc.frequency.value = freq;
+        
+        // Configure filter
+        filter.type = 'lowpass';
+        filter.frequency.value = 3000;
+        filter.Q.value = 3;
+        
+        // Configure envelope - FIXED: Set initial gain to 0
+        gainEnv.gain.value = 0;
+        
+        // ADSR envelope - FIXED: using explicit time values
+        gainEnv.gain.setValueAtTime(0, time);
+        gainEnv.gain.linearRampToValueAtTime(velocity, time + attack);
+        gainEnv.gain.linearRampToValueAtTime(velocity * sustain, time + attack + decay);
+        gainEnv.gain.linearRampToValueAtTime(0, time + duration + release);
+        
+        // Filter envelope for brightness
+        filter.frequency.setValueAtTime(1000, time);
+        filter.frequency.linearRampToValueAtTime(3000, time + attack);
+        filter.frequency.linearRampToValueAtTime(2000, time + attack + decay + duration);
+        
+        // Connect everything - FIXED: proper connections
+        osc.connect(filter);
+        filter.connect(gainEnv);
+        
+        // Start and stop - FIXED: explicit start/stop times
+        osc.start(time);
+        osc.stop(time + duration + release + 0.1);
+        
+        // Debug for verification
+        if (note === 60) { // Log only the first note to avoid excessive logs
+          debugAudioLog(`Created lead note: ${note}, freq: ${freq}Hz, time: ${time.toFixed(2)}, dur: ${duration.toFixed(2)}`);
+        }
+        
+        return {
+          oscillators: [osc],
+          gains: [gainEnv],
+          output: gainEnv
+        };
+      } catch (err) {
+        debugAudioLog(`Error in lead synth: ${err.message}`);
+        return null;
+      }
+    };
+  }
+  
+  // FIXED: Synthesize pluck sound with proper connections
+  function createPluckSynth(attack = 0.005, decay = 0.1, sustain = 0.3, release = 0.2) {
+    return function(offlineCtx, time, note, duration, velocity, options = {}) {
+      try {
+        const osc = offlineCtx.createOscillator();
+        const gainEnv = offlineCtx.createGain();
+        const filter = offlineCtx.createBiquadFilter();
+        
+        // Convert MIDI note to frequency
+        const freq = 440 * Math.pow(2, (note - 69) / 12);
+        
+        // Configure oscillator
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        
+        // Configure filter
+        filter.type = 'lowpass';
+        filter.frequency.value = 5000;
+        filter.Q.value = 2;
+        
+        // Configure envelope - FIXED: Set initial gain to 0
+        gainEnv.gain.value = 0;
+        
+        // ADSR envelope - FIXED: using explicit time values
+        if (options.reverse) {
+          // Reverse effect (slow attack, sharp release)
+          gainEnv.gain.setValueAtTime(0, time);
+          gainEnv.gain.linearRampToValueAtTime(velocity, time + duration * 0.8);
+          gainEnv.gain.linearRampToValueAtTime(0, time + duration);
+        } else {
+          // Normal pluck (sharp attack, exponential decay)
+          gainEnv.gain.setValueAtTime(0, time);
+          gainEnv.gain.linearRampToValueAtTime(velocity, time + attack);
+          gainEnv.gain.linearRampToValueAtTime(velocity * sustain, time + attack + decay);
+          gainEnv.gain.linearRampToValueAtTime(0, time + duration + release);
+        }
+        
+        // Filter envelope for brightness
+        filter.frequency.setValueAtTime(8000, time);
+        filter.frequency.exponentialRampToValueAtTime(1000, time + duration);
+        
+        // Connect everything - FIXED: proper connections
+        osc.connect(filter);
+        filter.connect(gainEnv);
+        
+        // Start and stop - FIXED: explicit start/stop times
+        osc.start(time);
+        osc.stop(time + duration + release + 0.1);
+        
+        // Debug for verification
+        if (note === 72) { // Log only the first note to avoid excessive logs
+          debugAudioLog(`Created pluck note: ${note}, freq: ${freq}Hz, time: ${time.toFixed(2)}, dur: ${duration.toFixed(2)}`);
+        }
+        
+        return {
+          oscillators: [osc],
+          gains: [gainEnv],
+          output: gainEnv
+        };
+      } catch (err) {
+        debugAudioLog(`Error in pluck synth: ${err.message}`);
+        return null;
+      }
+    };
+  }
+  
+  // FIXED: Synthesize percussion sounds with proper connections
+  function createPercussionSynth() {
+    return function(offlineCtx, time, note, duration, velocity) {
+      try {
+        // Different treatment based on note number (36=kick, 38=snare, 42=hi-hat, 49=crash)
+        if (note === 36) { // Kick
+          // Kick drum - sine with pitch envelope
+          const osc = offlineCtx.createOscillator();
+          const gainEnv = offlineCtx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(120, time);
+          osc.frequency.exponentialRampToValueAtTime(40, time + 0.1);
+          
+          gainEnv.gain.setValueAtTime(0, time);
+          gainEnv.gain.linearRampToValueAtTime(velocity, time + 0.005);
+          gainEnv.gain.exponentialRampToValueAtTime(0.001, time + 0.4);
+          
+          osc.connect(gainEnv);
+          
+          osc.start(time);
+          osc.stop(time + 0.4 + 0.1);
+          
+          debugAudioLog(`Created kick drum at time: ${time.toFixed(2)}`);
+          
+          return {
+            oscillators: [osc],
+            gains: [gainEnv],
+            output: gainEnv
+          };
+        } 
+        else if (note === 38) { // Snare
+          // Snare - noise + tone
+          const noiseBuffer = offlineCtx.createBuffer(1, offlineCtx.sampleRate * 0.2, offlineCtx.sampleRate);
+          const data = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < data.length; i++) {
+            data[i] = Math.random() * 2 - 1;
+          }
+          
+          const noise = offlineCtx.createBufferSource();
+          noise.buffer = noiseBuffer;
+          
+          const noiseGain = offlineCtx.createGain();
+          noiseGain.gain.setValueAtTime(0, time);
+          noiseGain.gain.linearRampToValueAtTime(velocity * 0.8, time + 0.005);
+          noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+          
+          // Tone component
+          const osc = offlineCtx.createOscillator();
+          osc.type = 'triangle';
+          osc.frequency.value = 180;
+          
+          const oscGain = offlineCtx.createGain();
+          oscGain.gain.setValueAtTime(0, time);
+          oscGain.gain.linearRampToValueAtTime(velocity * 0.5, time + 0.005);
+          oscGain.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
+          
+          // Filter for noise
+          const filter = offlineCtx.createBiquadFilter();
+          filter.type = 'highpass';
+          filter.frequency.value = 1000;
+          
+          noise.connect(filter);
+          filter.connect(noiseGain);
+          
+          osc.connect(oscGain);
+          
+          // Create a mixer gain for combining the noise and tone
+          const mixerGain = offlineCtx.createGain();
+          mixerGain.gain.value = 1.0;
+          
+          noiseGain.connect(mixerGain);
+          oscGain.connect(mixerGain);
+          
+          noise.start(time);
+          osc.start(time);
+          osc.stop(time + 0.2 + 0.1);
+          
+          debugAudioLog(`Created snare drum at time: ${time.toFixed(2)}`);
+          
+          return {
+            oscillators: [osc, noise],
+            gains: [noiseGain, oscGain],
+            output: mixerGain
+          };
+        }
+        else if (note === 42) { // Hi-hat
+          // Hi-hat - filtered noise, short duration
+          const noiseBuffer = offlineCtx.createBuffer(1, offlineCtx.sampleRate * 0.1, offlineCtx.sampleRate);
+          const data = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < data.length; i++) {
+            data[i] = Math.random() * 2 - 1;
+          }
+          
+          const noise = offlineCtx.createBufferSource();
+          noise.buffer = noiseBuffer;
+          
+          const noiseGain = offlineCtx.createGain();
+          noiseGain.gain.setValueAtTime(0, time);
+          noiseGain.gain.linearRampToValueAtTime(velocity * 0.7, time + 0.001);
+          noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+          
+          // Filter for noise
+          const filter = offlineCtx.createBiquadFilter();
+          filter.type = 'highpass';
+          filter.frequency.value = 7000;
+          
+          noise.connect(filter);
+          filter.connect(noiseGain);
+          
+          noise.start(time);
+          
+          debugAudioLog(`Created hi-hat at time: ${time.toFixed(2)}`);
+          
+          return {
+            oscillators: [noise],
+            gains: [noiseGain],
+            output: noiseGain
+          };
+        }
+        else if (note === 49) { // Crash
+          // Crash cymbal - filtered noise with longer decay
+          const noiseBuffer = offlineCtx.createBuffer(1, offlineCtx.sampleRate * 1.5, offlineCtx.sampleRate);
+          const data = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < data.length; i++) {
+            data[i] = Math.random() * 2 - 1;
+          }
+          
+          const noise = offlineCtx.createBufferSource();
+          noise.buffer = noiseBuffer;
+          
+          const noiseGain = offlineCtx.createGain();
+          noiseGain.gain.setValueAtTime(0, time);
+          noiseGain.gain.linearRampToValueAtTime(velocity * 0.8, time + 0.005);
+          noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 1.5);
+          
+          // Filter for noise
+          const filter = offlineCtx.createBiquadFilter();
+          filter.type = 'highpass';
+          filter.frequency.value = 5000;
+          
+          noise.connect(filter);
+          filter.connect(noiseGain);
+          
+          noise.start(time);
+          
+          return {
+            oscillators: [noise],
+            gains: [noiseGain],
+            output: noiseGain
+          };
+        }
+        else {
+          // Default percussion - simple sine tone
+          const osc = offlineCtx.createOscillator();
+          const gainEnv = offlineCtx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.value = 440 * Math.pow(2, (note - 69) / 12);
+          
+          gainEnv.gain.setValueAtTime(0, time);
+          gainEnv.gain.linearRampToValueAtTime(velocity, time + 0.005);
+          gainEnv.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
+          
+          osc.connect(gainEnv);
+          
+          osc.start(time);
+          osc.stop(time + 0.1 + 0.1);
+          
+          return {
+            oscillators: [osc],
+            gains: [gainEnv],
+            output: gainEnv
+          };
+        }
+      } catch (err) {
+        debugAudioLog(`Error in percussion synth: ${err.message}`);
+        return null;
+      }
+    };
+  }
+  
+  // FIXED: Create full song buffer with improved error handling and debugging
+  function createSongBuffer(songData) {
+    try {
+      debugAudioLog("Starting audio buffer generation...");
+      
+      const totalDuration = songData.duration;
+      const sampleRate = audioCtx.sampleRate;
+      const bufferSize = Math.ceil(sampleRate * totalDuration);
+      
+      debugAudioLog(`Creating buffer with ${bufferSize} samples (${totalDuration.toFixed(2)}s at ${sampleRate}Hz)`);
+      
+      const buffer = audioCtx.createBuffer(2, bufferSize, sampleRate); // Stereo
+      const leftChannel = buffer.getChannelData(0);
+      const rightChannel = buffer.getChannelData(1);
+      
+      // Clear buffer
+      for (let i = 0; i < bufferSize; i++) {
+        leftChannel[i] = 0;
+        rightChannel[i] = 0;
+      }
+      
+      // Update debug info
+      debugBufferStatus.textContent = "Created (empty)";
+      debugBufferStatus.className = "debug-value";
+      debugBufferDuration.textContent = totalDuration.toFixed(2) + "s";
+      debugBufferChannels.textContent = "2 (stereo)";
+      debugBufferSize.textContent = bufferSize + " samples";
+      
+      // Create a backup safety buffer with some noise in case everything else fails
+      const safetyBuffer = audioCtx.createBuffer(2, sampleRate * 2, sampleRate);
+      const safetyLeft = safetyBuffer.getChannelData(0);
+      const safetyRight = safetyBuffer.getChannelData(1);
+      
+      // Fill safety buffer with a simple sine wave
+      for (let i = 0; i < sampleRate * 2; i++) {
+        const v = Math.sin(440 * Math.PI * 2 * i / sampleRate) * 0.2;
+        safetyLeft[i] = v;
+        safetyRight[i] = v;
+      }
+      
+      try {
+        // Temporary rendering context
+        debugAudioLog("Creating offline audio context for rendering...");
+        const offlineCtx = new OfflineAudioContext(2, bufferSize, sampleRate);
+        
+        // Create gain node for master output
+        const masterGain = offlineCtx.createGain();
+        masterGain.gain.value = 0.8; // Prevent clipping
+        masterGain.connect(offlineCtx.destination);
+        
+        // Initialize instruments in offline context
+        debugAudioLog("Initializing instruments...");
+        const instruments = {
+          bass: {
+            synth: createBassSynth(0.01, 0.2, 0.3, 0.3),
+            gain: offlineCtx.createGain()
+          },
+          pads: {
+            synth: createPadSynth(0.5, 0.5, 0.8, 1.0),
+            gain: offlineCtx.createGain()
+          },
+          lead: {
+            synth: createLeadSynth(0.05, 0.2, 0.6, 0.4),
+            gain: offlineCtx.createGain()
+          },
+          pluck: {
+            synth: createPluckSynth(0.005, 0.1, 0.3, 0.2),
+            gain: offlineCtx.createGain()
+          },
+          percussion: {
+            synth: createPercussionSynth(),
+            gain: offlineCtx.createGain()
+          }
+        };
+        
+        // Set instrument levels - FIXED: increased levels to ensure audible output
+        instruments.bass.gain.gain.value = 0.9;
+        instruments.pads.gain.gain.value = 0.8;
+        instruments.lead.gain.gain.value = 0.8;
+        instruments.pluck.gain.gain.value = 0.7;
+        instruments.percussion.gain.gain.value = 1.0;
+        
+        // Connect instrument gains to master - FIXED: Explicitly connect each instrument
+        Object.values(instruments).forEach(inst => {
+          inst.gain.connect(masterGain);
+          debugAudioLog(`Connected ${inst.name} gain to master`);
+        });
+        
+        // Process all events across all sections
+        let allEvents = [];
+        let eventCount = 0;
+        
+        // Safely process sections
+        if (Array.isArray(songData.sections)) {
+          debugAudioLog(`Processing ${songData.sections.length} sections...`);
+          
+          songData.sections.forEach(section => {
+            if (section && Array.isArray(section.events)) {
+              eventCount += section.events.length;
+              
+              section.events.forEach(event => {
+                if (event && typeof event.time === 'number') {
+                  allEvents.push({
+                    ...event,
+                    time: section.startTime + event.time
+                  });
+                }
+              });
+            }
+          });
+        }
+        
+        debugAudioLog(`Processed ${eventCount} total events`);
+        
+        // Sort events by time
+        allEvents.sort((a, b) => a.time - b.time);
+        
+        // Schedule all events
+        debugAudioLog("Scheduling audio events...");
+        
+        let scheduledEvents = 0;
+        let instrumentSounds = [];
+        
+        allEvents.forEach(event => {
+          if (!instruments[event.instrument]) return;
+          
+          const inst = instruments[event.instrument];
+          
+          // Generate sound for this event - FIXED: pass explicit context and time
+          const synth = inst.synth(
+            offlineCtx,             // Pass the offline context
+            event.time,             // Time in seconds
+            event.note,             // MIDI note number
+            event.duration,         // Duration in seconds
+            event.velocity,         // Velocity (0-1)
+            { reverse: event.reverse } // Options
+          );
+          
+          if (synth && synth.output) {
+            // FIXED: Connect synth output to instrument gain
+            synth.output.connect(inst.gain);
+            scheduledEvents++;
+            instrumentSounds.push(synth);
+          }
+        });
+        
+        debugAudioLog(`Successfully scheduled ${scheduledEvents} audio events`);
+        
+        // Add a test tone to ensure there's always some sound
+        const testOsc = offlineCtx.createOscillator();
+        const testGain = offlineCtx.createGain();
+        testOsc.frequency.value = 440;
+        testGain.gain.value = 0.001; // Very quiet, just to ensure buffer isn't empty
+        testOsc.connect(testGain);
+        testGain.connect(masterGain);
+        testOsc.start(0);
+        testOsc.stop(1);
+        
+        // Render the audio
+        debugAudioLog("Starting offline rendering process...");
+        
+        return offlineCtx.startRendering().then(renderedBuffer => {
+          // Copy the rendered buffer to our output buffer
+          debugAudioLog("Rendering complete, copying data to output buffer...");
+          
+          const renderedLeft = renderedBuffer.getChannelData(0);
+          const renderedRight = renderedBuffer.getChannelData(1);
+          
+          // Debug: Check rendered buffer before copying
+          let maxRenderedAmplitude = 0;
+          for (let i = 0; i < Math.min(10000, renderedBuffer.length); i++) {
+            maxRenderedAmplitude = Math.max(maxRenderedAmplitude, Math.abs(renderedLeft[i]));
+          }
+          
+          debugAudioLog(`Rendered buffer sample max amplitude: ${maxRenderedAmplitude.toFixed(6)}`);
+          
+          // If buffer has no signal, use the safety buffer instead
+          if (maxRenderedAmplitude < 0.0001) {
+            debugAudioLog("WARNING: Rendered buffer has no signal, using safety buffer with test tone");
+            
+            // Use the safety buffer
+            for (let i = 0; i < safetyBuffer.length; i++) {
+              leftChannel[i] = safetyLeft[i];
+              rightChannel[i] = safetyRight[i];
+            }
+            
+            // Fill the rest of the buffer with silence
+            for (let i = safetyBuffer.length; i < buffer.length; i++) {
+              leftChannel[i] = 0;
+              rightChannel[i] = 0;
+            }
+          } else {
+            // Copy the rendered buffer
+            for (let i = 0; i < bufferSize; i++) {
+              leftChannel[i] = renderedLeft[i];
+              rightChannel[i] = renderedRight[i];
+            }
+          }
+          
+          // Check if buffer contains actual audio data
+          let maxAmplitude = 0;
+          let totalNonZero = 0;
+          
+          // Sample the buffer at intervals
+          const sampleInterval = Math.max(1, Math.floor(bufferSize / 1000));
+          for (let i = 0; i < bufferSize; i += sampleInterval) {
+            const amplitude = Math.abs(leftChannel[i]);
+            
+            if (amplitude > 0.0001) {
+              totalNonZero++;
+            }
+            
+            if (amplitude > maxAmplitude) {
+              maxAmplitude = amplitude;
+            }
+          }
+          
+          // FIXED: Apply normalization to ensure audible signal
+          // Find maximum amplitude in the entire buffer
+          let absoluteMax = 0;
+          for (let i = 0; i < bufferSize; i++) {
+            absoluteMax = Math.max(absoluteMax, Math.abs(leftChannel[i]), Math.abs(rightChannel[i]));
+          }
+          
+          // Normalize to a good amplitude if needed
+          if (absoluteMax > 0 && absoluteMax < 0.1) {
+            const gain = 0.5 / absoluteMax;
+            debugAudioLog(`Normalizing buffer by factor ${gain.toFixed(2)}`);
+            
+            for (let i = 0; i < bufferSize; i++) {
+              leftChannel[i] *= gain;
+              rightChannel[i] *= gain;
+            }
+            
+            // Update max amplitude
+            maxAmplitude *= gain;
+          }
+          
+          if (maxAmplitude > 0.01) {
+            debugAudioLog(`Buffer contains audio data (max amplitude: ${maxAmplitude.toFixed(4)})`);
+            debugBufferStatus.textContent = "Valid (has signal)";
+            debugBufferStatus.className = "debug-value success";
+            debugState.signalVerified = true;
+            debugState.bufferHasSignal = true;
+          } else if (maxAmplitude > 0) {
+            debugAudioLog(`Buffer contains very low level signal (max amplitude: ${maxAmplitude.toFixed(4)})`);
+            debugBufferStatus.textContent = `Low signal (${maxAmplitude.toFixed(4)})`;
+            debugBufferStatus.className = "debug-value warning";
+          } else {
+            debugAudioLog("WARNING: Buffer appears to be silent (no signal detected)");
+            debugBufferStatus.textContent = "Empty/Silent";
+            debugBufferStatus.className = "debug-value error";
+            debugState.errors.push("Buffer generation: Empty/Silent buffer");
+            debugErrorCount.textContent = debugState.errors.length;
+          }
+          
+          // Update debug visualization
+          visualizeBuffer(buffer, "Generated Audio");
+          
+          return buffer;
+        }).catch(err => {
+          debugAudioLog(`ERROR during offline rendering: ${err.message}`);
+          debugState.errors.push("Offline rendering: " + err.message);
+          debugErrorCount.textContent = debugState.errors.length;
+          
+          // Return the safety buffer as fallback
+          debugAudioLog("Returning safety buffer with test tone");
+          return safetyBuffer;
+        });
+      } catch (err) {
+        debugAudioLog(`ERROR in offline context setup: ${err.message}`);
+        debugState.errors.push("Offline context: " + err.message);
+        debugErrorCount.textContent = debugState.errors.length;
+        
+        // Return safety buffer
+        return Promise.resolve(safetyBuffer);
+      }
+    } catch (err) {
+      debugAudioLog(`ERROR in createSongBuffer: ${err.message}`);
+      log(`Error creating song buffer: ${err.message}`);
+      debugState.errors.push("Buffer creation: " + err.message);
+      debugErrorCount.textContent = debugState.errors.length;
+      
+      // Create a safety buffer
+      const safetyBuffer = audioCtx.createBuffer(2, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+      const safetyLeft = safetyBuffer.getChannelData(0);
+      const safetyRight = safetyBuffer.getChannelData(1);
+      
+      // Fill safety buffer with a simple sine wave
+      for (let i = 0; i < audioCtx.sampleRate * 2; i++) {
+        const v = Math.sin(440 * Math.PI * 2 * i / audioCtx.sampleRate) * 0.3;
+        safetyLeft[i] = v;
+        safetyRight[i] = v;
+      }
+      
+      // Update debug info
+      debugBufferStatus.textContent = "Error - Using test tone";
+      debugBufferStatus.className = "debug-value warning";
+      debugBufferDuration.textContent = "2.0s";
+      debugBufferChannels.textContent = "2 (stereo)";
+      debugBufferSize.textContent = audioCtx.sampleRate * 2 + " samples";
+      
+      return Promise.resolve(safetyBuffer);
+    }
+  }
+  
+  // Generate music function - FIXED with better error handling
+  function generate() {
+    if (isGenerating) return;
+    
+    isGenerating = true;
+    loadingEl.classList.add('active');
+    log('Generating quantum music...');
+    debugAudioLog("Starting music generation process");
+    
+    genBtn.disabled = true;
+    playBtn.disabled = true;
+    stopBtn.disabled = true;
+    
+    // Get parameters
+    const seed = seedEl.value || 'Quantum Harmonic Oscillation';
+    const dimensions = parseInt(dimensionsSlider.value);
+    const twist = parseFloat(twistSlider.value);
+    const quantumStates = parseInt(quantumSlider.value);
+    const evolutionSteps = parseInt(evolutionSlider.value);
+    const complexity = parseInt(complexitySlider.value);
+    const duration = parseInt(durationSlider.value);
+    
+    // Generate song structure
+    loadingText.textContent = "Creating quantum music structure...";
+    
+    // Use setTimeout to allow UI to update
+    setTimeout(() => {
+      try {
+        log('Generating song structure...');
+        debugAudioLog("Generating song structure...");
+        songData = generateSongStructure(seed, duration, complexity);
+        
+        // Log what we generated
+        log(`Generated ${songData.duration.toFixed(2)}s song at ${songData.bpm} BPM`);
+        
+        // Count total events
+        let totalEvents = 0;
+        songData.sections.forEach(section => {
+          if (Array.isArray(section.events)) {
+            totalEvents += section.events.length;
+          }
+        });
+        log(`Generated ${totalEvents} musical events across ${songData.sections.length} sections`);
+        debugAudioLog(`Generated ${totalEvents} musical events across ${songData.sections.length} sections`);
+        
+        // Generate audio buffer (this is intensive)
+        loadingText.textContent = "Synthesizing audio...";
+        
+        setTimeout(() => {
+          createSongBuffer(songData).then(buffer => {
+            audioBuffer = buffer;
+            
+            // Update debug display
+            debugBufferDuration.textContent = buffer.duration.toFixed(2) + "s";
+            debugBufferChannels.textContent = buffer.numberOfChannels;
+            debugBufferSize.textContent = buffer.length + " samples";
+            
+            // Inspect buffer to verify it has signal
+            inspectAudioBuffer();
+            
+            loadingEl.classList.remove('active');
+            isGenerating = false;
+            genBtn.disabled = false;
+            playBtn.disabled = false;
+            
+            log('Quantum music generation complete!');
+            debugAudioLog("Music generation process complete");
+            log('Click Play to hear your quantum song');
+          }).catch(err => {
+            log(`Error rendering audio: ${err.message}`);
+            debugAudioLog(`ERROR rendering audio: ${err.message}`);
+            debugState.errors.push("Audio rendering: " + err.message);
+            debugErrorCount.textContent = debugState.errors.length;
+            
+            loadingEl.classList.remove('active');
+            isGenerating = false;
+            genBtn.disabled = false;
+          });
+        }, 100);
+      } catch (err) {
+        log(`Generation error: ${err.message}`);
+        debugAudioLog(`ERROR in generate function: ${err.message}`);
+        debugState.errors.push("Generation: " + err.message);
+        debugErrorCount.textContent = debugState.errors.length;
+        console.error(err);
+        
+        loadingEl.classList.remove('active');
+        isGenerating = false;
+        genBtn.disabled = false;
+      }
+    }, 100);
+    
+    // Try to wake up audio context
+    if (audioCtx && audioCtx.state !== "running") {
+      log('Attempting to resume audio context...');
+      debugAudioLog("Attempting to resume audio context...");
+      
+      audioCtx.resume().then(() => {
+        log('Audio context activated');
+        debugAudioLog("AudioContext resumed successfully");
+      }).catch(err => {
+        log('Audio permission needed: click Play');
+        debugAudioLog(`Failed to resume AudioContext: ${err.message}`);
+        debugState.errors.push("Context resume: " + err.message);
+        debugErrorCount.textContent = debugState.errors.length;
+      });
+    } else {
+      debugAudioLog(`AudioContext already in ${audioCtx ? audioCtx.state : 'unavailable'} state`);
+    }
+  }
+  
+  // FIXED: Play function with improved error handling and activation
+  function play() {
+    if (!audioBuffer) {
+      log('Please generate music first');
+      debugAudioLog("Play attempted with no audio buffer available");
+      return;
+    }
+    
+    if (isPlaying) {
+      stop();
+    }
+    
+    debugAudioLog("Play function called, checking AudioContext state...");
+    
+    // Ensure audio context is running (needs user gesture)
+    if (audioCtx.state !== 'running') {
+      log('Attempting to resume audio context...');
+      debugAudioLog("AudioContext not running, attempting to resume...");
+      
+      audioCtx.resume().then(() => {
+        log('Audio context resumed successfully!');
+        debugAudioLog("AudioContext resumed successfully, starting playback");
+        startPlayback();
+      }).catch(err => {
+        log(`Could not start audio: ${err.message}`);
+        debugAudioLog(`ERROR resuming AudioContext: ${err.message}`);
+        debugState.errors.push("Context resume for playback: " + err.message);
+        debugErrorCount.textContent = debugState.errors.length;
+        playBtn.disabled = false;
+      });
+    } else {
+      debugAudioLog("AudioContext already running, starting playback");
+      startPlayback();
+    }
+  }
+  
+  // FIXED: Start playback function with better initialization and safety checks
+  function startPlayback() {
+    try {
+      debugAudioLog("Starting audio playback...");
+      
+      // Create nodes
+      audioNodes.source = audioCtx.createBufferSource();
+      audioNodes.gain = audioCtx.createGain();
+      
+      debugSourceCreated.textContent = "Yes";
+      debugSourceCreated.className = "debug-value success";
+      debugGainCreated.textContent = "Yes";
+      debugGainCreated.className = "debug-value success";
+      
+      // Configure
+      audioNodes.source.buffer = audioBuffer;
+      
+      // FIXED: Set explicit gain control with ramp
+      audioNodes.gain.gain.setValueAtTime(0, audioCtx.currentTime);
+      audioNodes.gain.gain.linearRampToValueAtTime(0.9, audioCtx.currentTime + 0.05);
+      
+      debugOutputVolume.textContent = "0.9 (90%)";
+      
+      // Connect
+      audioNodes.source.connect(audioNodes.gain);
+      audioNodes.gain.connect(audioCtx.destination);
+      
+      debugNodesConnected.textContent = "Yes";
+      debugNodesConnected.className = "debug-value success";
+      
+      debugAudioLog("Audio nodes created and connected to destination");
+      
+      // Start playback
+      audioNodes.source.start();
+      startTime = audioCtx.currentTime;
+      isPlaying = true;
+      songData.currentTime = 0;
+      
+      debugPlaybackStarted.textContent = "Yes";
+      debugPlaybackStarted.className = "debug-value success";
+      
+      debugAudioLog("Playback started!");
+      
+      // Update UI
+      playBtn.disabled = true;
+      stopBtn.disabled = false;
+      log('Playback started');
+      
+      // Update progress
+      updateProgress();
+      
+      // Handle completion
+      audioNodes.source.onended = () => {
+        debugAudioLog("Audio playback ended");
+        isPlaying = false;
+        audioNodes.source = null;
+        audioNodes.gain = null;
+        
+        debugPlaybackStarted.textContent = "No (completed)";
+        debugPlaybackStarted.className = "debug-value";
+        debugSourceCreated.textContent = "No (ended)";
+        debugSourceCreated.className = "debug-value";
+        debugGainCreated.textContent = "No (ended)";
+        debugGainCreated.className = "debug-value";
+        debugNodesConnected.textContent = "No (ended)";
+        debugNodesConnected.className = "debug-value";
+        
+        // Update UI
+        playBtn.disabled = false;
+        stopBtn.disabled = true;
+        progressBar.style.width = '0%';
+        log('Playback completed');
+      };
+    } catch (err) {
+      log(`Playback error: ${err.message}`);
+      debugAudioLog(`ERROR starting playback: ${err.message}`);
+      debugState.errors.push("Playback start: " + err.message);
+      debugErrorCount.textContent = debugState.errors.length;
+      
+      debugPlaybackStarted.textContent = "ERROR: " + err.message;
+      debugPlaybackStarted.className = "debug-value error";
+      
+      playBtn.disabled = false;
+      stopBtn.disabled = true;
+    }
+  }
+  
+  // Stop function
+  function stop() {
+    if (isPlaying && audioNodes.source) {
+      debugAudioLog("Stopping playback");
+      
+      try {
+        audioNodes.source.stop();
+        isPlaying = false;
+        audioNodes.source = null;
+        audioNodes.gain = null;
+        
+        debugPlaybackStarted.textContent = "No (stopped)";
+        debugPlaybackStarted.className = "debug-value";
+        debugSourceCreated.textContent = "No (stopped)";
+        debugSourceCreated.className = "debug-value";
+        debugGainCreated.textContent = "No (stopped)";
+        debugGainCreated.className = "debug-value";
+        debugNodesConnected.textContent = "No (stopped)";
+        debugNodesConnected.className = "debug-value";
+        
+        // Update UI
+        playBtn.disabled = false;
+        stopBtn.disabled = true;
+        progressBar.style.width = '0%';
+        log('Playback stopped');
+        
+        debugAudioLog("Playback successfully stopped");
+      } catch (err) {
+        debugAudioLog(`ERROR stopping playback: ${err.message}`);
+        debugState.errors.push("Playback stop: " + err.message);
+        debugErrorCount.textContent = debugState.errors.length;
+      }
+    }
+  }
+  
+  // Update progress bar and current time
+  function updateProgress() {
+    if (!isPlaying || !audioNodes.source || !audioBuffer) return;
+    
+    try {
+      const elapsed = audioCtx.currentTime - startTime;
+      const duration = audioBuffer.duration;
+      const progress = Math.min(elapsed / duration, 1);
+      songData.currentTime = elapsed;
+      
+      progressBar.style.width = `${progress * 100}%`;
+      debugCurrentTime.textContent = elapsed.toFixed(1) + "s / " + duration.toFixed(1) + "s";
+      
+      // Find current section
+      if (songData.sections && Array.isArray(songData.sections)) {
+        let currentSection = null;
+        for (let i = 0; i < songData.sections.length; i++) {
+          const section = songData.sections[i];
+          if (section && elapsed >= section.startTime && 
+              (i === songData.sections.length - 1 || elapsed < songData.sections[i + 1].startTime)) {
+            currentSection = section;
+            break;
+          }
+        }
+        
+        if (currentSection && !currentSection.announced) {
+          log(`Now playing: ${currentSection.type}`);
+          
+          // Mark as announced
+          currentSection.announced = true;
+          
+          // Reset other sections
+          songData.sections.forEach(s => {
+            if (s !== currentSection) s.announced = false;
+          });
+        }
+      }
+      
+      if (progress < 1) {
+        requestAnimationFrame(updateProgress);
+      }
+    } catch (err) {
+      debugAudioLog(`ERROR in progress update: ${err.message}`);
+    }
+  }
+  
+  // Visualization
+  function visualize() {
+    // Clear with fade effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    if (isPlaying && audioBuffer && songData) {
+      const elapsed = songData.currentTime;
+      const totalDuration = audioBuffer.duration;
+      
+      // Get current section
+      let currentSection = null;
+      if (Array.isArray(songData.sections)) {
+        for (let i = 0; i < songData.sections.length; i++) {
+          const section = songData.sections[i];
+          if (section && elapsed >= section.startTime && 
+              (i === songData.sections.length - 1 || elapsed < songData.sections[i + 1].startTime)) {
+            currentSection = section;
+            break;
+          }
+        }
+      }
+      
+      // Find active notes at this timestamp
+      const activeNotes = [];
+      
+      if (currentSection && Array.isArray(currentSection.events)) {
+        // Local time within section
+        const sectionTime = elapsed - currentSection.startTime;
+        
+        // Find events that are currently active
+        currentSection.events.forEach(event => {
+          if (event && typeof event.time === 'number' && 
+              sectionTime >= event.time && sectionTime <= event.time + event.duration) {
+            activeNotes.push({
+              ...event,
+              progress: (sectionTime - event.time) / event.duration
+            });
+          }
+        });
+      }
+      
+      // Draw based on section type
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const maxRadius = Math.min(canvas.width, canvas.height) * 0.4;
+      
+      // Draw section indicator
+      if (currentSection) {
+        ctx.fillStyle = 'rgba(0, 255, 200, 0.2)';
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 24px monospace';
+        ctx.fillText(currentSection.type.toUpperCase(), centerX, 40);
+      }
+      
+      // Draw progress ring
+      const progress = elapsed / totalDuration;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, maxRadius * 1.1, 0, progress * TAU);
+      ctx.strokeStyle = 'rgba(0, 255, 200, 0.5)';
+      ctx.lineWidth = 5;
+      ctx.stroke();
+      
+      // Draw active notes
+      activeNotes.forEach(note => {
+        // Parameters based on note properties
+        const noteAngle = (note.note / 127) * TAU;
+        const noteRadius = maxRadius * (0.2 + 0.7 * note.velocity);
+        const x = centerX + Math.cos(noteAngle) * noteRadius;
+        const y = centerY + Math.sin(noteAngle) * noteRadius;
+        
+        // Calculate color based on instrument
+        let hue = 0;
+        let size = 5 + note.velocity * 20;
+        
+        switch(note.instrument) {
+          case 'bass':
+            hue = 220; // Blue
+            size = 10 + note.velocity * 15;
+            break;
+          case 'pads':
+            hue = 180; // Cyan
+            size = 8 + note.velocity * 12;
+            break;
+          case 'lead':
+            hue = 120; // Green
+            size = 6 + note.velocity * 20;
+            break;
+          case 'pluck':
+            hue = 300; // Magenta
+            size = 4 + note.velocity * 12;
+            break;
+          case 'percussion':
+            hue = 60; // Yellow
+            size = 5 + note.velocity * 10;
+            break;
+        }
+        
+        // Draw note
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, TAU);
+        ctx.fillStyle = `hsla(${hue}, 80%, 60%, ${0.7 * note.velocity})`;
+        ctx.fill();
+        
+        // Draw ripple effect
+        const rippleSize = size * (1 + note.progress * 2);
+        ctx.beginPath();
+        ctx.arc(x, y, rippleSize, 0, TAU);
+        ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${0.5 * (1 - note.progress)})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Draw line to center
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${0.2 * note.velocity})`;
+        ctx.lineWidth = 1 + 3 * note.velocity;
+        ctx.stroke();
+      });
+      
+      // Draw central orb
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 10 + 5 * Math.sin(elapsed * 3), 0, TAU);
+      const glowIntensity = 0.3 + 0.2 * Math.sin(elapsed * 2);
+      ctx.fillStyle = `rgba(0, 255, 200, ${glowIntensity})`;
+      ctx.fill();
+      
+      // Central glow effect
+      const gradient = ctx.createRadialGradient(
+        centerX, centerY, 5,
+        centerX, centerY, 50
+      );
+      gradient.addColorStop(0, `rgba(0, 255, 200, ${glowIntensity})`);
+      gradient.addColorStop(1, 'rgba(0, 255, 200, 0)');
+      
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 50, 0, TAU);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+    } else {
+      // Static visualization when not playing
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const dimensions = parseInt(dimensionsSlider.value);
+      
+      // Draw static particles
+      for (let i = 0; i < dimensions; i++) {
+        const angle = (i / dimensions) * TAU;
+        const radius = Math.min(canvas.width, canvas.height) * 0.3;
+        
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        
+        const timeOffset = Date.now() / 1000;
+        const pulseSize = 3 + Math.sin(timeOffset + i * 0.2) * 2;
+        const hue = (i / dimensions * 360 + timeOffset * 20) % 360;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, pulseSize, 0, TAU);
+        ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.6)`;
+        ctx.fill();
+        
+        // Connection lines
+        if (i % 3 === 0) {
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(x, y);
+          ctx.strokeStyle = `hsla(${hue}, 70%, 50%, 0.1)`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+      
+      // Central orb pulse
+      const timeOffset = Date.now() / 1000;
+      const pulseSize = 10 + Math.sin(timeOffset * 2) * 5;
+      
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, pulseSize, 0, TAU);
+      ctx.fillStyle = `rgba(0, 255, 200, ${0.3 + 0.1 * Math.sin(timeOffset * 3)})`;
+      ctx.fill();
+    }
+    
+    // Continue animation
+    requestAnimationFrame(visualize);
+  }
+  
+  // Automatic diagnostic functions
+  async function runAllDiagnostics() {
+    const diagnosticStart = new Date();
+    debugAudioLog("Starting comprehensive diagnostic tests...");
+    diagnosticReport.value = "Running diagnostics...\n\n";
+    
+    // 1. System Information
+    collectSystemInfo();
+    
+    // 2. AudioContext Tests
+    await testAudioContext();
+    
+    // 3. Test tone
+    await testTonePlayback();
+    
+    // 4. Music generation test
+    await testMusicGeneration();
+    
+    // 5. Buffer inspection
+    if (audioBuffer) {
+      testAudioBuffer();
+    }
+    
+    // 6. Playback test
+    await testPlayback();
+    
+    // 7. Generate final report
+    generateDiagnosticReport(diagnosticStart);
+  }
+  
+  // Collect system information
+  function collectSystemInfo() {
+    debugAudioLog("Collecting system information...");
+    diagnosticReport.value += "SYSTEM INFORMATION\n";
+    
+    // Browser info
+    const userAgent = navigator.userAgent;
+    let browserName = "Unknown";
+    let browserVersion = "Unknown";
+    let osName = "Unknown";
+    
+    if (userAgent.indexOf("Firefox") > -1) {
+      browserName = "Firefox";
+      browserVersion = userAgent.match(/Firefox\/([0-9.]+)/)[1];
+    } else if (userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Edg") === -1) {
+      browserName = "Chrome";
+      browserVersion = userAgent.match(/Chrome\/([0-9.]+)/)[1];
+    } else if (userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") === -1) {
+      browserName = "Safari";
+      const versionMatch = userAgent.match(/Version\/([0-9.]+)/);
+      browserVersion = versionMatch ? versionMatch[1] : "Unknown";
+    } else if (userAgent.indexOf("Edg") > -1) {
+      browserName = "Edge";
+      browserVersion = userAgent.match(/Edg\/([0-9.]+)/)[1];
+    }
+    
+    if (userAgent.indexOf("Windows") > -1) {
+      osName = "Windows";
+    } else if (userAgent.indexOf("Mac") > -1) {
+      osName = "macOS";
+    } else if (userAgent.indexOf("Linux") > -1) {
+      osName = "Linux";
+    } else if (userAgent.indexOf("Android") > -1) {
+      osName = "Android";
+    } else if (userAgent.indexOf("iPhone") > -1 || userAgent.indexOf("iPad") > -1) {
+      osName = "iOS";
+    }
+    
+    debugState.diagnosticResults.browser = {
+      name: browserName,
+      version: browserVersion,
+      os: osName,
+      userAgent: userAgent
+    };
+    
+    diagnosticReport.value += `Browser: ${browserName} ${browserVersion} on ${osName}\n`;
+    diagnosticReport.value += `User Agent: ${userAgent}\n`;
+    
+    // Audio capabilities
+    const audioContextSupported = !!(window.AudioContext || window.webkitAudioContext);
+    diagnosticReport.value += `Web Audio API Support: ${audioContextSupported ? "Yes" : "No"}\n`;
+    
+    if (audioCtx) {
+      diagnosticReport.value += `Audio Sample Rate: ${audioCtx.sampleRate} Hz\n`;
+      diagnosticReport.value += `Current AudioContext State: ${audioCtx.state}\n`;
+    } else {
+      diagnosticReport.value += `AudioContext: Not available\n`;
+    }
+    
+    diagnosticReport.value += "\n";
+  }
+  
+  // Test AudioContext
+  async function testAudioContext() {
+    debugAudioLog("Testing AudioContext...");
+    diagnosticReport.value += "AUDIO CONTEXT TESTS\n";
+    
+    if (!audioCtx) {
+      diagnosticReport.value += "ERROR: AudioContext not created\n";
+      debugState.diagnosticResults.audioContext = {
+        created: false,
+        error: "Could not create AudioContext"
+      };
+      return;
+    }
+    
+    // Check initial state
+    diagnosticReport.value += `Initial state: ${audioCtx.state}\n`;
+    
+    // Try to resume
+    try {
+      diagnosticReport.value += "Attempting to resume AudioContext...\n";
+      await audioCtx.resume();
+      diagnosticReport.value += `After resume attempt: ${audioCtx.state}\n`;
+    } catch (err) {
+      diagnosticReport.value += `Error resuming context: ${err.message}\n`;
+    }
+    
+    // Check for suspend/resume history
+    diagnosticReport.value += `State change count: ${debugState.stateChanges.length}\n`;
+    if (debugState.stateChanges.length > 0) {
+      diagnosticReport.value += `State change history: ${debugState.stateChanges.join(', ')}\n`;
+    }
+    
+    // Set diagnostic result
+    debugState.diagnosticResults.audioContext = {
+      created: true,
+      initialState: audioCtx.state,
+      currentState: audioCtx.state,
+      stateChanges: debugState.stateChanges
+    };
+    
+    diagnosticReport.value += "\n";
+  }
+  
+  // Test tone playback
+  async function testTonePlayback() {
+    debugAudioLog("Testing basic audio tone playback...");
+    diagnosticReport.value += "BASIC AUDIO PLAYBACK TEST\n";
+    
+    // Check if AudioContext is available
+    if (!audioCtx) {
+      diagnosticReport.value += "Cannot run tone test - AudioContext not available\n\n";
+      return;
+    }
+    
+    try {
+      diagnosticReport.value += "Attempting to play test tone...\n";
+      
+      // Create oscillator for test
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.value = 440; // A4
+      
+      gainNode.gain.value = 0.2;
+      
+      // Connect nodes
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      // Start tone
+      osc.start();
+      
+      // Wait for tone to play and complete
+      diagnosticReport.value += "Test tone started (440Hz, 0.5 seconds)...\n";
+      
+      // Return a promise that resolves when the tone completes
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          try {
+            osc.stop();
+            osc.disconnect();
+            gainNode.disconnect();
+            debugState.diagnosticResults.testTone = {
+              success: true
+            };
+            diagnosticReport.value += "Test tone completed successfully\n";
+            resolve();
+          } catch (err) {
+            debugState.diagnosticResults.testTone = {
+              success: false,
+              error: err.message
+            };
+            diagnosticReport.value += `Error stopping test tone: ${err.message}\n`;
+            resolve();
+          }
+        }, 500);
+      });
+    } catch (err) {
+      debugState.diagnosticResults.testTone = {
+        success: false,
+        error: err.message
+      };
+      diagnosticReport.value += `Error playing test tone: ${err.message}\n`;
+    }
+    
+    diagnosticReport.value += `Did you hear the test tone? If not, there might be audio output issues.\n\n`;
+  }
+  
+  // Test music generation
+  async function testMusicGeneration() {
+    debugAudioLog("Testing music generation...");
+    diagnosticReport.value += "MUSIC GENERATION TEST\n";
+    
+    if (!audioCtx) {
+      diagnosticReport.value += "Cannot test music generation - AudioContext not available\n\n";
+      return;
+    }
+    
+    try {
+      // Create a short test song
+      diagnosticReport.value += "Generating test music structure...\n";
+      
+      const testSongData = generateSongStructure("Test Diagnostic", 5, 5);
+      
+      // Count events
+      let totalEvents = 0;
+      testSongData.sections.forEach(section => {
+        if (Array.isArray(section.events)) {
+          totalEvents += section.events.length;
+        }
+      });
+      
+      diagnosticReport.value += `Generated ${totalEvents} musical events in ${testSongData.sections.length} sections\n`;
+      
+      // Generate audio buffer
+      diagnosticReport.value += "Creating audio buffer for test music...\n";
+      
+      const testBuffer = await createSongBuffer(testSongData);
+      
+      // Inspect the buffer
+      const bufferInfo = inspectAudioBufferDiagnostic(testBuffer);
+      
+      diagnosticReport.value += `Test buffer created: ${testBuffer.duration.toFixed(2)}s, ${testBuffer.numberOfChannels} channels\n`;
+      diagnosticReport.value += `Buffer signal level: Max amplitude = ${bufferInfo.maxAmplitude.toFixed(4)}, ${bufferInfo.nonZeroPercentage}% non-silent\n`;
+      
+      if (bufferInfo.signalFound) {
+        diagnosticReport.value += "✅ Buffer contains adequate audio signal\n";
+      } else if (bufferInfo.maxAmplitude > 0) {
+        diagnosticReport.value += "⚠️ Buffer contains VERY LOW level audio signal\n";
+      } else {
+        diagnosticReport.value += "❌ Buffer contains NO audio signal (silence)\n";
+      }
+      
+      // Store diagnostic result
+      debugState.diagnosticResults.musicGeneration = {
+        success: true,
+        eventsGenerated: totalEvents,
+        bufferDuration: testBuffer.duration,
+        signalPresent: bufferInfo.signalFound,
+        maxAmplitude: bufferInfo.maxAmplitude
+      };
+    } catch (err) {
+      debugState.diagnosticResults.musicGeneration = {
+        success: false,
+        error: err.message
+      };
+      diagnosticReport.value += `Error generating test music: ${err.message}\n`;
+    }
+    
+    diagnosticReport.value += "\n";
+  }
+  
+  // Inspect buffer specifically for diagnostics
+  function inspectAudioBufferDiagnostic(buffer) {
+    if (!buffer) {
+      return {
+        signalFound: false,
+        maxAmplitude: 0,
+        nonZeroPercentage: 0
+      };
+    }
+    
+    try {
+      // Basic buffer properties
+      const duration = buffer.duration;
+      const channels = buffer.numberOfChannels;
+      const sampleRate = buffer.sampleRate;
+      const length = buffer.length;
+      
+      // Check for silence or very low signal
+      let signalFound = false;
+      let maxAmplitude = 0;
+      let totalSamples = 0;
+      let nonZeroSamples = 0;
+      
+      for (let c = 0; c < channels; c++) {
+        const channelData = buffer.getChannelData(c);
+        
+        for (let i = 0; i < length; i += 100) { // Check every 100th sample for efficiency
+          totalSamples++;
+          const absoluteValue = Math.abs(channelData[i]);
+          
+          if (absoluteValue > 0.00001) { // More than absolute silence
+            nonZeroSamples++;
+          }
+          
+          if (absoluteValue > maxAmplitude) {
+            maxAmplitude = absoluteValue;
+          }
+          
+          if (absoluteValue > 0.01) { // Significant audio signal
+            signalFound = true;
+          }
+        }
+      }
+      
+      const nonZeroPercentage = (nonZeroSamples / totalSamples * 100).toFixed(2);
+      
+      return {
+        duration,
+        channels,
+        sampleRate,
+        length,
+        maxAmplitude,
+        signalFound,
+        nonZeroPercentage
+      };
+    } catch (err) {
+      return {
+        signalFound: false,
+        maxAmplitude: 0,
+        nonZeroPercentage: 0,
+        error: err.message
+      };
+    }
+  }
+  
+  // Test audio buffer
+  function testAudioBuffer() {
+    debugAudioLog("Testing audio buffer...");
+    diagnosticReport.value += "AUDIO BUFFER INSPECTION\n";
+    
+    if (!audioBuffer) {
+      diagnosticReport.value += "No audio buffer to inspect\n\n";
+      return;
+    }
+    
+    try {
+      // Inspect the buffer properties
+      const bufferInfo = inspectAudioBufferDiagnostic(audioBuffer);
+      
+      diagnosticReport.value += `Buffer properties: ${audioBuffer.duration.toFixed(2)}s, ${audioBuffer.numberOfChannels} channels, ${audioBuffer.length} samples\n`;
+      diagnosticReport.value += `Signal level: Max amplitude = ${bufferInfo.maxAmplitude.toFixed(4)}, ${bufferInfo.nonZeroPercentage}% non-silent samples\n`;
+      
+      if (bufferInfo.signalFound) {
+        diagnosticReport.value += "✅ Buffer contains adequate audio signal\n";
+      } else if (bufferInfo.maxAmplitude > 0) {
+        diagnosticReport.value += "⚠️ Buffer contains VERY LOW level audio signal\n";
+      } else {
+        diagnosticReport.value += "❌ Buffer contains NO audio signal (silence)\n";
+      }
+      
+      // Sample some actual buffer values
+      diagnosticReport.value += "\nBuffer content sample:\n";
+      const channel = audioBuffer.getChannelData(0);
+      
+      const samplePoints = [0, 1000, 5000, 10000, 50000];
+      samplePoints.forEach(point => {
+        if (point < channel.length) {
+          diagnosticReport.value += `Sample ${point}: ${channel[point].toFixed(6)}\n`;
+        }
+      });
+      
+      // Count non-zero regions
+      let consecutiveZeros = 0;
+      let nonZeroRegions = 0;
+      let currentlyInZeroRegion = true;
+      
+      for (let i = 0; i < Math.min(channel.length, 100000); i += 100) {
+        if (Math.abs(channel[i]) < 0.0001) {
+          consecutiveZeros++;
+          if (consecutiveZeros > 50 && !currentlyInZeroRegion) {
+            currentlyInZeroRegion = true;
+          }
+        } else {
+          if (currentlyInZeroRegion) {
+            nonZeroRegions++;
+            currentlyInZeroRegion = false;
+          }
+          consecutiveZeros = 0;
+        }
+      }
+      
+      diagnosticReport.value += `Detected approximately ${nonZeroRegions} non-silent regions in the buffer\n`;
+      
+      // Store diagnostic results
+      debugState.diagnosticResults.audioBuffer = {
+        exists: true,
+        duration: audioBuffer.duration,
+        channels: audioBuffer.numberOfChannels,
+        sampleRate: audioBuffer.sampleRate,
+        signalPresent: bufferInfo.signalFound,
+        maxAmplitude: bufferInfo.maxAmplitude,
+        nonZeroPercentage: bufferInfo.nonZeroPercentage,
+        nonZeroRegions: nonZeroRegions
+      };
+    } catch (err) {
+      debugState.diagnosticResults.audioBuffer = {
+        exists: true,
+        error: err.message
+      };
+      diagnosticReport.value += `Error inspecting buffer: ${err.message}\n`;
+    }
+    
+    diagnosticReport.value += "\n";
+  }
+  
+  // Test playback
+  async function testPlayback() {
+    debugAudioLog("Testing playback mechanism...");
+    diagnosticReport.value += "PLAYBACK MECHANISM TEST\n";
+    
+    if (!audioCtx) {
+      diagnosticReport.value += "Cannot test playback - AudioContext not available\n\n";
+      return;
+    }
+    
+    try {
+      // Create a simple test buffer with sine wave
+      const testBuffer = audioCtx.createBuffer(2, audioCtx.sampleRate, audioCtx.sampleRate);
+      const leftChannel = testBuffer.getChannelData(0);
+      const rightChannel = testBuffer.getChannelData(1);
+      
+      // Fill with sine wave
+      for (let i = 0; i < audioCtx.sampleRate; i++) {
+        const value = Math.sin(440 * Math.PI * 2 * i / audioCtx.sampleRate);
+        leftChannel[i] = value * 0.2;
+        rightChannel[i] = value * 0.2;
+      }
+      
+      diagnosticReport.value += "Created test buffer with 1 second 440Hz sine wave\n";
+      
+      // Try to play the buffer
+      diagnosticReport.value += "Attempting to play test buffer...\n";
+      
+      // Create source and gain nodes
+      const source = audioCtx.createBufferSource();
+      const gain = audioCtx.createGain();
+      
+      source.buffer = testBuffer;
+      gain.gain.value = 0.3;
+      
+      source.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      // Start playback
+      try {
+        source.start();
+        diagnosticReport.value += "✅ Playback started successfully\n";
+        
+        // Wait for completion
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            try {
+              source.stop();
+              source.disconnect();
+              gain.disconnect();
+              diagnosticReport.value += "✅ Playback completed successfully\n";
+              resolve();
+            } catch (err) {
+              diagnosticReport.value += `Error stopping playback: ${err.message}\n`;
+              resolve();
+            }
+          }, 1000);
+        });
+        
+        debugState.diagnosticResults.playbackTest = {
+          success: true
+        };
+      } catch (err) {
+        diagnosticReport.value += `❌ Error starting playback: ${err.message}\n`;
+        debugState.diagnosticResults.playbackTest = {
+          success: false,
+          error: err.message
+        };
+      }
+    } catch (err) {
+      diagnosticReport.value += `Error in playback test: ${err.message}\n`;
+      debugState.diagnosticResults.playbackTest = {
+        success: false,
+        error: err.message
+      };
+    }
+    
+    diagnosticReport.value += `Did you hear the test tone? If not, there might be playback issues.\n\n`;
+  }
+  
+  // Generate final diagnostic report
+  function generateDiagnosticReport(startTime) {
+    const endTime = new Date();
+    const duration = (endTime - startTime) / 1000;
+    
+    debugAudioLog(`Diagnostic tests completed in ${duration.toFixed(2)} seconds`);
+    
+    // Begin the final report
+    const report = `
+=================================================================
+QUANTUM MOBIUS MUSIC GENERATOR - DIAGNOSTIC REPORT
+=================================================================
+Generated: ${new Date().toISOString()}
+Diagnostic Duration: ${duration.toFixed(2)} seconds
+
+SYSTEM INFORMATION
+-----------------------------------------------------------------
+Browser: ${debugState.diagnosticResults.browser?.name || 'Unknown'} ${debugState.diagnosticResults.browser?.version || 'Unknown'}
+OS: ${debugState.diagnosticResults.browser?.os || 'Unknown'}
+Web Audio API Support: ${debugState.diagnosticResults.audioContext?.created ? "Yes" : "No"}
+Audio Sample Rate: ${audioCtx ? audioCtx.sampleRate : 'N/A'} Hz
+
+AUDIO CONTEXT STATUS
+-----------------------------------------------------------------
+AudioContext Created: ${debugState.diagnosticResults.audioContext?.created ? "Yes" : "No"}
+Initial State: ${debugState.diagnosticResults.audioContext?.initialState || 'N/A'}
+Current State: ${debugState.diagnosticResults.audioContext?.currentState || 'N/A'}
+State Change Count: ${debugState.diagnosticResults.audioContext?.stateChanges?.length || 0}
+${debugState.diagnosticResults.audioContext?.stateChanges?.length > 0 ? 
+  'State Change History: ' + debugState.diagnosticResults.audioContext?.stateChanges.join(', ') : ''}
+
+TEST TONE RESULTS
+-----------------------------------------------------------------
+Test Tone Playback: ${debugState.diagnosticResults.testTone?.success ? "Succeeded" : "Failed"}
+${debugState.diagnosticResults.testTone?.error ? 'Error: ' + debugState.diagnosticResults.testTone.error : ''}
+
+MUSIC GENERATION RESULTS
+-----------------------------------------------------------------
+Music Generation: ${debugState.diagnosticResults.musicGeneration?.success ? "Succeeded" : "Failed"}
+${debugState.diagnosticResults.musicGeneration?.error ? 'Error: ' + debugState.diagnosticResults.musicGeneration.error : ''}
+${debugState.diagnosticResults.musicGeneration?.success ? 
+  'Events Generated: ' + debugState.diagnosticResults.musicGeneration.eventsGenerated : ''}
+${debugState.diagnosticResults.musicGeneration?.success ? 
+  'Buffer Duration: ' + debugState.diagnosticResults.musicGeneration.bufferDuration?.toFixed(2) + 's' : ''}
+${debugState.diagnosticResults.musicGeneration?.success ? 
+  'Signal Detected: ' + (debugState.diagnosticResults.musicGeneration.signalPresent ? 'Yes' : 'No') : ''}
+${debugState.diagnosticResults.musicGeneration?.success ? 
+  'Max Amplitude: ' + debugState.diagnosticResults.musicGeneration.maxAmplitude?.toFixed(4) : ''}
+
+AUDIO BUFFER STATUS
+-----------------------------------------------------------------
+${audioBuffer ? 'Buffer Exists: Yes' : 'Buffer Exists: No'}
+${debugState.diagnosticResults.audioBuffer?.duration ? 
+    'Duration: ' + debugState.diagnosticResults.audioBuffer.duration.toFixed(2) + 's' : ''}
+    ${debugState.diagnosticResults.audioBuffer?.channels ? 
+      'Channels: ' + debugState.diagnosticResults.audioBuffer.channels : ''}
+    ${debugState.diagnosticResults.audioBuffer?.signalPresent !== undefined ? 
+      'Signal Present: ' + (debugState.diagnosticResults.audioBuffer.signalPresent ? 'Yes' : 'No') : ''}
+    ${debugState.diagnosticResults.audioBuffer?.maxAmplitude ? 
+      'Max Amplitude: ' + debugState.diagnosticResults.audioBuffer.maxAmplitude.toFixed(4) : ''}
+    ${debugState.diagnosticResults.audioBuffer?.nonZeroRegions ? 
+      'Non-zero Regions: ' + debugState.diagnosticResults.audioBuffer.nonZeroRegions : ''}
+    
+    PLAYBACK MECHANISM TEST
+    -----------------------------------------------------------------
+    Playback Test: ${debugState.diagnosticResults.playbackTest?.success ? "Succeeded" : "Failed"}
+    ${debugState.diagnosticResults.playbackTest?.error ? 'Error: ' + debugState.diagnosticResults.playbackTest.error : ''}
+    
+    ERROR LOG
+    -----------------------------------------------------------------
+    Total Errors: ${debugState.errors.length}
+    ${debugState.errors.map(error => '- ' + error).join('\n')}
+    
+    DIAGNOSIS SUMMARY
+    -----------------------------------------------------------------
+    ${generateSummaryDiagnosis()}
+    
+    =================================================================
+    END OF REPORT
+    =================================================================
+    `;
+        
+        diagnosticReport.value = report;
+      }
+      
+      // Generate a summary diagnosis
+      function generateSummaryDiagnosis() {
+        let summary = "";
+        
+        // Check for the AudioContext issues
+        if (!debugState.diagnosticResults.audioContext?.created) {
+          summary += "❌ CRITICAL: AudioContext could not be created. Web Audio API may not be supported in this browser.\n";
+        } else if (debugState.diagnosticResults.audioContext?.currentState !== "running") {
+          summary += "❌ CRITICAL: AudioContext is not in 'running' state. Audio playback is not possible until context is resumed.\n";
+        }
+        
+        // Check for test tone issues
+        if (debugState.diagnosticResults.testTone?.success === false) {
+          summary += "❌ CRITICAL: Test tone playback failed. Basic audio output has issues.\n";
+        }
+        
+        // Check for music generation issues
+        if (debugState.diagnosticResults.musicGeneration?.success === false) {
+          summary += "❌ CRITICAL: Music generation failed. Check error logs for details.\n";
+        } else if (debugState.diagnosticResults.musicGeneration?.signalPresent === false) {
+          summary += "❌ CRITICAL: Music was generated but contains no audible signal (silence). Synthesis functions may be failing.\n";
+        } else if (debugState.diagnosticResults.musicGeneration?.maxAmplitude < 0.01) {
+          summary += "⚠️ WARNING: Music was generated but signal level is very low. Output may be barely audible.\n";
+        }
+        
+        // Check for buffer issues
+        if (audioBuffer && debugState.diagnosticResults.audioBuffer) {
+          if (debugState.diagnosticResults.audioBuffer.signalPresent === false) {
+            summary += "❌ CRITICAL: Current audio buffer contains no audible signal. Generation or rendering failed.\n";
+          } else if (debugState.diagnosticResults.audioBuffer.maxAmplitude < 0.01) {
+            summary += "⚠️ WARNING: Current audio buffer signal level is very low. Output may be barely audible.\n";
+          }
+        }
+        
+        // Check for playback mechanism issues
+        if (debugState.diagnosticResults.playbackTest?.success === false) {
+          summary += "❌ CRITICAL: Playback mechanism test failed. Audio output chain is broken.\n";
+        }
+        
+        // If no critical issues found
+        if (summary === "") {
+          if (debugState.errors.length > 0) {
+            summary = "⚠️ Some non-critical errors occurred, but basic audio functionality is working.\n";
+            summary += "The issue may be specific to music generation or the combination of synthesis functions.\n";
+          } else {
+            summary = "✅ All diagnostic tests passed successfully. No obvious issues detected.\n";
+            summary += "If you're still not hearing music, the issue might be related to:\n";
+            summary += "- System volume or mute settings\n";
+            summary += "- Audio routing/output selection in your operating system\n";
+            summary += "- Browser-specific permission issues\n";
+          }
+        }
+        
+        // Recommend next steps
+        summary += "\nRECOMMENDED NEXT STEPS:\n";
+        
+        if (debugState.diagnosticResults.audioContext?.currentState !== "running") {
+          summary += "1. Click the 'Force Resume Context' button to try again to manually resume the AudioContext\n";
+        }
+        
+        if (debugState.diagnosticResults.testTone?.success === false) {
+          summary += "1. Check if your system audio is working with other applications\n";
+          summary += "2. Check browser sound permissions and settings\n";
+        }
+        
+        if (audioBuffer && debugState.diagnosticResults.audioBuffer?.signalPresent === false) {
+          summary += "1. Try generating music with only percussion instrument enabled (most reliable)\n";
+          summary += "2. Try a shorter duration (15 seconds) with higher complexity to ensure adequate events\n";
+        }
+        
+        summary += "3. Try this page in a different browser (Chrome recommended for Web Audio support)\n";
+        summary += "4. Check the Console (F12) for any JavaScript errors that might be occurring\n";
+        
+        return summary;
+      }
+      
+      // Set up debug button events
+      testSimpleToneBtn.addEventListener('click', function() {
+        playTestTone();
+      });
+      
+      checkAudioStateBtn.addEventListener('click', function() {
+        debugAudioLog("Checking AudioContext state...");
+        
+        if (!audioCtx) {
+          debugAudioLog("No AudioContext available");
+          return;
+        }
+        
+        debugAudioLog(`Current AudioContext state: ${audioCtx.state}`);
+        updateAudioContextStateDisplay(audioCtx.state);
+        
+        // Check browser-specific audio info
+        if (navigator.userAgent.indexOf('Chrome') !== -1) {
+          // Chrome-specific checks
+          debugAudioLog("Browser: Chrome - checking audio device info");
+          
+          // Non-standard Chrome API to get audio devices - may not work in all versions
+          if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            navigator.mediaDevices.enumerateDevices()
+              .then(devices => {
+                const audioOutputs = devices.filter(device => device.kind === 'audiooutput');
+                debugAudioLog(`Found ${audioOutputs.length} audio output devices`);
+                
+                audioOutputs.forEach((device, index) => {
+                  debugAudioLog(`Audio device ${index + 1}: ${device.label || 'Label unavailable'}`);
+                });
+              })
+              .catch(err => {
+                debugAudioLog(`Error enumerating devices: ${err.message}`);
+              });
+          }
+        } else if (navigator.userAgent.indexOf('Firefox') !== -1) {
+          // Firefox-specific checks
+          debugAudioLog("Browser: Firefox - checking audio device info");
+          
+          // Firefox also supports enumerateDevices
+          if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            navigator.mediaDevices.enumerateDevices()
+              .then(devices => {
+                const audioOutputs = devices.filter(device => device.kind === 'audiooutput');
+                debugAudioLog(`Found ${audioOutputs.length} audio output devices`);
+                
+                audioOutputs.forEach((device, index) => {
+                  debugAudioLog(`Audio device ${index + 1}: ${device.label || 'Label unavailable'}`);
+                });
+              })
+              .catch(err => {
+                debugAudioLog(`Error enumerating devices: ${err.message}`);
+              });
+          }
+        } else if (navigator.userAgent.indexOf('Safari') !== -1) {
+          // Safari-specific checks
+          debugAudioLog("Browser: Safari - checking audio device info");
+          debugAudioLog("Note: Safari has limited audio device enumeration capabilities");
+          
+          if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            navigator.mediaDevices.enumerateDevices()
+              .then(devices => {
+                const audioOutputs = devices.filter(device => device.kind === 'audiooutput');
+                debugAudioLog(`Found ${audioOutputs.length} audio output devices`);
+              })
+              .catch(err => {
+                debugAudioLog(`Error enumerating devices: ${err.message}`);
+              });
+          }
+        } else {
+          // Generic browser checks
+          debugAudioLog(`Browser: Other - checking audio device info`);
+          
+          if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            navigator.mediaDevices.enumerateDevices()
+              .then(devices => {
+                const audioOutputs = devices.filter(device => device.kind === 'audiooutput');
+                debugAudioLog(`Found ${audioOutputs.length} audio output devices`);
+              })
+              .catch(err => {
+                debugAudioLog(`Error enumerating devices: ${err.message}`);
+              });
+          }
+        }
+      });
+      
+      forceResumeContextBtn.addEventListener('click', function() {
+        debugAudioLog("Attempting to force resume AudioContext...");
+        
+        if (!audioCtx) {
+          debugAudioLog("No AudioContext available to resume");
+          return;
+        }
+        
+        audioCtx.resume().then(() => {
+          debugAudioLog(`AudioContext resumed successfully. Current state: ${audioCtx.state}`);
+          updateAudioContextStateDisplay(audioCtx.state);
+        }).catch(err => {
+          debugAudioLog(`ERROR: Failed to resume AudioContext: ${err.message}`);
+          debugState.errors.push("Force resume: " + err.message);
+          debugErrorCount.textContent = debugState.errors.length;
+        });
+      });
+      
+      inspectBufferBtn.addEventListener('click', function() {
+        debugAudioLog("Inspecting current audio buffer...");
+        inspectAudioBuffer();
+      });
+      
+      testAudioChainBtn.addEventListener('click', function() {
+        debugAudioLog("Testing complete audio chain...");
+        testAudioChain();
+      });
+      
+      checkPermissionsBtn.addEventListener('click', function() {
+        debugAudioLog("Checking audio permissions...");
+        
+        checkAudioPermissions().then(state => {
+          debugAudioLog(`Audio permission status: ${state}`);
+        });
+      });
+      
+      // Main button actions
+      genBtn.addEventListener('click', generate);
+      playBtn.addEventListener('click', play);
+      stopBtn.addEventListener('click', stop);
+      runDiagnosticsBtn.addEventListener('click', runAllDiagnostics);
+      
+      // Copy diagnostic report
+      copyReportBtn.addEventListener('click', function() {
+        try {
+          diagnosticReport.select();
+          document.execCommand('copy');
+          log('Diagnostic report copied to clipboard');
+        } catch (err) {
+          log(`Error copying report: ${err.message}`);
+        }
+      });
+      
+      // Start visualization
+      visualize();
+      
+      // Log initial audio state
+      log(`Web Audio API ${window.AudioContext || window.webkitAudioContext ? 'is supported' : 'is NOT supported'} in this browser`);
+      if (audioCtx) {
+        log(`AudioContext created successfully. Initial state: ${audioCtx.state}`);
+        
+        if (audioCtx.state !== 'running') {
+          log('Note: Click Generate or Play to activate audio (browser security requirement)');
+        }
+      } else {
+        log('Warning: AudioContext could not be created. Audio features will not work.');
+      }
+      
+      // Auto-run initial basic diagnostics
+      setTimeout(() => {
+        debugAudioLog("Running initial audio system checks...");
+        
+        // Basic environment check
+        if (!(window.AudioContext || window.webkitAudioContext)) {
+          debugAudioLog("CRITICAL: Web Audio API is not supported in this browser");
+          diagnosticReport.value = "CRITICAL ERROR: Web Audio API is not supported in this browser.\n\n" +
+                                  "The Quantum Mobius Music Generator requires Web Audio API support.\n" +
+                                  "Please try using a modern browser like Chrome, Firefox, or Edge.";
+          return;
+        }
+        
+        // Check AudioContext
+        if (!audioCtx) {
+          debugAudioLog("CRITICAL: Could not create AudioContext");
+          diagnosticReport.value = "CRITICAL ERROR: Could not create AudioContext.\n\n" +
+                                 "This could be due to browser restrictions or system audio issues.\n" +
+                                 "Try reloading the page or using a different browser.";
+          return;
+        }
+        
+        // Display basic info
+        diagnosticReport.value = "Basic system check complete.\n\n" +
+                               `Browser: ${debugBrowser.textContent}\n` +
+                               `Web Audio API: ${debugAudioSupport.textContent}\n` +
+                               `AudioContext: ${debugAudioCreated.textContent}\n` +
+                               `Initial State: ${audioCtx.state}\n\n` +
+                               "To run a full diagnostic, click the 'Run Full Diagnostics' button.\n" +
+                               "If you're experiencing issues, the diagnostic report will help identify problems.";
+      }, 500);
+      
+    })();
+    </script>
+    </body>
+    </html>g;

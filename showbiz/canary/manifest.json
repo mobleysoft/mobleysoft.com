@@ -1,0 +1,177 @@
+{
+  "claim_boundary": "This is a Mobleysoft integration canary exercising nine venture handoff contracts. It is not represented as an NBCUniversal commission, customer delivery, or proof that each venture's independent production runtime generated its assigned artifact.",
+  "final_output_sha256": "82c202a92e59ac21ff32f5d344fa5649fb1a3652a793dfedeeb5708960818f10",
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "pipeline_source_sha256": "92e902384155f14f1894c37e7fdc3c83bb28593784f155a1bcc163e8c841323d",
+  "project_id": "showbizca-the-handoff-2026",
+  "schema_version": "1.0",
+  "source": {
+    "path": "/showbiz/canary/artifacts/00-brief/event-brief.json",
+    "private_evidence_sha256": "fe0e52743612e8b0a6b2996acb17c05a598e7af2255c42a20250693ec7f5a86a",
+    "sha256": "426c04fec425460bbfde98b7bf153d6469c17eded523fbb6411481f0bbedd631"
+  },
+  "stage_count": 9,
+  "stages": [
+    {
+      "domain": "literacraft.com",
+      "input": {
+        "path": "/showbiz/canary/artifacts/00-brief/event-brief.json",
+        "sha256": "426c04fec425460bbfde98b7bf153d6469c17eded523fbb6411481f0bbedd631"
+      },
+      "output": {
+        "bytes": 1819,
+        "path": "/showbiz/canary/artifacts/01-source/story-bible.json",
+        "sha256": "a2afb5041cf97e83717f3871d4ae2711d301bf4242aa7efea95311791bef6928"
+      },
+      "position": 1,
+      "product": "Story Forge",
+      "stage": "Source",
+      "status": "generated-integration-canary",
+      "supplemental_outputs": []
+    },
+    {
+      "domain": "mobleybooks.com",
+      "input": {
+        "path": "/showbiz/canary/artifacts/01-source/story-bible.json",
+        "sha256": "a2afb5041cf97e83717f3871d4ae2711d301bf4242aa7efea95311791bef6928"
+      },
+      "output": {
+        "bytes": 1164,
+        "path": "/showbiz/canary/artifacts/02-catalog/title-record.json",
+        "sha256": "9b1947053b63b1ad5de2867a3c2b15e770cc72599a999285f1a8cb54d132ac19"
+      },
+      "position": 2,
+      "product": "Title Library",
+      "stage": "Catalog",
+      "status": "generated-integration-canary",
+      "supplemental_outputs": []
+    },
+    {
+      "domain": "book2film.cc",
+      "input": {
+        "path": "/showbiz/canary/artifacts/02-catalog/title-record.json",
+        "sha256": "9b1947053b63b1ad5de2867a3c2b15e770cc72599a999285f1a8cb54d132ac19"
+      },
+      "output": {
+        "bytes": 1328,
+        "path": "/showbiz/canary/artifacts/03-adapt/screenplay.fountain",
+        "sha256": "0a6d6a13d5d4749b6119e198c144d57ef962408f32f6538fb06bb92508452449"
+      },
+      "position": 3,
+      "product": "Book2Film",
+      "stage": "Adapt",
+      "status": "generated-integration-canary",
+      "supplemental_outputs": []
+    },
+    {
+      "domain": "conseiv.com",
+      "input": {
+        "path": "/showbiz/canary/artifacts/03-adapt/screenplay.fountain",
+        "sha256": "0a6d6a13d5d4749b6119e198c144d57ef962408f32f6538fb06bb92508452449"
+      },
+      "output": {
+        "bytes": 5917,
+        "path": "/showbiz/canary/artifacts/04-design/production-layout.svg",
+        "sha256": "392ec89860ad04a76a39eec76ad700cf30fb372f28f272d3b7594e69d5b84beb"
+      },
+      "position": 4,
+      "product": "Conseiv",
+      "stage": "Design",
+      "status": "generated-integration-canary",
+      "supplemental_outputs": []
+    },
+    {
+      "domain": "animetrope.com",
+      "input": {
+        "path": "/showbiz/canary/artifacts/04-design/production-layout.svg",
+        "sha256": "392ec89860ad04a76a39eec76ad700cf30fb372f28f272d3b7594e69d5b84beb"
+      },
+      "output": {
+        "bytes": 4514,
+        "path": "/showbiz/canary/artifacts/05-visualize/storyboard.svg",
+        "sha256": "c9cb1ea7a25ff775bbf186d17ab38411c93c6c520a1f804076cea9ec8c27aad0"
+      },
+      "position": 5,
+      "product": "Animetrope",
+      "stage": "Visualize",
+      "status": "generated-integration-canary",
+      "supplemental_outputs": []
+    },
+    {
+      "domain": "audiovizai.com",
+      "input": {
+        "path": "/showbiz/canary/artifacts/05-visualize/storyboard.svg",
+        "sha256": "c9cb1ea7a25ff775bbf186d17ab38411c93c6c520a1f804076cea9ec8c27aad0"
+      },
+      "output": {
+        "bytes": 1828,
+        "path": "/showbiz/canary/artifacts/06-score/cue-sheet.json",
+        "sha256": "c716dd2daceadab2a422e43f292e59fe5c481d7200f6ca97e313a1deec603a97"
+      },
+      "position": 6,
+      "product": "AudioVizAI",
+      "stage": "Score",
+      "status": "generated-integration-canary",
+      "supplemental_outputs": [
+        {
+          "bytes": 529244,
+          "path": "/showbiz/canary/artifacts/06-score/handoff-sting.wav",
+          "sha256": "3792092e4fcbd4cf769f694eb8e2833a2e0934866f0be4b198e6adf9e9243343"
+        }
+      ]
+    },
+    {
+      "domain": "filmline.cc",
+      "input": {
+        "path": "/showbiz/canary/artifacts/06-score/cue-sheet.json",
+        "sha256": "c716dd2daceadab2a422e43f292e59fe5c481d7200f6ca97e313a1deec603a97"
+      },
+      "output": {
+        "bytes": 1549,
+        "path": "/showbiz/canary/artifacts/07-finish/master.json",
+        "sha256": "f6f076d09eb436c4f7fefcea0c1f8bed6dd79634b91cc5e689672c6f81c905b2"
+      },
+      "position": 7,
+      "product": "Filmline",
+      "stage": "Finish",
+      "status": "generated-integration-canary",
+      "supplemental_outputs": []
+    },
+    {
+      "domain": "gamegob.com",
+      "input": {
+        "path": "/showbiz/canary/artifacts/07-finish/master.json",
+        "sha256": "f6f076d09eb436c4f7fefcea0c1f8bed6dd79634b91cc5e689672c6f81c905b2"
+      },
+      "output": {
+        "bytes": 1237,
+        "path": "/showbiz/canary/artifacts/08-extend/playable-prototype.json",
+        "sha256": "105227424db1a97d4fa5f38a46f44fe3f765eab82df426d840d94a1cebfaab08"
+      },
+      "position": 8,
+      "product": "GameGob",
+      "stage": "Extend",
+      "status": "generated-integration-canary",
+      "supplemental_outputs": []
+    },
+    {
+      "domain": "marketingium.com",
+      "input": {
+        "path": "/showbiz/canary/artifacts/08-extend/playable-prototype.json",
+        "sha256": "105227424db1a97d4fa5f38a46f44fe3f765eab82df426d840d94a1cebfaab08"
+      },
+      "output": {
+        "bytes": 1572,
+        "path": "/showbiz/canary/artifacts/09-reach/campaign.json",
+        "sha256": "82c202a92e59ac21ff32f5d344fa5649fb1a3652a793dfedeeb5708960818f10"
+      },
+      "position": 9,
+      "product": "Marketingium",
+      "stage": "Reach",
+      "status": "generated-integration-canary",
+      "supplemental_outputs": []
+    }
+  ],
+  "status": "generated-integration-canary",
+  "title": "THE HANDOFF"
+}

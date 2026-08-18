@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "site": "mobleysoft.com",
+  "selection_status": "selected",
+  "selected_candidate": "A",
+  "canonical_release": "/backgrounds/canonical/blackhole-a-20260522/",
+  "deduplication": "sha256",
+  "archived_runtimes": [
+    {
+      "artifact": "/backgrounds/candidates/live-adapted-e1a5de7a.js",
+      "bytes": 18161,
+      "classification": "superseded-single-canvas-game-runtime",
+      "sha256": "e1a5de7ae02166961defa349c3f47c7ff56ad96537da431d1e49041037c3a8a0"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "A",
+      "name": "Three.js gravitational lensing",
+      "classification": "standalone-blackhole-js",
+      "renderer": "threejs-webgl-shaders",
+      "source": "local Apple Mail message body",
+      "source_date": "2026-05-22",
+      "bytes": 4398,
+      "sha256": "417b9edc4e6e4c9c8857d96bbebb6ad305a516421b92e034b43a9c3627fe9f6d",
+      "script": "/backgrounds/candidates/email-threejs.js",
+      "preview": "/backgrounds/threejs.html"
+    },
+    {
+      "id": "B",
+      "name": "Canvas accretion field",
+      "classification": "standalone-blackhole-js",
+      "renderer": "canvas-2d",
+      "source": "canonical working copy and deployment backup",
+      "source_date": "2026-07-26",
+      "bytes": 7065,
+      "sha256": "54a9b49f2564d905fc3223fa366ed90c06f0f52f4d1cfc45d8dea2894dd36547",
+      "script": "/backgrounds/candidates/current-canvas-2d.js",
+      "preview": "/backgrounds/canvas-2d.html"
+    },
+    {
+      "id": "C",
+      "name": "Void-computer kernel",
+      "classification": "standalone-blackhole-js-nonvisual",
+      "renderer": "none",
+      "source": "preserved deployment backup",
+      "source_date": "2026-07-25",
+      "bytes": 9220,
+      "sha256": "d3fc6184add305741429321e057847af3438915b60b84545ad2c9b4053f0f777",
+      "script": "/backgrounds/candidates/void-kernel.js",
+      "preview": "/backgrounds/void-kernel.html"
+    },
+    {
+      "id": "D",
+      "name": "Concentric horizon rings",
+      "classification": "related-inline-fallback",
+      "renderer": "canvas-2d",
+      "source": "legacy Mobleysoft venture snapshot",
+      "source_date": null,
+      "script": "/backgrounds/candidates/legacy-rings.js",
+      "preview": "/backgrounds/legacy-rings.html"
+    }
+  ]
+}

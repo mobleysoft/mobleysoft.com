@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Möbius Music Generator</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}body{background:#111;color:#0fc;overflow-x:hidden}#c{position:absolute;width:100%;height:100%;left:0;top:0;z-index:-1;opacity:.8}#ui{position:relative;padding:20px;width:100%;max-width:800px;margin:0 auto}h1{color:#0fc;text-align:center;margin:20px 0;text-shadow:0 0 10px #0fc}button{background:#0a0a0a;color:#0fc;border:1px solid #0fc;padding:8px 16px;margin:5px;cursor:pointer;box-shadow:0 0 5px #0fc;transition:all .2s}button:hover{background:#0fc;color:#000}#m,#s{display:flex;flex-direction:column;background:rgba(0,0,0,.7);border:1px solid #0fc;padding:10px;margin-bottom:10px;box-shadow:0 0 10px rgba(0,255,200,.3)}#p{width:100%;height:20px;background:#000;margin:10px 0;box-shadow:0 0 5px #0fc inset}#b{width:0%;height:100%;background:#0fc;transition:width .3s}input[type=range]{width:100%;margin:10px 0}input[type=text]{background:#000;border:1px solid #0fc;color:#0fc;padding:5px;width:100%;margin-bottom:10px}#o{color:#0fc;height:100px;overflow-y:auto;border:1px solid #0fc;padding:5px;margin-top:10px;font-size:12px;background:rgba(0,0,0,.5)}#o div{border-bottom:1px solid #050;padding:2px 0}.l{width:30px;display:inline-block;text-align:right;color:#090;padding-right:5px}.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:600px){.menu{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div id="ui">
+    <h1>Quantum Möbius Music Generator</h1>
+    <div id="m">
+      <input type="text" id="seed" value="Möbius Time Quantum Field" placeholder="Seed phrase...">
+      <div class="menu">
+        <div>
+          <label for="d">Möbius Dimensions: <span id="dv">32</span></label>
+          <input type="range" id="d" min="16" max="64" value="32">
+        </div>
+        <div>
+          <label for="t">Twist Factor: <span id="tv">0.75</span></label>
+          <input type="range" id="t" min="0.1" max="2.0" step="0.05" value="0.75">
+        </div>
+        <div>
+          <label for="q">Quantum States: <span id="qv">24</span></label>
+          <input type="range" id="q" min="8" max="48" value="24">
+        </div>
+        <div>
+          <label for="e">Evolution Steps: <span id="ev">12</span></label>
+          <input type="range" id="e" min="4" max="24" value="12">
+        </div>
+      </div>
+      <div>
+        <button id="g">Generate Music</button>
+        <button id="play">Play</button>
+        <button id="stop">Stop</button>
+      </div>
+      <div id="p"><div id="b"></div></div>
+    </div>
+    <div id="s">
+      <div id="o"></div>
+    </div>
+  </div>
+
+<script>
+((w,d,M,A,T,H)=>{
+  const π=Math.PI,τ=π*2,sin=Math.sin,cos=Math.cos,exp=Math.exp,ran=Math.random,pow=Math.pow,sqrt=Math.sqrt,abs=Math.abs,floor=Math.floor,max=Math.max,min=Math.min,iota=(n,f)=>Array(n).fill().map((_,i)=>f?f(i):i),mixin=(a,b)=>Object.assign(a,b),primes=[2,3,5,7,11,13,17,19,23,29,31],hash=s=>[...s].reduce((a,c)=>((a<<5)-a)+c.charCodeAt(0),0)>>>0;
+  
+  const memo=(f=>((c={})=>(...a)=>{const k=JSON.stringify(a);return k in c?c[k]:(c[k]=f(...a))}))();
+  const genTable=(n,f)=>memo(i=>i<n?f(i):null);
+  
+  const C=((R,I)=>(R=r=>I=i=>({r,i,m:()=>sqrt(r*r+i*i),θ:()=>M.atan2(i,r),a:c=>C(r+c.r)(i+c.i),s:s=>C(r*s)(i*s),m:c=>C(r*c.r-i*c.i)(r*c.i+i*c.r),c:()=>C(r)(-i)})))  (0)(0);
+
+  const decompressQuantumField=((seed,d,t)=>((fieldPrimitives=((i,j)=>(s=>s*s)(sin(i*t+cos(j))*cos(j*t+sin(i)))),tensorGen=((i,j)=>fieldPrimitives(i/d*τ,j/d*τ)),tensorField=iota(d*d,(i)=>tensorGen(i%d,~~(i/d))))=>(x,steps=1)=>iota(x.length,i=>iota(steps).reduce((a,_)=>iota(x.length,j=>iota(x.length,k=>((tIdx,tJ)=>a[j]+=x[tJ]*tensorField[tIdx])((j%d)*d+(k%d),(k+~~(j/d)*~~(t*10))%x.length)).reduce((s,v)=>s+v,0)/d,Array(x.length).fill(0)))())());
+
+  const genQuantumState=((d,seed)=>((initialRaw=iota(d,i=>((φ=i/d*τ)=>[cos(φ),sin(φ)])()),magnitude=sqrt(initialRaw.reduce((s,[r,i])=>s+r*r+i*i,0)),normalized=initialRaw.map(([r,i])=>[r/magnitude,i/magnitude]))=>((sv=normalized)=>({get:()=>sv,apply:(op,intensity)=>((newState=iota(d,i=>iota(d,j=>[sv[j][0]*op[i][j][0]-sv[j][1]*op[i][j][1],sv[j][0]*op[i][j][1]+sv[j][1]*op[i][j][0]]).reduce((a,[r,i])=>[a[0]+r*intensity,a[1]+i*intensity],[0,0])),mag=sqrt(newState.reduce((s,[r,i])=>s+r*r+i*i,0)))=>(sv=newState.map(([r,i])=>[r/mag,i/mag])) && true)(),waveform:(points,mobiusField)=>((basic=iota(points,t=>((phase=t/points)=>iota(d,i=>((p=phase*τ*i)=>[cos(p),sin(p)])()).reduce((s,[mr,mi],i)=>s+(mr*sv[i][0]+mi*sv[i][1]),0))()))=>mobiusField(basic,3))()}))())());
+  
+  const genOperator=((d,type)=>((pHarmonic=(i,j)=>((psum=primes.slice(0,min(primes.length,d/4)).reduce((s,p)=>s+sin(τ*((i*j)%d)*p/d)/p,0),normalized=0.3+0.7*abs(psum/sqrt(d)))=>normalized)(),opFuncs={pluck:(i,j)=>((h=pHarmonic(i,j),φ=(i-j)*π/d)=>[h*cos(φ),h*sin(φ)])(),bow:(i,j)=>((h=j===0?0.8:0.8/j,φ=(i)*π/d)=>[h*cos(φ),h*sin(φ)])(),strike:(i,j)=>((dist=abs(i-j)/d,h=exp(-dist*3)*(0.5+0.5*ran()),r=h*(ran()-0.5),im=h*(ran()-0.5))=>[r,im])()})=>iota(d,i=>iota(d,j=>opFuncs[type](i,j))))());
+  
+  const genHypergraph=((seed,steps)=>((h=hash(seed),vTypes=['pitch','rhythm','timbre'],eTypes=['progression','structure','texture'],vType=i=>vTypes[((h*(i+1))%1000)%vTypes.length],eType=i=>eTypes[((h*(i+100))%1000)%eTypes.length],vProps=(t,s)=>t==='pitch'?{note:s%12,octave:~~(s/12)%3+3,duration:(s%4)/4+0.25}:t==='rhythm'?{pulses:(s%4)+1,steps:(s%4)+4,velocity:(s%40)+80}:{brightness:(s%100)/100,harmonicity:(s%100)/100,attackTime:((s%10)+1)/100},vCount=(h%7)+5,vertices=iota(vCount,i=>((s=(h*(i+1))%1000000,t=vType(i))=>({id:i,type:t,props:vProps(t,s)}))()),eCount=(h%5)+3,selectVertices=s=>((c=(s%3)+2)=>iota(c,i=>((idx=(s+i*17)%vertices.length)=>idx)()))(),edges=iota(eCount,i=>((s=(h*(i+100))%1000000)=>({id:i,type:eType(i),vertices:selectVertices(s),props:{strength:(s%100)/100,duration:(s%4)+1}}))()),rCount=(h%3)+2,rType=i=>['split','merge','transform'][((h*(i+200))%1000)%3],rules=iota(rCount,i=>((s=(h*(i+200))%1000000)=>({type:rType(i),probability:((s%50)+30)/100,params:{intensity:(s%100)/100,target:(s%3)}}))()))=>((g={vertices,edges})=>iota(steps,_=>rules.forEach(rule=>ran()<rule.probability && ((apply=()=>rule.type==='split'?((vSplit=()=>vertices.length>0&&((vIdx=~~(ran()*vertices.length),v=vertices[vIdx],nv={id:vertices.length,type:v.type,props:Object.fromEntries(Object.entries(v.props).map(([k,val])=>[k,typeof val==='number'?val*(1+(ran()-0.5)*rule.params.intensity):val]))}})=>(vertices.push(nv),edges.forEach(e=>e.vertices.includes(v.id)&&ran()<0.5&&e.vertices.push(nv.id)),true))(),eSplit=()=>edges.length>0&&((eIdx=~~(ran()*edges.length),e=edges[eIdx])=>e.vertices.length>=3&&((vCount=~~(e.vertices.length/2)+1,newVerts=[...e.vertices].sort(()=>0.5-ran()).slice(0,vCount),newEdge={id:edges.length,type:e.type,vertices:newVerts,props:{...e.props}})=>(edges.push(newEdge),true))())())=>rule.params.target===0||rule.params.target===2?vSplit():rule.params.target===1||rule.params.target===2?eSplit():false)():rule.type==='merge'?((eMerge=()=>edges.length>=2&&((e1Idx=~~(ran()*edges.length),e2Idx=(()=>{let i;do{i=~~(ran()*edges.length)}while(i===e1Idx);return i})(),e1=edges[e1Idx],e2=edges[e2Idx],combinedVerts=[...new Set([...e1.vertices,...e2.vertices])])=>(e1.vertices=combinedVerts,Object.entries(e1.props).forEach(([k,v])=>typeof v==='number'&&typeof e2.props[k]==='number'&&(e1.props[k]=(v+e2.props[k])/2)),edges.splice(e2Idx,1),edges.forEach((e,i)=>e.id=i),true))())=>rule.params.target===1||rule.params.target===2?eMerge():false)():rule.type==='transform'?((vTransform=()=>vertices.length>0&&((vIdx=~~(ran()*vertices.length),v=vertices[vIdx])=>(Object.entries(v.props).forEach(([k,val])=>{if(typeof val==='number'){const transform=ran()<0.5?1+ran()*rule.params.intensity:1/(1+ran()*rule.params.intensity);v.props[k]*=transform;if(k==='note') v.props[k]=~~v.props[k]%12;else if(k==='octave') v.props[k]=max(2,min(6,~~v.props[k]))}}),true))(),eTransform=()=>edges.length>0&&((eIdx=~~(ran()*edges.length),e=edges[eIdx])=>(Object.entries(e.props).forEach(([k,val])=>{if(typeof val==='number'){e.props[k]*=1+(ran()-0.5)*rule.params.intensity;}}),true))())=>rule.params.target===0||rule.params.target===2?vTransform():rule.params.target===1||rule.params.target===2?eTransform():false)():false,apply()))) && g)())());
+  
+  const genMusicStructure=((g,complexity,density)=>((structure={notes:[],duration:8},pitches=g.vertices.filter(v=>v.type==='pitch'),baseNotes=pitches.map(v=>({vertexId:v.id,note:v.props.note,octave:v.props.octave,startTime:ran()*(structure.duration-v.props.duration),duration:v.props.duration,velocity:0.8})))=>((structure={notes:[...baseNotes],duration:8},processEdges=()=>g.edges.forEach(edge=>edge.type==='progression'?((connectedPitches=pitches.filter(v=>edge.vertices.includes(v.id)))=>connectedPitches.length>=2&&((sortedPitches=[...connectedPitches].sort((a,b)=>{const noteA=a.props.note+a.props.octave*12;const noteB=b.props.note+b.props.octave*12;return noteA-noteB;}))=>sortedPitches.slice(0,-1).forEach((current,i)=>{const next=sortedPitches[i+1];const startNote=current.props.note+current.props.octave*12;const endNote=next.props.note+next.props.octave*12;const steps=abs(endNote-startNote);iota(steps,step=>ran()<0.6&&((noteValue=startNote+step*Math.sign(endNote-startNote),note=noteValue%12,octave=~~(noteValue/12))=>structure.notes.push({note:note,octave:octave,startTime:ran()*(structure.duration-0.5),duration:0.5,velocity:0.6}))());}))())():edge.type==='texture'?((connectedPitchIds=pitches.filter(v=>edge.vertices.includes(v.id)).map(v=>v.id),factor=0.5+edge.props.strength)=>structure.notes.forEach(note=>connectedPitchIds.includes(note.vertexId)&&(note.velocity*=factor)))():null),addComplexity=()=>((extraCount=~~(complexity*20))=>iota(extraCount,i=>i<structure.notes.length&&((baseNote=structure.notes[i%structure.notes.length],harmonicOffset=[0,4,7,12,-5,3,-4][(i*3)%7],newNote=baseNote.note+harmonicOffset,octaveOffset=~~(newNote/12))=>structure.notes.push({note:((newNote%12)+12)%12,octave:baseNote.octave+octaveOffset,startTime:(baseNote.startTime+i*0.2)%(structure.duration-0.5),duration:baseNote.duration*(0.7+ran()*0.6),velocity:baseNote.velocity*0.8}))()))(),adjustDensity=()=>((finalCount=~~(structure.notes.length*density))=>finalCount<structure.notes.length&&(structure.notes=structure.notes.sort(()=>0.5-ran()).slice(0,finalCount)))())=>(processEdges(),addComplexity(),adjustDensity(),structure))())());
+  
+  const createSynthesizer=audioCtx=>((oscillators=[],gainNodes=[],isPlaying=false,currentTime=0,durationSeconds=0,progressCallback=null,envelope=(t,type)=>type==='strike'?exp(-t*8)*(1-exp(-t*80)):type==='pluck'?exp(-t*5)*(1-exp(-t*100)):type==='bow'?(1-exp(-t*5))*exp(-t*2):1.0)=>({setProgress:cb=>progressCallback=cb,generateBuffer:(mobiusField,quantumState,musicStructure,params)=>((sampleRate=audioCtx.sampleRate,duration=musicStructure.duration,bufferSize=~~(sampleRate*duration),audioBuffer=audioCtx.createBuffer(1,bufferSize,sampleRate),channelData=audioBuffer.getChannelData(0))=>((generateNote=(freq,start,dur,vel)=>((operatorType=freq<220?'strike':freq<880?'pluck':'bow',noteSamples=~~(sampleRate*dur),startSample=~~(start*sampleRate),applyOp=quantumState.apply(genOperator(quantumState.get().length,operatorType),0.5+0.5*ran()),waveform=quantumState.waveform(noteSamples,mobiusField))=>iota(noteSamples,i=>i+startSample<channelData.length&&(channelData[i+startSample]+=waveform[i]*envelope(i/noteSamples,operatorType)*vel)))())=>(musicStructure.notes.forEach(note=>((midiNote=note.note+note.octave*12)=>generateNote(440*pow(2,(midiNote-69)/12),note.startTime,note.duration,note.velocity))()),((maxAmp=channelData.reduce((max,s)=>abs(s)>max?abs(s):max,0.001))=>maxAmp>0&&iota(bufferSize,i=>channelData[i]*=0.9/maxAmp))(),audioBuffer))()),play:(mobiusField,quantumState,musicStructure,params)=>((isPlaying&&this.stop(),durationSeconds=musicStructure.duration,isPlaying=true,buffer=this.generateBuffer(mobiusField,quantumState,musicStructure,params),source=audioCtx.createBufferSource(),gainNode=audioCtx.createGain())=>((source.buffer=buffer,gainNode.gain.value=0.8,source.connect(gainNode),gainNode.connect(audioCtx.destination),oscillators.push(source),gainNodes.push(gainNode),source.start(),startTime=audioCtx.currentTime,progressInterval=progressCallback&&setInterval(()=>{currentTime=audioCtx.currentTime-startTime;if(currentTime>=durationSeconds||!isPlaying){clearInterval(progressInterval);isPlaying=false;progressCallback&&progressCallback(1.0);}else{progressCallback&&progressCallback(currentTime/durationSeconds);}},50),source.onended=()=>{isPlaying=false;oscillators=oscillators.filter(o=>o!==source);gainNodes=gainNodes.filter(g=>g!==gainNode);})=>true)()),stop:()=>((oscillators.forEach(osc=>{try{osc.stop()}catch(e){}}),oscillators=[],gainNodes=[],isPlaying=false,progressCallback&&progressCallback(0))=>true)()}))();
+  
+  const init=()=>{
+    const c=d.getElementById('c'),ctx=c.getContext('2d'),logEl=d.getElementById('o'),seedEl=d.getElementById('seed'),genBtn=d.getElementById('g'),playBtn=d.getElementById('play'),stopBtn=d.getElementById('stop'),progressEl=d.getElementById('b'),dSlider=d.getElementById('d'),tSlider=d.getElementById('t'),qSlider=d.getElementById('q'),eSlider=d.getElementById('e'),dVal=d.getElementById('dv'),tVal=d.getElementById('tv'),qVal=d.getElementById('qv'),eVal=d.getElementById('ev');
+          
+    const audioCtx=new (w.AudioContext||w.webkitAudioContext)();
+    const synth=createSynthesizer(audioCtx);
+    
+    synth.setProgress(p=>progressEl.style.width=`${p*100}%`);
+    
+    let mobiusDecompressor=null,quantumStateGen=null,musicStructure=null,lineCount=0;
+    
+    const log=msg=>{
+      const line=d.createElement('div');
+      line.innerHTML=`<span class="l">${++lineCount}</span>${msg}`;
+      logEl.appendChild(line);
+      logEl.scrollTop=logEl.scrollHeight;
+    };
+    
+    const updateSliders=()=>{
+      dVal.textContent=dSlider.value;
+      tVal.textContent=tSlider.value;
+      qVal.textContent=qSlider.value;
+      eVal.textContent=eSlider.value;
+    };
+    
+    [dSlider,tSlider,qSlider,eSlider].forEach(s=>s.addEventListener('input',updateSliders));
+    
+    updateSliders();
+    
+    const resizeCanvas=()=>{
+      c.width=w.innerWidth;
+      c.height=w.innerHeight;
+    };
+    
+    w.addEventListener('resize',resizeCanvas);
+    resizeCanvas();
+    
+    const visualize=()=>{
+      ctx.fillStyle='rgba(0,0,0,0.05)';
+      ctx.fillRect(0,0,c.width,c.height);
+      
+      if(quantumStateGen){
+        const state=quantumStateGen.get();
+        const d=state.length;
+        
+        iota(d,i=>{
+          const r=min(c.width,c.height)*0.3;
+          const angle=i/d*τ;
+          const [real,imag]=state[i];
+          const mag=sqrt(real*real+imag*imag)*3;
+          const phase=M.atan2(imag,real);
+          const hue=((phase/τ)*360+360)%360;
+          
+          const x=c.width/2+cos(angle)*r;
+          const y=c.height/2+sin(angle)*r;
+          
+          ctx.beginPath();
+          ctx.arc(x,y,3+mag*10,0,τ);
+          ctx.fillStyle=`hsla(${hue},80%,60%,0.8)`;
+          ctx.fill();
+          
+          ctx.beginPath();
+          ctx.moveTo(c.width/2,c.height/2);
+          ctx.lineTo(x,y);
+          ctx.strokeStyle=`hsla(${hue},80%,60%,0.2)`;
+          ctx.lineWidth=mag*3;
+          ctx.stroke();
+        });
+      }
+      
+      requestAnimationFrame(visualize);
+    };
+    
+    visualize();
+    
+    const generate=async()=>{
+      genBtn.disabled=playBtn.disabled=stopBtn.disabled=true;
+      
+      try {
+        const seedPhrase=seedEl.value||'Quantum Harmonic Oscillation';
+        const mobiusDimensions=parseInt(dSlider.value);
+        const twistFactor=parseFloat(tSlider.value);
+        const quantumStateSize=parseInt(qSlider.value);
+        const evolutionSteps=parseInt(eSlider.value);
+        
+        log(`Generating music with seed: "${seedPhrase}"`);
+        
+        log('Creating möbius time field...');
+        mobiusDecompressor=decompressQuantumField(seedPhrase,mobiusDimensions,twistFactor);
+        
+        log(`Initializing quantum state with ${quantumStateSize} dimensions...`);
+        quantumStateGen=genQuantumState(quantumStateSize,seedPhrase);
+        
+        log('Generating hypergraph structure...');
+        const hypergraph=genHypergraph(seedPhrase,evolutionSteps);
+        log(`Created graph with ${hypergraph.vertices.length} vertices and ${hypergraph.edges.length} edges`);
+        
+        log('Creating music structure...');
+        musicStructure=genMusicStructure(hypergraph,0.7,0.7);
+        log(`Generated ${musicStructure.notes.length} notes over ${musicStructure.duration}s`);
+        
+        playBtn.disabled=false;
+      } catch(err) {
+        log(`ERROR: ${err.message}`);
+        console.error(err);
+      } finally {
+        genBtn.disabled=false;
+      }
+    };
+    
+    const play=async()=>{
+      if(!musicStructure||!mobiusDecompressor||!quantumStateGen) return;
+      
+      try {
+        if(audioCtx.state==='suspended') await audioCtx.resume();
+        
+        playBtn.disabled=true;
+        stopBtn.disabled=false;
+        
+        synth.play(mobiusDecompressor,quantumStateGen,musicStructure,{});
+      } catch(err) {
+        log(`Playback error: ${err.message}`);
+        console.error(err);
+        
+        playBtn.disabled=false;
+        stopBtn.disabled=true;
+      }
+    };
+    
+    const stop=()=>{
+      synth.stop();
+      playBtn.disabled=false;
+      stopBtn.disabled=true;
+    };
+    
+    genBtn.addEventListener('click',generate);
+    playBtn.addEventListener('click',play);
+    stopBtn.addEventListener('click',stop);
+    
+    log('Quantum Möbius Music Generator initialized');
+    log('Enter seed phrase and click Generate to begin');
+  };
+
+  d.addEventListener('DOMContentLoaded',init);
+})(window,document,Math,Array,Object,{});
+</script>
+</body>
+</html>

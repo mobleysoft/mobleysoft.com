@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Candidate A | Three.js gravitational lensing</title>
+  <link rel="stylesheet" href="/backgrounds/preview.css">
+</head>
+<body>
+  <canvas id="blackhole-canvas"></canvas>
+  <div class="preview-note" id="preview-note">Exact email source / Three.js r128</div>
+  <script>var isMobile = window.matchMedia("(max-width: 720px)").matches;</script>
+  <script src="/assets/vendor/three-r128.min.js"></script>
+  <script>
+    if (!window.THREE) {
+      const note = document.getElementById("preview-note");
+      note.textContent = "Three.js failed to load";
+      note.classList.add("failure");
+    }
+  </script>
+  <script src="/backgrounds/candidates/email-threejs.js"></script>
+</body>
+</html>

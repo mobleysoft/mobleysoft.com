@@ -1,0 +1,29 @@
+{
+  "adaptation_status": "cleared-for-canary",
+  "artifact_kind": "rights-aware-title-record",
+  "claim_boundary": "This is a Mobleysoft integration canary exercising nine venture handoff contracts. It is not represented as an NBCUniversal commission, customer delivery, or proof that each venture's independent production runtime generated its assigned artifact.",
+  "creator": "Mobleysoft",
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "genres": [
+    "brand film",
+    "production technology",
+    "interactive proof"
+  ],
+  "identifier": "mobleysoft:showbizca:the-handoff:2026",
+  "input": {
+    "path": "/showbiz/canary/artifacts/01-source/story-bible.json",
+    "sha256": "a2afb5041cf97e83717f3871d4ae2711d301bf4242aa7efea95311791bef6928"
+  },
+  "language": "en",
+  "position": 2,
+  "product": "Title Library",
+  "project_id": "showbizca-the-handoff-2026",
+  "rights_holder": "Mobleysoft",
+  "schema_version": "1.0",
+  "source_record": "/showbiz/canary/artifacts/01-source/story-bible.json",
+  "stage": "Catalog",
+  "status": "generated-integration-canary",
+  "third_party_assets": [],
+  "title": "The Handoff",
+  "venture_contract": "mobleybooks.com"
+}

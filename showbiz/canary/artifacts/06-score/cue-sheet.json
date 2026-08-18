@@ -1,0 +1,76 @@
+{
+  "artifact_kind": "synchronized-cue-sheet",
+  "claim_boundary": "This is a Mobleysoft integration canary exercising nine venture handoff contracts. It is not represented as an NBCUniversal commission, customer delivery, or proof that each venture's independent production runtime generated its assigned artifact.",
+  "duration_seconds": 12,
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "input": {
+    "path": "/showbiz/canary/artifacts/05-visualize/storyboard.svg",
+    "sha256": "c9cb1ea7a25ff775bbf186d17ab38411c93c6c520a1f804076cea9ec8c27aad0"
+  },
+  "position": 6,
+  "product": "AudioVizAI",
+  "project_id": "showbizca-the-handoff-2026",
+  "sample_rate_hz": 22050,
+  "schema_version": "1.0",
+  "soundtrack": {
+    "kind": "original-procedural-instrumental",
+    "path": "/showbiz/canary/artifacts/06-score/handoff-sting.wav",
+    "sha256": "3792092e4fcbd4cf769f694eb8e2833a2e0934866f0be4b198e6adf9e9243343"
+  },
+  "stage": "Score",
+  "stage_pulses": [
+    {
+      "at": 0.35,
+      "stage": "Source"
+    },
+    {
+      "at": 1.6,
+      "stage": "Catalog"
+    },
+    {
+      "at": 2.85,
+      "stage": "Adapt"
+    },
+    {
+      "at": 4.1,
+      "stage": "Design"
+    },
+    {
+      "at": 5.35,
+      "stage": "Visualize"
+    },
+    {
+      "at": 6.6,
+      "stage": "Score"
+    },
+    {
+      "at": 7.85,
+      "stage": "Finish"
+    },
+    {
+      "at": 9.1,
+      "stage": "Extend"
+    },
+    {
+      "at": 10.35,
+      "stage": "Reach"
+    }
+  ],
+  "status": "generated-integration-canary",
+  "venture_contract": "audiovizai.com",
+  "voice_render_status": "scripted-not-synthesized",
+  "voiceover": [
+    {
+      "at": 0.2,
+      "text": "One brief."
+    },
+    {
+      "at": 3.8,
+      "text": "Nine specialists."
+    },
+    {
+      "at": 7.2,
+      "text": "One world that remembers how it was made."
+    }
+  ]
+}

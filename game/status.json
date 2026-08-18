@@ -1,0 +1,35 @@
+{
+  "release": "eventwake-slice-r3",
+  "observed_at": "2026-07-27",
+  "classification": "deterministic temporal vertical-slice runtime",
+  "verified": [
+    "live canonical renderer is byte-identical to the selected 417b9edc artifact",
+    "canonical and gameplay render through separate WebGL canvases",
+    "scenario content, world state, ordered systems, presentation, and browser adapters have explicit boundaries",
+    "simulation advances at a fixed 60 Hz independent of render-frame chunking",
+    "world state is quantized, checksummed, serializable, saveable, and loadable without rendering",
+    "active scan is gated by flight geometry and resolves ordered scenario discoveries",
+    "entry requires a resolved frame, phase lock, inward velocity, and held thrust",
+    "accidental horizon contact cannot capture the craft",
+    "interior thrust and reverse traverse a selected temporal coordinate",
+    "valid temporal exit preserves the source branch and creates one child branch",
+    "the earlier craft is reconstructed from source snapshots and source-branch input",
+    "The Second Arrival completes from semantic inputs in a headless acceptance scenario",
+    "a complete branched run replays to the same checksum",
+    "a branched run survives JSON serialization and restoration",
+    "keyboard, touch, and gamepad share thrust, reverse, pitch, bank, fire, and scan semantics",
+    "active browser sessions persist and completed sessions enter a bounded local archive",
+    "deployed Chrome verifies WebGL boot, scan, held thrust, simultaneous controls, pause, replay, phone layout, and touch actions",
+    "reference-Mac headless benchmark measured 0.0091 ms p95 across 18000 simulation ticks",
+    "pause restores the Mobleysoft site shell without resetting simulation state",
+    "story and game retain reciprocal navigation"
+  ],
+  "open_product_requirements": [
+    "human playtest and tuning of the complete deployed causal loop",
+    "a visible preventable catastrophe that makes scan evidence actionable",
+    "causal hazards or combat that alter branch outcomes",
+    "final interior art, audio, haptics, onboarding, and accessibility",
+    "profile-driven performance verification on representative mobile hardware",
+    "physical-device portrait and landscape acceptance testing"
+  ]
+}

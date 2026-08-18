@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "release_id": "blackhole-a-20260522",
+  "selected_at": "2026-07-26",
+  "selection": "A",
+  "title": "Three.js gravitational lensing",
+  "source": {
+    "artifact": "blackhole.source.js",
+    "bytes": 4398,
+    "sha256": "417b9edc4e6e4c9c8857d96bbebb6ad305a516421b92e034b43a9c3627fe9f6d",
+    "provenance": "Exact body recovered from two matching local Apple Mail messages dated 2026-05-22"
+  },
+  "runtime": {
+    "artifact": "/blackhole.js",
+    "bytes": 4398,
+    "sha256": "417b9edc4e6e4c9c8857d96bbebb6ad305a516421b92e034b43a9c3627fe9f6d",
+    "relationship_to_source": "byte-identical"
+  },
+  "game_overlay": {
+    "artifact": "/encounter.js",
+    "bytes": 31092,
+    "sha256": "9ab5789a67e9bfdd11eec07860bece4c39537d421a677166ab931470bd9d4422",
+    "canvas": "/encounter-canvas",
+    "rendering_contract": "independent transparent WebGL scene; cannot mutate canonical renderer",
+    "interpretation": "multiversal-foam analog",
+    "phases": ["exterior-scan", "causal-boundary-crossing", "interior-foam-manifold"],
+    "controls": ["play", "pause", "replay", "desktop-space-warm-in-scan-fire", "mobile-double-tap-warm-in-scan-fire", "pointer-steer", "wasd-steer"]
+  },
+  "dependency": {
+    "artifact": "/assets/vendor/three-r128.min.js",
+    "version": "r128",
+    "license": "MIT",
+    "bytes": 603445,
+    "sha256": "9274bbcec8d96168626c732b5d31c775aa8cfb7eaa0599bec0c175908a2c1ce2"
+  },
+  "interpretation_contract": {
+    "artifact": "FIELD_MODELS.md",
+    "anomaly_name": null,
+    "status": "fictional model, not a claim about physical cosmology"
+  },
+  "asset_policy": "Original geometric craft and effects; no third-party game assets."
+}

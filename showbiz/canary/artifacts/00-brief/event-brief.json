@@ -1,0 +1,44 @@
+{
+  "creative_objective": "Create a concise supplier proof showing one brief passing through nine explicit production contracts.",
+  "date": "2026-08-13",
+  "entry_point": "3900 Lankershim Blvd., Universal City, CA 91608",
+  "event": "ShowBizCA: Small Business Connections",
+  "evidence": {
+    "kind": "private-invitation-screenshot",
+    "pixel_height": 2796,
+    "pixel_width": 1290,
+    "published": false,
+    "sha256": "fe0e52743612e8b0a6b2996acb17c05a598e7af2255c42a20250693ec7f5a86a",
+    "verification": "visually-inspected-on-source-machine"
+  },
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "organizer": "NBCUniversal",
+  "project_id": "showbizca-the-handoff-2026",
+  "purpose": "Connect California small businesses and suppliers with television and film production professionals.",
+  "rights_boundary": "Original Mobleysoft canary; event facts only. No NBCUniversal mark, footage, endorsement, or commission is claimed.",
+  "schedule": [
+    {
+      "activity": "Arrival / Check-In",
+      "end": "11:00",
+      "start": "10:00"
+    },
+    {
+      "activity": "NBCU Presentation",
+      "end": "12:00",
+      "start": "11:00"
+    },
+    {
+      "activity": "Lunch Buffet",
+      "end": "13:00",
+      "start": "12:00"
+    },
+    {
+      "activity": "Interactive networking expo for direct vendor engagement",
+      "end": "14:00",
+      "start": "13:00"
+    }
+  ],
+  "schema_version": "1.0",
+  "status": "observed-source-brief",
+  "venue": "The Commons Event Center, Universal City, CA 91604"
+}

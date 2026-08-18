@@ -1,0 +1,13 @@
+{
+  "name": "@mobleysoft/eventwake-runtime",
+  "private": true,
+  "version": "0.3.0",
+  "description": "Development contracts for the EVENTWAKE playable Mobleysoft background.",
+  "scripts": {
+    "benchmark": "node testing/benchmark.mjs",
+    "check": "npm test && npm run doctor",
+    "doctor": "node doctor.js",
+    "smoke:browser": "node browser-smoke.mjs",
+    "test": "node --test input-core.test.js runtime-contract.test.js engine/engine.test.mjs testing/vertical-slice.test.mjs"
+  }
+}

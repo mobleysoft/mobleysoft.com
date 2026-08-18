@@ -1,0 +1,40 @@
+{
+  "artifact_kind": "measurable-campaign-package",
+  "audiences": [
+    "production sourcing professionals",
+    "independent producers",
+    "California small-business suppliers"
+  ],
+  "call_to_action": "Scope one production-supplier pilot with explicit acceptance criteria.",
+  "campaign": "One Brief / Nine Handoffs",
+  "channels": [
+    "live event demo",
+    "direct follow-up",
+    "mobile landing page"
+  ],
+  "claim_boundary": "This is a Mobleysoft integration canary exercising nine venture handoff contracts. It is not represented as an NBCUniversal commission, customer delivery, or proof that each venture's independent production runtime generated its assigned artifact.",
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "input": {
+    "path": "/showbiz/canary/artifacts/08-extend/playable-prototype.json",
+    "sha256": "105227424db1a97d4fa5f38a46f44fe3f765eab82df426d840d94a1cebfaab08"
+  },
+  "landing_page": "https://mobleysoft.com/showbiz/canary/",
+  "measurement_plan": [
+    "qualified conversations",
+    "pilot briefs received",
+    "artifact-chain reviews completed"
+  ],
+  "message": "Bring us a title. Leave with a world whose source and decisions remain traceable.",
+  "position": 9,
+  "product": "Marketingium",
+  "project_id": "showbizca-the-handoff-2026",
+  "restricted_claims": [
+    "No NBCUniversal endorsement",
+    "No completed customer deployment claim",
+    "No fabricated performance metrics"
+  ],
+  "schema_version": "1.0",
+  "stage": "Reach",
+  "status": "generated-integration-canary",
+  "venture_contract": "marketingium.com"
+}

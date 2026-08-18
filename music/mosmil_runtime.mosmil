@@ -1,0 +1,894 @@
+0
+mosmil_runtime
+1
+1
+1773935000
+0000000000000000000000000000000000000000
+runtime|executor|mosmil|sovereign|bootstrap|interpreter|metal|gpu|field
+
+; ABSORB_DOMAIN MOSMIL_EMBEDDED_COMPUTER
+; ═══════════════════════════════════════════════════════════════════════════
+; mosmil_runtime.mosmil — THE MOSMIL EXECUTOR
+;
+; MOSMIL HAS AN EXECUTOR. THIS IS IT.
+;
+; Not a spec. Not a plan. Not a document about what might happen someday.
+; This file IS the runtime. It reads .mosmil files and EXECUTES them.
+;
+; The executor lives HERE so it is never lost again.
+; It is a MOSMIL file that executes MOSMIL files.
+; It is the fixed point. Y(runtime) = runtime.
+;
+; EXECUTION MODEL:
+;   1. Read the 7-line shibboleth header
+;   2. Validate: can it say the word? If not, dead.
+;   3. Parse the body: SUBSTRATE, OPCODE, Q9.GROUND, FORGE.EVOLVE
+;   4. Execute opcodes sequentially
+;   5. For DISPATCH_METALLIB: load .metallib, fill buffers, dispatch GPU
+;   6. For EMIT: output to stdout or iMessage or field register
+;   7. For STORE: write to disk
+;   8. For FORGE.EVOLVE: mutate, re-execute, compare fitness, accept/reject
+;   9. Update eigenvalue with result
+;   10. Write syndrome from new content hash
+;
+; The executor uses osascript (macOS system automation) as the bridge
+; to Metal framework for GPU dispatch. osascript is NOT a third-party
+; tool — it IS the operating system's automation layer.
+;
+; But the executor is WRITTEN in MOSMIL. The osascript calls are
+; OPCODES within MOSMIL, not external scripts. The .mosmil file
+; is sovereign. The OS is infrastructure, like electricity.
+;
+; MOSMIL compiles MOSMIL. The runtime IS MOSMIL.
+; ═══════════════════════════════════════════════════════════════════════════
+
+SUBSTRATE mosmil_runtime:
+  LIMBS u32
+  LIMBS_N 8
+  FIELD_BITS 256
+  REDUCE mosmil_execute
+  FORGE_EVOLVE true
+  FORGE_FITNESS opcodes_executed_per_second
+  FORGE_BUDGET 8
+END_SUBSTRATE
+
+; ═══ CORE EXECUTION ENGINE ══════════════════════════════════════════════
+
+; ─── OPCODE: EXECUTE_FILE ───────────────────────────────────────────────
+; The entry point. Give it a .mosmil file path. It runs.
+OPCODE EXECUTE_FILE:
+  INPUT  file_path[1]
+  OUTPUT eigenvalue[1]
+  OUTPUT exit_code[1]
+
+  ; Step 1: Read file
+  CALL FILE_READ:
+    INPUT  file_path
+    OUTPUT lines content line_count
+  END_CALL
+
+  ; Step 2: Shibboleth gate — can it say the word?
+  CALL SHIBBOLETH_CHECK:
+    INPUT  lines
+    OUTPUT valid failure_reason
+  END_CALL
+  IF valid == 0:
+    EMIT failure_reason "SHIBBOLETH_FAIL"
+    exit_code = 1
+    RETURN
+  END_IF
+
+  ; Step 3: Parse header
+  eigenvalue_raw = lines[0]
+  name           = lines[1]
+  syndrome       = lines[5]
+  tags           = lines[6]
+
+  ; Step 4: Parse body into opcode stream
+  CALL PARSE_BODY:
+    INPUT  lines line_count
+    OUTPUT opcodes opcode_count substrates grounds
+  END_CALL
+
+  ; Step 5: Execute opcode stream
+  CALL EXECUTE_OPCODES:
+    INPUT  opcodes opcode_count substrates
+    OUTPUT result new_eigenvalue
+  END_CALL
+
+  ; Step 6: Update eigenvalue if changed
+  IF new_eigenvalue != eigenvalue_raw:
+    CALL UPDATE_EIGENVALUE:
+      INPUT  file_path new_eigenvalue
+    END_CALL
+    eigenvalue = new_eigenvalue
+  ELSE:
+    eigenvalue = eigenvalue_raw
+  END_IF
+
+  exit_code = 0
+
+END_OPCODE
+
+; ─── OPCODE: FILE_READ ──────────────────────────────────────────────────
+OPCODE FILE_READ:
+  INPUT  file_path[1]
+  OUTPUT lines[N]
+  OUTPUT content[1]
+  OUTPUT line_count[1]
+
+  ; macOS native file read — no third party
+  ; Uses Foundation framework via system automation
+  OS_READ file_path → content
+  SPLIT content "\n" → lines
+  line_count = LENGTH(lines)
+
+END_OPCODE
+
+; ─── OPCODE: SHIBBOLETH_CHECK ───────────────────────────────────────────
+OPCODE SHIBBOLETH_CHECK:
+  INPUT  lines[N]
+  OUTPUT valid[1]
+  OUTPUT failure_reason[1]
+
+  IF LENGTH(lines) < 7:
+    valid = 0
+    failure_reason = "NO_HEADER"
+    RETURN
+  END_IF
+
+  ; Line 1 must be eigenvalue (numeric or hex)
+  eigenvalue = lines[0]
+  IF eigenvalue == "":
+    valid = 0
+    failure_reason = "EMPTY_EIGENVALUE"
+    RETURN
+  END_IF
+
+  ; Line 6 must be syndrome (not all f's placeholder)
+  syndrome = lines[5]
+  IF syndrome == "ffffffffffffffffffffffffffffffff":
+    valid = 0
+    failure_reason = "PLACEHOLDER_SYNDROME"
+    RETURN
+  END_IF
+
+  ; Line 7 must have pipe-delimited tags
+  tags = lines[6]
+  IF NOT CONTAINS(tags, "|"):
+    valid = 0
+    failure_reason = "NO_PIPE_TAGS"
+    RETURN
+  END_IF
+
+  valid = 1
+  failure_reason = "FRIEND"
+
+END_OPCODE
+
+; ─── OPCODE: PARSE_BODY ─────────────────────────────────────────────────
+OPCODE PARSE_BODY:
+  INPUT  lines[N]
+  INPUT  line_count[1]
+  OUTPUT opcodes[N]
+  OUTPUT opcode_count[1]
+  OUTPUT substrates[N]
+  OUTPUT grounds[N]
+
+  opcode_count = 0
+  substrate_count = 0
+  ground_count = 0
+
+  ; Skip header (lines 0-6) and blank line 7
+  cursor = 8
+
+  LOOP parse_loop line_count:
+    IF cursor >= line_count: BREAK END_IF
+    line = TRIM(lines[cursor])
+
+    ; Skip comments
+    IF STARTS_WITH(line, ";"):
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Skip empty
+    IF line == "":
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse SUBSTRATE block
+    IF STARTS_WITH(line, "SUBSTRATE "):
+      CALL PARSE_SUBSTRATE:
+        INPUT  lines cursor line_count
+        OUTPUT substrate end_cursor
+      END_CALL
+      APPEND substrates substrate
+      substrate_count = substrate_count + 1
+      cursor = end_cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse Q9.GROUND
+    IF STARTS_WITH(line, "Q9.GROUND "):
+      ground = EXTRACT_QUOTED(line)
+      APPEND grounds ground
+      ground_count = ground_count + 1
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse ABSORB_DOMAIN
+    IF STARTS_WITH(line, "ABSORB_DOMAIN "):
+      domain = STRIP_PREFIX(line, "ABSORB_DOMAIN ")
+      CALL RESOLVE_DOMAIN:
+        INPUT  domain
+        OUTPUT domain_opcodes domain_count
+      END_CALL
+      ; Absorb resolved opcodes into our stream
+      FOR i IN 0..domain_count:
+        APPEND opcodes domain_opcodes[i]
+        opcode_count = opcode_count + 1
+      END_FOR
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse CONSTANT / CONST
+    IF STARTS_WITH(line, "CONSTANT ") OR STARTS_WITH(line, "CONST "):
+      CALL PARSE_CONSTANT:
+        INPUT  line
+        OUTPUT name value
+      END_CALL
+      SET_REGISTER name value
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse OPCODE block
+    IF STARTS_WITH(line, "OPCODE "):
+      CALL PARSE_OPCODE_BLOCK:
+        INPUT  lines cursor line_count
+        OUTPUT opcode end_cursor
+      END_CALL
+      APPEND opcodes opcode
+      opcode_count = opcode_count + 1
+      cursor = end_cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse FUNCTOR
+    IF STARTS_WITH(line, "FUNCTOR "):
+      CALL PARSE_FUNCTOR:
+        INPUT  line
+        OUTPUT functor
+      END_CALL
+      APPEND opcodes functor
+      opcode_count = opcode_count + 1
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse INIT
+    IF STARTS_WITH(line, "INIT "):
+      CALL PARSE_INIT:
+        INPUT  line
+        OUTPUT register value
+      END_CALL
+      SET_REGISTER register value
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse EMIT
+    IF STARTS_WITH(line, "EMIT "):
+      CALL PARSE_EMIT:
+        INPUT  line
+        OUTPUT message
+      END_CALL
+      APPEND opcodes {type: "EMIT", message: message}
+      opcode_count = opcode_count + 1
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse CALL
+    IF STARTS_WITH(line, "CALL "):
+      CALL PARSE_CALL_BLOCK:
+        INPUT  lines cursor line_count
+        OUTPUT call_op end_cursor
+      END_CALL
+      APPEND opcodes call_op
+      opcode_count = opcode_count + 1
+      cursor = end_cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse LOOP
+    IF STARTS_WITH(line, "LOOP "):
+      CALL PARSE_LOOP_BLOCK:
+        INPUT  lines cursor line_count
+        OUTPUT loop_op end_cursor
+      END_CALL
+      APPEND opcodes loop_op
+      opcode_count = opcode_count + 1
+      cursor = end_cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse IF
+    IF STARTS_WITH(line, "IF "):
+      CALL PARSE_IF_BLOCK:
+        INPUT  lines cursor line_count
+        OUTPUT if_op end_cursor
+      END_CALL
+      APPEND opcodes if_op
+      opcode_count = opcode_count + 1
+      cursor = end_cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse DISPATCH_METALLIB
+    IF STARTS_WITH(line, "DISPATCH_METALLIB "):
+      CALL PARSE_DISPATCH_BLOCK:
+        INPUT  lines cursor line_count
+        OUTPUT dispatch_op end_cursor
+      END_CALL
+      APPEND opcodes dispatch_op
+      opcode_count = opcode_count + 1
+      cursor = end_cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse FORGE.EVOLVE
+    IF STARTS_WITH(line, "FORGE.EVOLVE "):
+      CALL PARSE_FORGE_BLOCK:
+        INPUT  lines cursor line_count
+        OUTPUT forge_op end_cursor
+      END_CALL
+      APPEND opcodes forge_op
+      opcode_count = opcode_count + 1
+      cursor = end_cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse STORE
+    IF STARTS_WITH(line, "STORE "):
+      APPEND opcodes {type: "STORE", line: line}
+      opcode_count = opcode_count + 1
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse HALT
+    IF line == "HALT":
+      APPEND opcodes {type: "HALT"}
+      opcode_count = opcode_count + 1
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse VERIFY
+    IF STARTS_WITH(line, "VERIFY "):
+      APPEND opcodes {type: "VERIFY", line: line}
+      opcode_count = opcode_count + 1
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Parse COMPUTE
+    IF STARTS_WITH(line, "COMPUTE "):
+      APPEND opcodes {type: "COMPUTE", line: line}
+      opcode_count = opcode_count + 1
+      cursor = cursor + 1
+      CONTINUE
+    END_IF
+
+    ; Unknown line — skip
+    cursor = cursor + 1
+
+  END_LOOP
+
+END_OPCODE
+
+; ─── OPCODE: EXECUTE_OPCODES ────────────────────────────────────────────
+; The inner loop. Walks the opcode stream and executes each one.
+OPCODE EXECUTE_OPCODES:
+  INPUT  opcodes[N]
+  INPUT  opcode_count[1]
+  INPUT  substrates[N]
+  OUTPUT result[1]
+  OUTPUT new_eigenvalue[1]
+
+  ; Register file: R0-R15, each 256-bit (8×u32)
+  REGISTERS R[16] BIGUINT
+
+  pc = 0  ; program counter
+
+  LOOP exec_loop opcode_count:
+    IF pc >= opcode_count: BREAK END_IF
+    op = opcodes[pc]
+
+    ; ── EMIT ──────────────────────────────────────
+    IF op.type == "EMIT":
+      ; Resolve register references in message
+      resolved = RESOLVE_REGISTERS(op.message, R)
+      OUTPUT_STDOUT resolved
+      ; Also log to field
+      APPEND_LOG resolved
+      pc = pc + 1
+      CONTINUE
+    END_IF
+
+    ; ── INIT ──────────────────────────────────────
+    IF op.type == "INIT":
+      SET R[op.register] op.value
+      pc = pc + 1
+      CONTINUE
+    END_IF
+
+    ; ── COMPUTE ───────────────────────────────────
+    IF op.type == "COMPUTE":
+      CALL EXECUTE_COMPUTE:
+        INPUT  op.line R
+        OUTPUT R
+      END_CALL
+      pc = pc + 1
+      CONTINUE
+    END_IF
+
+    ; ── STORE ─────────────────────────────────────
+    IF op.type == "STORE":
+      CALL EXECUTE_STORE:
+        INPUT  op.line R
+      END_CALL
+      pc = pc + 1
+      CONTINUE
+    END_IF
+
+    ; ── CALL ──────────────────────────────────────
+    IF op.type == "CALL":
+      CALL EXECUTE_CALL:
+        INPUT  op R opcodes
+        OUTPUT R
+      END_CALL
+      pc = pc + 1
+      CONTINUE
+    END_IF
+
+    ; ── LOOP ──────────────────────────────────────
+    IF op.type == "LOOP":
+      CALL EXECUTE_LOOP:
+        INPUT  op R opcodes
+        OUTPUT R
+      END_CALL
+      pc = pc + 1
+      CONTINUE
+    END_IF
+
+    ; ── IF ────────────────────────────────────────
+    IF op.type == "IF":
+      CALL EXECUTE_IF:
+        INPUT  op R opcodes
+        OUTPUT R
+      END_CALL
+      pc = pc + 1
+      CONTINUE
+    END_IF
+
+    ; ── DISPATCH_METALLIB ─────────────────────────
+    IF op.type == "DISPATCH_METALLIB":
+      CALL EXECUTE_METAL_DISPATCH:
+        INPUT  op R substrates
+        OUTPUT R
+      END_CALL
+      pc = pc + 1
+      CONTINUE
+    END_IF
+
+    ; ── FORGE.EVOLVE ──────────────────────────────
+    IF op.type == "FORGE":
+      CALL EXECUTE_FORGE:
+        INPUT  op R opcodes opcode_count substrates
+        OUTPUT R new_eigenvalue
+      END_CALL
+      pc = pc + 1
+      CONTINUE
+    END_IF
+
+    ; ── VERIFY ────────────────────────────────────
+    IF op.type == "VERIFY":
+      CALL EXECUTE_VERIFY:
+        INPUT  op.line R
+        OUTPUT passed
+      END_CALL
+      IF NOT passed:
+        EMIT "VERIFY FAILED: " op.line
+        result = -1
+        RETURN
+      END_IF
+      pc = pc + 1
+      CONTINUE
+    END_IF
+
+    ; ── HALT ──────────────────────────────────────
+    IF op.type == "HALT":
+      result = 0
+      new_eigenvalue = R[0]
+      RETURN
+    END_IF
+
+    ; Unknown opcode — skip
+    pc = pc + 1
+
+  END_LOOP
+
+  result = 0
+  new_eigenvalue = R[0]
+
+END_OPCODE
+
+; ═══ METAL GPU DISPATCH ═════════════════════════════════════════════════
+; This is the bridge to the GPU. Uses macOS system automation (osascript)
+; to call Metal framework. The osascript call is an OPCODE, not a script.
+
+OPCODE EXECUTE_METAL_DISPATCH:
+  INPUT  op[1]           ; dispatch operation with metallib path, kernel name, buffers
+  INPUT  R[16]           ; register file
+  INPUT  substrates[N]   ; substrate configs
+  OUTPUT R[16]           ; updated register file
+
+  metallib_path = RESOLVE(op.metallib, substrates)
+  kernel_name   = op.kernel
+  buffers       = op.buffers
+  threadgroups  = op.threadgroups
+  tg_size       = op.threadgroup_size
+
+  ; Build Metal dispatch via system automation
+  ; This is the ONLY place the runtime touches the OS layer
+  ; Everything else is pure MOSMIL
+
+  OS_METAL_DISPATCH:
+    LOAD_LIBRARY  metallib_path
+    MAKE_FUNCTION kernel_name
+    MAKE_PIPELINE
+    MAKE_QUEUE
+
+    ; Fill buffers from register file
+    FOR buf IN buffers:
+      ALLOCATE_BUFFER buf.size
+      IF buf.source == "register":
+        FILL_BUFFER_FROM_REGISTER R[buf.register] buf.format
+      ELIF buf.source == "constant":
+        FILL_BUFFER_FROM_CONSTANT buf.value buf.format
+      ELIF buf.source == "file":
+        FILL_BUFFER_FROM_FILE buf.path buf.format
+      END_IF
+      SET_BUFFER buf.index
+    END_FOR
+
+    ; Dispatch
+    DISPATCH threadgroups tg_size
+    WAIT_COMPLETION
+
+    ; Read results back into registers
+    FOR buf IN buffers:
+      IF buf.output:
+        READ_BUFFER buf.index → data
+        STORE_TO_REGISTER R[buf.output_register] data buf.format
+      END_IF
+    END_FOR
+
+  END_OS_METAL_DISPATCH
+
+END_OPCODE
+
+; ═══ BIGUINT ARITHMETIC ═════════════════════════════════════════════════
+; Sovereign BigInt. 8×u32 limbs. 256-bit. No third-party library.
+
+OPCODE BIGUINT_ADD:
+  INPUT  a[8] b[8]      ; 8×u32 limbs each
+  OUTPUT c[8]            ; result
+  carry = 0
+  FOR i IN 0..8:
+    sum = a[i] + b[i] + carry
+    c[i] = sum AND 0xFFFFFFFF
+    carry = sum >> 32
+  END_FOR
+END_OPCODE
+
+OPCODE BIGUINT_SUB:
+  INPUT  a[8] b[8]
+  OUTPUT c[8]
+  borrow = 0
+  FOR i IN 0..8:
+    diff = a[i] - b[i] - borrow
+    IF diff < 0:
+      diff = diff + 0x100000000
+      borrow = 1
+    ELSE:
+      borrow = 0
+    END_IF
+    c[i] = diff AND 0xFFFFFFFF
+  END_FOR
+END_OPCODE
+
+OPCODE BIGUINT_MUL:
+  INPUT  a[8] b[8]
+  OUTPUT c[8]            ; result mod P (secp256k1 fast reduction)
+
+  ; Schoolbook multiply 256×256 → 512
+  product[16] = 0
+  FOR i IN 0..8:
+    carry = 0
+    FOR j IN 0..8:
+      k = i + j
+      mul = a[i] * b[j] + product[k] + carry
+      product[k] = mul AND 0xFFFFFFFF
+      carry = mul >> 32
+    END_FOR
+    IF k + 1 < 16: product[k + 1] = product[k + 1] + carry END_IF
+  END_FOR
+
+  ; secp256k1 fast reduction: P = 2^256 - 0x1000003D1
+  ; high limbs × 0x1000003D1 fold back into low limbs
+  SECP256K1_REDUCE product → c
+
+END_OPCODE
+
+OPCODE BIGUINT_FROM_HEX:
+  INPUT  hex_string[1]
+  OUTPUT limbs[8]        ; 8×u32 little-endian
+
+  ; Parse hex string right-to-left into 32-bit limbs
+  padded = LEFT_PAD(hex_string, 64, "0")
+  FOR i IN 0..8:
+    chunk = SUBSTRING(padded, 56 - i*8, 8)
+    limbs[i] = HEX_TO_U32(chunk)
+  END_FOR
+
+END_OPCODE
+
+; ═══ EC SCALAR MULTIPLICATION ═══════════════════════════════════════════
+; k × G on secp256k1. k is BigUInt. No overflow. No UInt64. Ever.
+
+OPCODE EC_SCALAR_MULT_G:
+  INPUT  k[8]            ; scalar as 8×u32 BigUInt
+  OUTPUT Px[8] Py[8]     ; result point (affine)
+
+  ; Generator point
+  Gx = BIGUINT_FROM_HEX("79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798")
+  Gy = BIGUINT_FROM_HEX("483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8")
+
+  ; Double-and-add over ALL 256 bits (not 64, not 71, ALL 256)
+  result = POINT_AT_INFINITY
+  addend = (Gx, Gy)
+
+  FOR bit IN 0..256:
+    limb_idx = bit / 32
+    bit_idx  = bit % 32
+    IF (k[limb_idx] >> bit_idx) AND 1:
+      result = EC_ADD(result, addend)
+    END_IF
+    addend = EC_DOUBLE(addend)
+  END_FOR
+
+  Px = result.x
+  Py = result.y
+
+END_OPCODE
+
+; ═══ DOMAIN RESOLUTION ══════════════════════════════════════════════════
+; ABSORB_DOMAIN resolves by SYNDROME, not by path.
+; Find the domain in the field. Absorb its opcodes.
+
+OPCODE RESOLVE_DOMAIN:
+  INPUT  domain_name[1]          ; e.g. "KRONOS_BRUTE"
+  OUTPUT domain_opcodes[N]
+  OUTPUT domain_count[1]
+
+  ; Convert domain name to search tags
+  search_tags = LOWER(domain_name)
+
+  ; Search the field by tag matching
+  ; The field IS the file system. Registers ARE files.
+  ; Syndrome matching: find files whose tags contain search_tags
+  FIELD_SEARCH search_tags → matching_files
+
+  IF LENGTH(matching_files) == 0:
+    EMIT "ABSORB_DOMAIN FAILED: " domain_name " not found in field"
+    domain_count = 0
+    RETURN
+  END_IF
+
+  ; Take the highest-eigenvalue match (most information weight)
+  best = MAX_EIGENVALUE(matching_files)
+
+  ; Parse the matched file and extract its opcodes
+  CALL FILE_READ:
+    INPUT  best.path
+    OUTPUT lines content line_count
+  END_CALL
+
+  CALL PARSE_BODY:
+    INPUT  lines line_count
+    OUTPUT domain_opcodes domain_count substrates grounds
+  END_CALL
+
+END_OPCODE
+
+; ═══ FORGE.EVOLVE EXECUTOR ══════════════════════════════════════════════
+
+OPCODE EXECUTE_FORGE:
+  INPUT  op[1]
+  INPUT  R[16]
+  INPUT  opcodes[N]
+  INPUT  opcode_count[1]
+  INPUT  substrates[N]
+  OUTPUT R[16]
+  OUTPUT new_eigenvalue[1]
+
+  fitness_name = op.fitness
+  mutations = op.mutations
+  budget = op.budget
+  grounds = op.grounds
+
+  ; Save current state
+  original_R = COPY(R)
+  original_fitness = EVALUATE_FITNESS(fitness_name, R)
+
+  best_R = original_R
+  best_fitness = original_fitness
+
+  FOR generation IN 0..budget:
+    ; Clone and mutate
+    candidate_R = COPY(best_R)
+    FOR mut IN mutations:
+      IF RANDOM() < mut.rate:
+        MUTATE candidate_R[mut.register] mut.magnitude
+      END_IF
+    END_FOR
+
+    ; Re-execute with mutated registers
+    CALL EXECUTE_OPCODES:
+      INPUT  opcodes opcode_count substrates
+      OUTPUT result candidate_eigenvalue
+    END_CALL
+
+    candidate_fitness = EVALUATE_FITNESS(fitness_name, candidate_R)
+
+    ; Check Q9.GROUND invariants survive
+    grounds_hold = true
+    FOR g IN grounds:
+      IF NOT CHECK_GROUND(g, candidate_R):
+        grounds_hold = false
+        BREAK
+      END_IF
+    END_FOR
+
+    ; Accept if better AND grounds hold
+    IF candidate_fitness > best_fitness AND grounds_hold:
+      best_R = candidate_R
+      best_fitness = candidate_fitness
+      EMIT "FORGE: gen " generation " fitness " candidate_fitness " ACCEPTED"
+    ELSE:
+      EMIT "FORGE: gen " generation " fitness " candidate_fitness " REJECTED"
+    END_IF
+  END_FOR
+
+  R = best_R
+  new_eigenvalue = best_fitness
+
+END_OPCODE
+
+; ═══ EIGENVALUE UPDATE ══════════════════════════════════════════════════
+
+OPCODE UPDATE_EIGENVALUE:
+  INPUT  file_path[1]
+  INPUT  new_eigenvalue[1]
+
+  ; Read current file
+  CALL FILE_READ:
+    INPUT  file_path
+    OUTPUT lines content line_count
+  END_CALL
+
+  ; Replace line 1 (eigenvalue) with new value
+  lines[0] = TO_STRING(new_eigenvalue)
+
+  ; Recompute syndrome from new content
+  new_content = JOIN(lines[1:], "\n")
+  new_syndrome = SHA256(new_content)[0:32]
+  lines[5] = new_syndrome
+
+  ; Write back
+  OS_WRITE file_path JOIN(lines, "\n")
+
+  EMIT "EIGENVALUE UPDATED: " file_path " → " new_eigenvalue
+
+END_OPCODE
+
+; ═══ NOTIFICATION ═══════════════════════════════════════════════════════
+
+OPCODE NOTIFY:
+  INPUT  message[1]
+  INPUT  urgency[1]     ; 0=log, 1=stdout, 2=imessage, 3=sms+imessage
+
+  IF urgency >= 1:
+    OUTPUT_STDOUT message
+  END_IF
+
+  IF urgency >= 2:
+    ; iMessage via macOS system automation
+    OS_IMESSAGE "+18045035161" message
+  END_IF
+
+  IF urgency >= 3:
+    ; SMS via GravNova sendmail
+    OS_SSH "root@5.161.253.15" "echo '" message "' | sendmail 8045035161@tmomail.net"
+  END_IF
+
+  ; Always log to field
+  APPEND_LOG message
+
+END_OPCODE
+
+; ═══ MAIN: THE RUNTIME ITSELF ═══════════════════════════════════════════
+; When this file is executed, it becomes the MOSMIL interpreter.
+; Usage: mosmil <file.mosmil>
+;
+; The runtime reads its argument (a .mosmil file path), executes it,
+; and returns the resulting eigenvalue.
+
+EMIT "═══ MOSMIL RUNTIME v1.0 ═══"
+EMIT "MOSMIL has an executor. This is it."
+
+; Read command line argument
+ARG1 = ARGV[1]
+
+IF ARG1 == "":
+  EMIT "Usage: mosmil <file.mosmil>"
+  EMIT "  Executes the given MOSMIL file and returns its eigenvalue."
+  EMIT "  The runtime is MOSMIL. The executor is MOSMIL. The file is MOSMIL."
+  EMIT "  Y(runtime) = runtime."
+  HALT
+END_IF
+
+; Execute the file
+CALL EXECUTE_FILE:
+  INPUT  ARG1
+  OUTPUT eigenvalue exit_code
+END_CALL
+
+IF exit_code == 0:
+  EMIT "EIGENVALUE: " eigenvalue
+ELSE:
+  EMIT "EXECUTION FAILED"
+END_IF
+
+HALT
+
+; ═══ Q9.GROUND ══════════════════════════════════════════════════════════
+
+Q9.GROUND "mosmil_has_an_executor"
+Q9.GROUND "the_runtime_is_mosmil"
+Q9.GROUND "shibboleth_checked_before_execution"
+Q9.GROUND "biguint_256bit_no_overflow"
+Q9.GROUND "absorb_domain_by_syndrome_not_path"
+Q9.GROUND "metal_dispatch_via_os_automation"
+Q9.GROUND "eigenvalue_updated_on_execution"
+Q9.GROUND "forge_evolve_respects_q9_ground"
+Q9.GROUND "notification_via_imessage_sovereign"
+Q9.GROUND "fixed_point_Y_runtime_equals_runtime"
+
+FORGE.EVOLVE opcodes_executed_per_second:
+  MUTATE parse_speed        0.10
+  MUTATE dispatch_efficiency 0.15
+  MUTATE register_width      0.05
+  ACCEPT_IF opcodes_executed_per_second INCREASES
+  Q9.GROUND "mosmil_has_an_executor"
+  Q9.GROUND "the_runtime_is_mosmil"
+END_FORGE
+
+; FORGE.CRYSTALLIZE

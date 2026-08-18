@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Mobius Music Generator</title>
+    <style>
+        :root {
+            --primary: #6200ee;
+            --primary-dark: #3700b3;
+            --secondary: #03dac6;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --error: #cf6679;
+            --on-primary: #ffffff;
+            --on-secondary: #000000;
+            --on-background: #ffffff;
+            --on-surface: #ffffff;
+            --on-error: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--on-background);
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--secondary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--on-background);
+            opacity: 0.8;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .control-panel {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--on-background);
+            font-size: 1rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            border: none;
+            border-radius: 4px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        button:disabled {
+            background-color: rgba(98, 0, 238, 0.5);
+            cursor: not-allowed;
+        }
+
+        button.secondary {
+            background-color: var(--secondary);
+            color: var(--on-secondary);
+        }
+
+        button.secondary:hover {
+            background-color: #02c4b0;
+        }
+
+        .output-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .output-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .visualization {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .visualization h3 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+
+        canvas {
+            border-radius: 4px;
+            background-color: rgba(0, 0, 0, 0.2);
+            width: 100%;
+            height: 200px;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.05);
+            font-family: monospace;
+            height: 100px;
+            overflow-y: auto;
+        }
+
+        .player-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--surface);
+            border-top: 5px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .parameter {
+            margin-bottom: 15px;
+        }
+
+        .parameter-label {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .parameter-value {
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .piano-roll {
+            height: 200px;
+            position: relative;
+            margin: 15px 0;
+            background-color: rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .piano-key {
+            position: absolute;
+            background-color: var(--secondary);
+            border-radius: 2px;
+            opacity: 0.8;
+        }
+
+        .hypergraph-node {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            transform: translate(-50%, -50%);
+        }
+
+        .hypergraph-edge {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform-origin: 0 0;
+            border-radius: 2px;
+        }
+
+        .log-entry {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 15px 0;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--secondary);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Quantum Mobius Music Generator</h1>
+            <p class="subtitle">Generate novel music using quantum-inspired algorithms and mobius time fields</p>
+        </header>
+
+        <section class="control-panel">
+            <div class="control-group">
+                <h2>Seed & Parameters</h2>
+                <label for="seed-phrase">Creative Seed Phrase</label>
+                <input type="text" id="seed-phrase" placeholder="Enter a seed phrase to inspire the music..." value="Cosmic twilight through a quantum lens">
+                
+                <div class="control-row">
+                    <div style="flex: 1;">
+                        <div class="parameter">
+                            <div class="parameter-label">
+                                <label for="mobius-dimensions">Mobius Dimensions</label>
+                                <span class="parameter-value" id="mobius-dimensions-value">32</span>
+                            </div>
+                            <input type="range" id="mobius-dimensions" min="16" max="64" value="32">
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="parameter">
+                            <div class="parameter-label">
+                                <label for="twist-factor">Twist Factor</label>
+                                <span class="parameter-value" id="twist-factor-value">0.75</span>
+                            </div>
+                            <input type="range" id="twist-factor" min="0.1" max="2.0" step="0.05" value="0.75">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-row">
+                    <div style="flex: 1;">
+                        <div class="parameter">
+                            <div class="parameter-label">
+                                <label for="quantum-state-size">Quantum State Size</label>
+                                <span class="parameter-value" id="quantum-state-size-value">24</span>
+                            </div>
+                            <input type="range" id="quantum-state-size" min="8" max="48" value="24">
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="parameter">
+                            <div class="parameter-label">
+                                <label for="evolution-steps">Evolution Steps</label>
+                                <span class="parameter-value" id="evolution-steps-value">12</span>
+                            </div>
+                            <input type="range" id="evolution-steps" min="4" max="24" value="12">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-row">
+                    <div style="flex: 1;">
+                        <div class="parameter">
+                            <div class="parameter-label">
+                                <label for="harmonic-complexity">Harmonic Complexity</label>
+                                <span class="parameter-value" id="harmonic-complexity-value">0.6</span>
+                            </div>
+                            <input type="range" id="harmonic-complexity" min="0.1" max="1.0" step="0.05" value="0.6">
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="parameter">
+                            <div class="parameter-label">
+                                <label for="temporal-density">Temporal Density</label>
+                                <span class="parameter-value" id="temporal-density-value">0.7</span>
+                            </div>
+                            <input type="range" id="temporal-density" min="0.1" max="1.0" step="0.05" value="0.7">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h2>Generator Controls</h2>
+                <div class="control-row">
+                    <button id="generate-btn" class="primary">Generate Music</button>
+                    <button id="reset-btn" class="secondary">Reset Parameters</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="output-panel">
+            <div class="visualization">
+                <h3>Mobius Time Field & Quantum State Visualization</h3>
+                <canvas id="mobius-canvas"></canvas>
+                <div class="player-controls">
+                    <button id="play-btn" disabled>Play</button>
+                    <button id="stop-btn" disabled>Stop</button>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="visualization">
+                <h3>Hypergraph Composition Structure</h3>
+                <div id="hypergraph-container" class="piano-roll"></div>
+                <div class="status" id="status-log"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="loading" id="loading-overlay">
+        <div class="spinner"></div>
+        <p id="loading-message">Initializing quantum fields...</p>
+    </div>
+
+    <script>
+        // =====================================================
+        // Core Classes for Quantum Mobius Music Generation
+        // =====================================================
+
+        // Complex number class for quantum calculations
+        class Complex {
+            constructor(real = 0, imag = 0) {
+                this.real = real;
+                this.imag = imag;
+            }
+
+            magnitude() {
+                return Math.sqrt(this.real * this.real + this.imag * this.imag);
+            }
+
+            phase() {
+                return Math.atan2(this.imag, this.real);
+            }
+
+            add(other) {
+                return new Complex(
+                    this.real + other.real,
+                    this.imag + other.imag
+                );
+            }
+
+            multiply(other) {
+                return new Complex(
+                    this.real * other.real - this.imag * other.imag,
+                    this.real * other.imag + this.imag * other.real
+                );
+            }
+
+            scale(factor) {
+                return new Complex(
+                    this.real * factor,
+                    this.imag * factor
+                );
+            }
+
+            conjugate() {
+                return new Complex(this.real, -this.imag);
+            }
+        }
+
+        // Mobius Time Field - core of our novel approach
+        class MobiusTimeField {
+            constructor(dimensions, twistFactor) {
+                this.dimensions = dimensions;
+                this.twistFactor = twistFactor;
+                this.propagationTensors = new Array(dimensions * dimensions);
+                this.initializeTensors();
+                this.visualData = { nodes: [], edges: [] };
+            }
+
+            initializeTensors() {
+                // Create novel physics relationships based on mobius topology
+                for (let i = 0; i < this.dimensions; i++) {
+                    for (let j = 0; j < this.dimensions; j++) {
+                        const theta = (i / this.dimensions) * Math.PI * 2;
+                        const phi = (j / this.dimensions) * Math.PI * 2;
+                        
+                        // Novel tensor math creating mobius-like relationships
+                        // This is a simplified implementation for the prototype
+                        const mobiusPhase = Math.sin(theta + this.twistFactor * phi) * 
+                                           Math.cos(phi - this.twistFactor * theta);
+                                           
+                        this.propagationTensors[i * this.dimensions + j] = mobiusPhase;
+                    }
+                }
+
+                // Generate visualization data
+                this.updateVisualization();
+            }
+
+            updateVisualization() {
+                this.visualData.nodes = [];
+                this.visualData.edges = [];
+
+                // Create nodes at the tensor coordinates
+                for (let i = 0; i < this.dimensions; i += Math.max(1, Math.floor(this.dimensions / 20))) {
+                    const theta = (i / this.dimensions) * Math.PI * 2;
+                    const r = 80;
+                    const x = Math.cos(theta) * r + 100;
+                    const y = Math.sin(theta) * r + 100;
+                    
+                    this.visualData.nodes.push({ x, y, value: i });
+                }
+
+                // Create edges showing strong connections
+                for (let i = 0; i < this.visualData.nodes.length; i++) {
+                    for (let j = 0; j < this.visualData.nodes.length; j++) {
+                        if (i === j) continue;
+                        
+                        const nodeI = this.visualData.nodes[i];
+                        const nodeJ = this.visualData.nodes[j];
+                        const idx1 = nodeI.value;
+                        const idx2 = nodeJ.value;
+                        
+                        // Only show strong connections
+                        const connection = Math.abs(this.propagationTensors[idx1 * this.dimensions + idx2]);
+                        if (connection > 0.7) {
+                            this.visualData.edges.push({
+                                from: i,
+                                to: j,
+                                strength: connection
+                            });
+                        }
+                    }
+                }
+            }
+
+            propagateWave(initialState, steps) {
+                let currentState = [...initialState];
+                let nextState = new Array(initialState.length).fill(0);
+                
+                for (let step = 0; step < steps; step++) {
+                    // Calculate wave propagation with mobius twist
+                    for (let i = 0; i < currentState.length; i++) {
+                        nextState[i] = 0;
+                        for (let j = 0; j < currentState.length; j++) {
+                            const tensorIdx = (i % this.dimensions) * this.dimensions + (j % this.dimensions);
+                            const twistedJ = (j + Math.floor(i / this.dimensions) * 
+                                             Math.floor(this.twistFactor * 10)) % currentState.length;
+                            
+                            nextState[i] += currentState[twistedJ] * this.propagationTensors[tensorIdx];
+                        }
+                    }
+                    
+                    // Normalize and update
+                    const maxAmp = Math.max(...nextState.map(Math.abs));
+                    for (let i = 0; i < nextState.length; i++) {
+                        nextState[i] /= maxAmp;
+                    }
+                    
+                    [currentState, nextState] = [nextState, currentState];
+                }
+                
+                return currentState;
+            }
+        }
+
+        // Quantum Instrument Model
+        class QuantumInstrumentModel {
+            constructor(stateDimension) {
+                this.dimension = stateDimension;
+                this.stateVector = this.createInitialState();
+                this.operators = {};
+                this.initializeOperators();
+                this.visualData = [];
+            }
+
+            createInitialState() {
+                // Creates a superposition state using complex numbers
+                const state = new Array(this.dimension).fill(null)
+                    .map((_, i) => {
+                        const phase = (i / this.dimension) * Math.PI * 2;
+                        return new Complex(
+                            Math.cos(phase),
+                            Math.sin(phase)
+                        );
+                    });
+                
+                // Normalize
+                const totalMagnitude = Math.sqrt(state.reduce(
+                    (sum, z) => sum + z.real * z.real + z.imag * z.imag, 0
+                ));
+                
+                return state.map(z => new Complex(
+                    z.real / totalMagnitude,
+                    z.imag / totalMagnitude
+                ));
+            }
+
+            initializeOperators() {
+                // Create quantum operators for different articulations
+                this.operators.pluck = this.createPluckOperator();
+                this.operators.bow = this.createBowOperator();
+                this.operators.strike = this.createStrikeOperator();
+                
+                // Update visualization
+                this.updateVisualization();
+            }
+
+            createPluckOperator() {
+                // This creates a simplified version of a plucking operation
+                const operator = new Array(this.dimension).fill(null)
+                    .map(() => new Array(this.dimension).fill(null));
+                
+                for (let i = 0; i < this.dimension; i++) {
+                    for (let j = 0; j < this.dimension; j++) {
+                        // Create harmonic relationships
+                        const harmonicFactor = this.primeHarmonicSeries(i, j);
+                        const phaseShift = (i - j) * Math.PI / this.dimension;
+                        
+                        operator[i][j] = new Complex(
+                            harmonicFactor * Math.cos(phaseShift),
+                            harmonicFactor * Math.sin(phaseShift)
+                        );
+                    }
+                }
+                
+                return operator;
+            }
+
+            createBowOperator() {
+                // Creates sustained notes with different harmonic profile
+                const operator = new Array(this.dimension).fill(null)
+                    .map(() => new Array(this.dimension).fill(null));
+                
+                for (let i = 0; i < this.dimension; i++) {
+                    for (let j = 0; j < this.dimension; j++) {
+                        // Bowing produces more sustained, filtered harmonics
+                        const harmonicFactor = (j === 0) ? 0.8 : 0.8 / j;
+                        const phaseShift = (i) * Math.PI / this.dimension;
+                        
+                        operator[i][j] = new Complex(
+                            harmonicFactor * Math.cos(phaseShift),
+                            harmonicFactor * Math.sin(phaseShift)
+                        );
+                    }
+                }
+                
+                return operator;
+            }
+
+            createStrikeOperator() {
+                // Creates percussive sounds with sharp attack
+                const operator = new Array(this.dimension).fill(null)
+                    .map(() => new Array(this.dimension).fill(null));
+                
+                for (let i = 0; i < this.dimension; i++) {
+                    for (let j = 0; j < this.dimension; j++) {
+                        // More inharmonic content with sharp attack
+                        const distFactor = Math.abs(i - j) / this.dimension;
+                        const harmonicFactor = Math.exp(-distFactor * 3) * 
+                                             (0.5 + 0.5 * Math.random());
+                        
+                        operator[i][j] = new Complex(
+                            harmonicFactor * (Math.random() - 0.5),
+                            harmonicFactor * (Math.random() - 0.5)
+                        );
+                    }
+                }
+                
+                return operator;
+            }
+
+            primeHarmonicSeries(i, j) {
+                // Uses prime numbers to create novel harmonic relationships
+                const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+                let sum = 0;
+                
+                // Sum up harmonics based on prime number ratios
+                for (let k = 0; k < Math.min(primes.length, this.dimension/4); k++) {
+                    sum += Math.sin(2 * Math.PI * ((i * j) % this.dimension) * primes[k] / this.dimension) / 
+                          primes[k];
+                }
+                
+                return 0.3 + 0.7 * Math.abs(sum / Math.sqrt(this.dimension));
+            }
+
+            applyOperator(operatorType, intensity) {
+                const operator = this.operators[operatorType];
+                if (!operator) return false;
+                
+                // Apply quantum operator to current state
+                const newState = new Array(this.dimension).fill(null)
+                    .map(() => new Complex(0, 0));
+                
+                for (let i = 0; i < this.dimension; i++) {
+                    for (let j = 0; j < this.dimension; j++) {
+                        const contribution = operator[i][j].multiply(this.stateVector[j])
+                                                         .scale(intensity);
+                        newState[i] = newState[i].add(contribution);
+                    }
+                }
+                
+                // Normalize the state
+                const magnitude = Math.sqrt(newState.reduce(
+                    (sum, z) => sum + z.real * z.real + z.imag * z.imag, 0
+                ));
+                
+                this.stateVector = newState.map(z => new Complex(
+                    z.real / magnitude,
+                    z.imag / magnitude
+                ));
+                
+                // Update visualization
+                this.updateVisualization();
+                return true;
+            }
+
+            updateVisualization() {
+                this.visualData = [];
+                for (let i = 0; i < this.stateVector.length; i++) {
+                    const radius = 80;
+                    const angle = (i / this.stateVector.length) * Math.PI * 2;
+                    const x = Math.cos(angle) * radius + 100;
+                    const y = Math.sin(angle) * radius + 100;
+                    
+                    // Calculate color and size based on complex value
+                    const magnitude = this.stateVector[i].magnitude() * 2;
+                    const phase = this.stateVector[i].phase();
+                    const hue = ((phase / (Math.PI * 2)) * 360 + 360) % 360;
+                    
+                    this.visualData.push({
+                        x, y, 
+                        magnitude, 
+                        phase,
+                        color: `hsl(${hue}, 80%, 60%)`,
+                    });
+                }
+            }
+
+            generateWaveform(timepoints, mobiusField) {
+                // Convert quantum state to actual waveform samples
+                const waveform = new Array(timepoints).fill(0);
+                
+                for (let t = 0; t < timepoints; t++) {
+                    const normalizedT = t / timepoints;
+                    
+                    // Create measurement vector for this time
+                    let amplitude = 0;
+                    for (let i = 0; i < this.dimension; i++) {
+                        const phase = normalizedT * 2 * Math.PI * i;
+                        const measureVector = new Complex(
+                            Math.cos(phase),
+                            Math.sin(phase)
+                        );
+                        
+                        // Calculate inner product with state vector
+                        const inner = measureVector.multiply(this.stateVector[i].conjugate());
+                        amplitude += inner.real;
+                    }
+                    
+                    waveform[t] = amplitude;
+                }
+                
+                // Apply mobius field propagation for richer harmonic content
+                return mobiusField.propagateWave(waveform, 3);
+            }
+        }
+
+        // Hypergraph Composer
+        class HypergraphComposer {
+            constructor(seed) {
+                this.vertices = [];
+                this.hyperedges = [];
+                this.evolutionRules = [];
+                this.seed = this.hashString(seed);
+                this.generateSeedStructure();
+                this.generateEvolutionRules();
+                this.visualData = { vertices: [], edges: [] };
+                this.updateVisualization();
+            }
+
+            hashString(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                    hash = hash & hash; // Convert to 32bit integer
+                }
+                return Math.abs(hash);
+            }
+
+            generateSeedStructure() {
+                // Create initial vertices representing musical elements
+                const vertexCount = (this.seed % 7) + 5; // 5-11 vertices
+                
+                for (let i = 0; i < vertexCount; i++) {
+                    const vertexSeed = (this.seed * (i + 1)) % 1000000;
+                    const vertexType = this.determineVertexType(vertexSeed);
+                    
+                    this.vertices.push({
+                        id: i,
+                        type: vertexType,
+                        properties: this.generateVertexProperties(vertexType, vertexSeed)
+                    });
+                }
+                
+                // Create initial hyperedges
+                const edgeCount = (this.seed % 5) + 3; // 3-7 hyperedges
+                
+                for (let i = 0; i < edgeCount; i++) {
+                    const edgeSeed = (this.seed * (i + 100)) % 1000000;
+                    const verticesInEdge = this.selectVerticesForEdge(edgeSeed);
+                    
+                    this.hyperedges.push({
+                        id: i,
+                        type: this.determineEdgeType(edgeSeed),
+                        vertices: verticesInEdge,
+                        properties: this.generateEdgeProperties(edgeSeed)
+                    });
+                }
+            }
+
+            determineVertexType(seed) {
+                const types = ['pitch', 'rhythm', 'timbre'];
+                return types[seed % types.length];
+            }
+
+            generateVertexProperties(type, seed) {
+                const props = {};
+                
+                if (type === 'pitch') {
+                    props.note = (seed % 12);  // 0-11 for C through B
+                    props.octave = Math.floor(seed / 12) % 3 + 3;  // 3-5
+                    props.duration = (seed % 4) / 4 + 0.25;  // 0.25-1.25
+                }
+                else if (type === 'rhythm') {
+                    props.pulses = (seed % 4) + 1;  // 1-4
+                    props.steps = (seed % 4) + 4;   // 4-7
+                    props.velocity = (seed % 40) + 80;  // 80-120
+                }
+                else if (type === 'timbre') {
+                    props.brightness = (seed % 100) / 100;  // 0-1
+                    props.harmonicity = (seed % 100) / 100;  // 0-1
+                    props.attackTime = ((seed % 10) + 1) / 100;  // 0.01-0.11
+                }
+                
+                return props;
+            }
+
+            selectVerticesForEdge(seed) {
+                const count = (seed % 3) + 2;  // 2-4 vertices per edge
+                const selected = [];
+                
+                for (let i = 0; i < count; i++) {
+                    const idx = (seed + i * 17) % this.vertices.length;
+                    if (!selected.includes(idx)) {
+                        selected.push(idx);
+                    }
+                }
+                
+                return selected;
+            }
+
+            determineEdgeType(seed) {
+                const types = ['progression', 'structure', 'texture'];
+                return types[seed % types.length];
+            }
+
+            generateEdgeProperties(seed) {
+                const props = {};
+                
+                props.strength = (seed % 100) / 100;  // 0-1
+                props.duration = (seed % 4) + 1;  // 1-4 time units
+                
+                return props;
+            }
+
+            generateEvolutionRules() {
+                // Create rules for how the hypergraph will evolve
+                const ruleCount = (this.seed % 3) + 2;  // 2-4 rules
+                
+                for (let i = 0; i < ruleCount; i++) {
+                    const ruleSeed = (this.seed * (i + 200)) % 1000000;
+                    
+                    this.evolutionRules.push({
+                        type: this.determineRuleType(ruleSeed),
+                        probability: ((ruleSeed % 50) + 30) / 100,  // 0.3-0.8
+                        parameters: this.generateRuleParameters(ruleSeed)
+                    });
+                }
+            }
+
+            determineRuleType(seed) {
+                const types = ['split', 'merge', 'transform'];
+                return types[seed % types.length];
+            }
+
+            generateRuleParameters(seed) {
+                return {
+                    intensity: (seed % 100) / 100,  // 0-1
+                    target: (seed % 3)  // 0=vertex, 1=edge, 2=both
+                };
+            }
+
+            evolve(steps) {
+                for (let step = 0; step < steps; step++) {
+                    // Apply transformation rules
+                    for (const rule of this.evolutionRules) {
+                        if (Math.random() < rule.probability) {
+                            this.applyRule(rule);
+                        }
+                    }
+                }
+                
+                // Update visualization after evolution
+                this.updateVisualization();
+            }
+
+            applyRule(rule) {
+                if (rule.type === 'split') {
+                    this.applySplitRule(rule);
+                }
+                else if (rule.type === 'merge') {
+                    this.applyMergeRule(rule);
+                }
+                else if (rule.type === 'transform') {
+                    this.applyTransformRule(rule);
+                }
+            }
+
+            applySplitRule(rule) {
+                if (rule.parameters.target === 0 || rule.parameters.target === 2) {
+                    // Split a vertex
+                    if (this.vertices.length > 0) {
+                        const vertexIdx = Math.floor(Math.random() * this.vertices.length);
+                        const vertex = this.vertices[vertexIdx];
+                        
+                        // Create a new vertex based on the original
+                        const newVertex = {
+                            id: this.vertices.length,
+                            type: vertex.type,
+                            properties: { ...vertex.properties }
+                        };
+                        
+                        // Modify properties slightly
+                        for (const key in newVertex.properties) {
+                            if (typeof newVertex.properties[key] === 'number') {
+                                // Randomly perturb numerical properties
+                                newVertex.properties[key] *= 1 + (Math.random() - 0.5) * rule.parameters.intensity;
+                            }
+                        }
+                        
+                        this.vertices.push(newVertex);
+                        
+                        // Add to any hyperedges that contained the original
+                        for (const edge of this.hyperedges) {
+                            if (edge.vertices.includes(vertex.id) && Math.random() < 0.5) {
+                                edge.vertices.push(newVertex.id);
+                            }
+                        }
+                    }
+                }
+                
+                if (rule.parameters.target === 1 || rule.parameters.target === 2) {
+                    // Split a hyperedge
+                    if (this.hyperedges.length > 0) {
+                        const edgeIdx = Math.floor(Math.random() * this.hyperedges.length);
+                        const edge = this.hyperedges[edgeIdx];
+                        
+                        if (edge.vertices.length >= 3) {
+                            // Create a new edge with some of the vertices
+                            const vertexCount = Math.floor(edge.vertices.length / 2) + 1;
+                            const newVertices = [];
+                            
+                            // Randomly select vertices
+                            const shuffled = [...edge.vertices].sort(() => 0.5 - Math.random());
+                            newVertices.push(...shuffled.slice(0, vertexCount));
+                            
+                            const newEdge = {
+                                id: this.hyperedges.length,
+                                type: edge.type,
+                                vertices: newVertices,
+                                properties: { ...edge.properties }
+                            };
+                            
+                            this.hyperedges.push(newEdge);
+                        }
+                    }
+                }
+            }
+
+            applyMergeRule(rule) {
+                if (rule.parameters.target === 0 || rule.parameters.target === 2) {
+                    // Merge vertices (not implemented in this prototype)
+                }
+                
+                if (rule.parameters.target === 1 || rule.parameters.target === 2) {
+                    // Merge hyperedges
+                    if (this.hyperedges.length >= 2) {
+                        const edge1Idx = Math.floor(Math.random() * this.hyperedges.length);
+                        let edge2Idx;
+                        do {
+                            edge2Idx = Math.floor(Math.random() * this.hyperedges.length);
+                        } while (edge1Idx === edge2Idx);
+                        
+                        const edge1 = this.hyperedges[edge1Idx];
+                        const edge2 = this.hyperedges[edge2Idx];
+                        
+                        // Combine vertices from both edges
+                        const combinedVertices = [...new Set([...edge1.vertices, ...edge2.vertices])];
+                        
+                        // Update the first edge
+                        edge1.vertices = combinedVertices;
+                        
+                        // Average the properties
+                        for (const key in edge1.properties) {
+                            if (typeof edge1.properties[key] === 'number' && 
+                                typeof edge2.properties[key] === 'number') {
+                                edge1.properties[key] = (edge1.properties[key] + edge2.properties[key]) / 2;
+                            }
+                        }
+                        
+                        // Remove the second edge
+                        this.hyperedges.splice(edge2Idx, 1);
+                        
+                        // Update IDs
+                        for (let i = 0; i < this.hyperedges.length; i++) {
+                            this.hyperedges[i].id = i;
+                        }
+                    }
+                }
+            }
+
+            applyTransformRule(rule) {
+                if (rule.parameters.target === 0 || rule.parameters.target === 2) {
+                    // Transform a vertex
+                    if (this.vertices.length > 0) {
+                        const vertexIdx = Math.floor(Math.random() * this.vertices.length);
+                        const vertex = this.vertices[vertexIdx];
+                        
+                        // Modify properties
+                        for (const key in vertex.properties) {
+                            if (typeof vertex.properties[key] === 'number') {
+                                // Transform numerical properties
+                                const transform = Math.random() < 0.5 ? 
+                                    1 + Math.random() * rule.parameters.intensity : 
+                                    1 / (1 + Math.random() * rule.parameters.intensity);
+                                    
+                                vertex.properties[key] *= transform;
+                                
+                                // Keep within reasonable bounds
+                                if (key === 'note') {
+                                    vertex.properties[key] = Math.floor(vertex.properties[key]) % 12;
+                                }
+                                else if (key === 'octave') {
+                                    vertex.properties[key] = Math.max(2, Math.min(6, Math.floor(vertex.properties[key])));
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if (rule.parameters.target === 1 || rule.parameters.target === 2) {
+                    // Transform a hyperedge
+                    if (this.hyperedges.length > 0) {
+                        const edgeIdx = Math.floor(Math.random() * this.hyperedges.length);
+                        const edge = this.hyperedges[edgeIdx];
+                        
+                        // Modify properties
+                        for (const key in edge.properties) {
+                            if (typeof edge.properties[key] === 'number') {
+                                edge.properties[key] *= 1 + (Math.random() - 0.5) * rule.parameters.intensity;
+                            }
+                        }
+                    }
+                }
+            }
+
+            updateVisualization() {
+                // Create visualization data for the hypergraph
+                const width = 400;
+                const height = 200;
+                const padding = 30;
+                
+                // Position vertices in a circular layout
+                this.visualData.vertices = this.vertices.map((vertex, i) => {
+                    const angle = (i / this.vertices.length) * Math.PI * 2;
+                    const radius = 70;
+                    
+                    // Calculate position
+                    const x = Math.cos(angle) * radius + width / 2;
+                    const y = Math.sin(angle) * radius + height / 2;
+                    
+                    // Determine color based on vertex type
+                    let color;
+                    if (vertex.type === 'pitch') color = '#6200ee';
+                    else if (vertex.type === 'rhythm') color = '#03dac6';
+                    else if (vertex.type === 'timbre') color = '#cf6679';
+                    
+                    // Size based on some property
+                    let size;
+                    if (vertex.type === 'pitch') {
+                        size = 8 + vertex.properties.duration * 10;
+                    } else if (vertex.type === 'rhythm') {
+                        size = 8 + vertex.properties.pulses * 2;
+                    } else {
+                        size = 8 + vertex.properties.brightness * 10;
+                    }
+                    
+                    return {
+                        id: vertex.id,
+                        x, y,
+                        color,
+                        size,
+                        type: vertex.type,
+                        properties: vertex.properties
+                    };
+                });
+                
+                // Create visual representations of hyperedges
+                this.visualData.edges = this.hyperedges.map(edge => {
+                    // Calculate center point of all connected vertices
+                    const vertices = edge.vertices.map(id => 
+                        this.visualData.vertices.find(v => v.id === id)
+                    ).filter(v => v !== undefined);
+                    
+                    if (vertices.length < 2) return null;
+                    
+                    const center = vertices.reduce(
+                        (acc, v) => ({ x: acc.x + v.x, y: acc.y + v.y }),
+                        { x: 0, y: 0 }
+                    );
+                    
+                    center.x /= vertices.length;
+                    center.y /= vertices.length;
+                    
+                    // Determine color based on edge type
+                    let color;
+                    if (edge.type === 'progression') color = 'rgba(98, 0, 238, 0.3)';
+                    else if (edge.type === 'structure') color = 'rgba(3, 218, 198, 0.3)';
+                    else if (edge.type === 'texture') color = 'rgba(207, 102, 121, 0.3)';
+                    
+                    return {
+                        id: edge.id,
+                        center,
+                        vertices: vertices,
+                        color,
+                        type: edge.type,
+                        properties: edge.properties
+                    };
+                }).filter(e => e !== null);
+            }
+
+            generateMusicStructure() {
+                // Convert the hypergraph to a musical structure
+                // In this prototype, we'll create a simple piano roll representation
+                const structure = {
+                    notes: [],
+                    duration: 8  // 8 seconds of music
+                };
+                
+                // Process vertices into musical elements
+                for (const vertex of this.vertices) {
+                    if (vertex.type === 'pitch') {
+                        // Create a note
+                        const startTime = Math.random() * (structure.duration - vertex.properties.duration);
+                        structure.notes.push({
+                            note: vertex.properties.note,
+                            octave: vertex.properties.octave,
+                            startTime: startTime,
+                            duration: vertex.properties.duration,
+                            velocity: 0.8  // Default velocity
+                        });
+                    }
+                }
+                
+                // Process hyperedges to modify the notes
+                for (const edge of this.hyperedges) {
+                    if (edge.type === 'progression') {
+                        // Create additional notes in a progression
+                        const connectedPitches = this.vertices.filter(v => 
+                            v.type === 'pitch' && edge.vertices.includes(v.id)
+                        );
+                        
+                        if (connectedPitches.length >= 2) {
+                            // Create a progression between the notes
+                            const sortedPitches = [...connectedPitches].sort((a, b) => {
+                                const noteA = a.properties.note + a.properties.octave * 12;
+                                const noteB = b.properties.note + b.properties.octave * 12;
+                                return noteA - noteB;
+                            });
+                            
+                            for (let i = 0; i < sortedPitches.length - 1; i++) {
+                                const current = sortedPitches[i];
+                                const next = sortedPitches[i + 1];
+                                
+                                const startNote = current.properties.note + current.properties.octave * 12;
+                                const endNote = next.properties.note + next.properties.octave * 12;
+                                
+                                // Create notes in between
+                                const steps = Math.abs(endNote - startNote);
+                                for (let step = 1; step < steps; step++) {
+                                    if (Math.random() < 0.6) {  // Only add some notes
+                                        const noteValue = startNote + step * Math.sign(endNote - startNote);
+                                        const note = noteValue % 12;
+                                        const octave = Math.floor(noteValue / 12);
+                                        
+                                        structure.notes.push({
+                                            note: note,
+                                            octave: octave,
+                                            startTime: Math.random() * (structure.duration - 0.5),
+                                            duration: 0.5,
+                                            velocity: 0.6
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (edge.type === 'texture') {
+                        // Modify velocities of connected notes
+                        const connectedPitchIds = this.vertices
+                            .filter(v => v.type === 'pitch' && edge.vertices.includes(v.id))
+                            .map(v => v.id);
+                            
+                        const factor = 0.5 + edge.properties.strength;
+                        
+                        for (const note of structure.notes) {
+                            if (connectedPitchIds.includes(note.vertexId)) {
+                                note.velocity *= factor;
+                            }
+                        }
+                    }
+                }
+                
+                return structure;
+            }
+        }
+
+        // Synthesizer for audio generation
+        class MobiusQuantumSynthesizer {
+            constructor(audioContext) {
+                this.audioContext = audioContext;
+                this.oscillators = [];
+                this.gainNodes = [];
+                this.isPlaying = false;
+                this.bufferCache = {};
+                this.currentTime = 0;
+                this.progressCallback = null;
+                this.durationSeconds = 0;
+                this.mobiusField = null;
+                this.quantumModel = null;
+            }
+
+            setModels(mobiusField, quantumModel) {
+                this.mobiusField = mobiusField;
+                this.quantumModel = quantumModel;
+            }
+
+            setProgressCallback(callback) {
+                this.progressCallback = callback;
+            }
+
+            async generateBuffer(musicStructure, parameters) {
+                if (!this.mobiusField || !this.quantumModel) {
+                    throw new Error("Models not initialized");
+                }
+
+                const sampleRate = this.audioContext.sampleRate;
+                const duration = musicStructure.duration;
+                this.durationSeconds = duration;
+                
+                // Create an audio buffer
+                const bufferSize = Math.ceil(sampleRate * duration);
+                const audioBuffer = this.audioContext.createBuffer(1, bufferSize, sampleRate);
+                const channelData = audioBuffer.getChannelData(0);
+                
+                // Clear the buffer
+                for (let i = 0; i < bufferSize; i++) {
+                    channelData[i] = 0;
+                }
+                
+                // Generate each note
+                for (const note of musicStructure.notes) {
+                    // Calculate the frequency for this note
+                    const midiNote = note.note + note.octave * 12;
+                    const frequency = 440 * Math.pow(2, (midiNote - 69) / 12);
+                    
+                    // Generate a quantum waveform for this note
+                    await this.generateNoteWaveform(
+                        channelData, 
+                        frequency, 
+                        note.startTime, 
+                        note.duration, 
+                        note.velocity,
+                        sampleRate,
+                        parameters
+                    );
+                }
+                
+                // Normalize the buffer to prevent clipping
+                let maxAmp = 0;
+                for (let i = 0; i < bufferSize; i++) {
+                    maxAmp = Math.max(maxAmp, Math.abs(channelData[i]));
+                }
+                
+                if (maxAmp > 0) {
+                    const gain = 0.9 / maxAmp;
+                    for (let i = 0; i < bufferSize; i++) {
+                        channelData[i] *= gain;
+                    }
+                }
+                
+                return audioBuffer;
+            }
+
+            async generateNoteWaveform(channelData, frequency, startTime, duration, velocity, sampleRate, parameters) {
+                // Apply quantum operator based on note properties
+                const operatorType = (frequency < 220) ? 'strike' : 
+                                   (frequency < 880) ? 'pluck' : 'bow';
+                                   
+                this.quantumModel.applyOperator(operatorType, 0.5 + 0.5 * Math.random());
+                
+                // Generate a waveform for this note with harmonics using the quantum model
+                const noteSamples = Math.ceil(sampleRate * duration);
+                const startSample = Math.floor(startTime * sampleRate);
+                
+                // Generate the quantum waveform
+                const baseWaveform = this.quantumModel.generateWaveform(noteSamples, this.mobiusField);
+                
+                // Apply envelope
+                for (let i = 0; i < noteSamples; i++) {
+                    if (startSample + i >= channelData.length) break;
+                    
+                    const normalizedTime = i / noteSamples;
+                    const envelope = this.applyEnvelope(normalizedTime, operatorType);
+                    
+                    // Copy to the main buffer with the envelope and velocity
+                    channelData[startSample + i] += baseWaveform[i] * envelope * velocity;
+                }
+            }
+
+            applyEnvelope(normalizedTime, operatorType) {
+                if (operatorType === 'strike') {
+                    // Percussive envelope: quick attack, medium decay
+                    return Math.exp(-normalizedTime * 8) * (1 - Math.exp(-normalizedTime * 80));
+                }
+                else if (operatorType === 'pluck') {
+                    // Pluck envelope: quick attack, slower decay
+                    return Math.exp(-normalizedTime * 5) * (1 - Math.exp(-normalizedTime * 100));
+                }
+                else if (operatorType === 'bow') {
+                    // Bowed envelope: slower attack, sustained
+                    return (1 - Math.exp(-normalizedTime * 5)) * Math.exp(-normalizedTime * 2);
+                }
+                
+                return 1.0;  // Default
+            }
+
+            async play(musicStructure, parameters) {
+                if (this.isPlaying) {
+                    this.stop();
+                }
+                
+                try {
+                    // Generate the audio buffer
+                    const buffer = await this.generateBuffer(musicStructure, parameters);
+                    const source = this.audioContext.createBufferSource();
+                    source.buffer = buffer;
+                    
+                    const gainNode = this.audioContext.createGain();
+                    gainNode.gain.value = 0.8;
+                    
+                    source.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    // Store references
+                    this.oscillators.push(source);
+                    this.gainNodes.push(gainNode);
+                    
+                    // Play
+                    source.start();
+                    this.isPlaying = true;
+                    
+                    // Track progress
+                    this.currentTime = 0;
+                    const startTime = this.audioContext.currentTime;
+                    
+                    // Progress tracking
+                    if (this.progressCallback) {
+                        const progressInterval = setInterval(() => {
+                            this.currentTime = this.audioContext.currentTime - startTime;
+                            
+                            if (this.currentTime >= this.durationSeconds || !this.isPlaying) {
+                                clearInterval(progressInterval);
+                                this.isPlaying = false;
+                                if (this.progressCallback) {
+                                    this.progressCallback(1.0);
+                                }
+                            } else {
+                                const progress = this.currentTime / this.durationSeconds;
+                                if (this.progressCallback) {
+                                    this.progressCallback(progress);
+                                }
+                            }
+                        }, 50);
+                    }
+                    
+                    // Clean up when finished
+                    source.onended = () => {
+                        this.isPlaying = false;
+                        this.oscillators = this.oscillators.filter(o => o !== source);
+                        this.gainNodes = this.gainNodes.filter(g => g !== gainNode);
+                    };
+                    
+                    return true;
+                } catch (error) {
+                    console.error("Error playing:", error);
+                    return false;
+                }
+            }
+
+            stop() {
+                // Stop all oscillators
+                for (const osc of this.oscillators) {
+                    try {
+                        osc.stop();
+                    } catch (e) {
+                        // Ignore errors from already stopped oscillators
+                    }
+                }
+                
+                this.oscillators = [];
+                this.gainNodes = [];
+                this.isPlaying = false;
+                
+                // Reset progress
+                if (this.progressCallback) {
+                    this.progressCallback(0);
+                }
+            }
+        }
+
+        // =====================================================
+        // Application Logic
+        // =====================================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize audio context (suspended until user gesture)
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            const audioContext = new AudioContext();
+            
+            // Initialize synthesizer
+            const synthesizer = new MobiusQuantumSynthesizer(audioContext);
+            
+            // UI Elements
+            const seedInput = document.getElementById('seed-phrase');
+            const generateBtn = document.getElementById('generate-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const playBtn = document.getElementById('play-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const statusLog = document.getElementById('status-log');
+            const mobiusCanvas = document.getElementById('mobius-canvas');
+            const hypergraphContainer = document.getElementById('hypergraph-container');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingMessage = document.getElementById('loading-message');
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            
+            // Parameter sliders
+            const mobiusDimensionsSlider = document.getElementById('mobius-dimensions');
+            const mobiusDimensionsValue = document.getElementById('mobius-dimensions-value');
+            const twistFactorSlider = document.getElementById('twist-factor');
+            const twistFactorValue = document.getElementById('twist-factor-value');
+            const quantumStateSizeSlider = document.getElementById('quantum-state-size');
+            const quantumStateSizeValue = document.getElementById('quantum-state-size-value');
+            const evolutionStepsSlider = document.getElementById('evolution-steps');
+            const evolutionStepsValue = document.getElementById('evolution-steps-value');
+            const harmonicComplexitySlider = document.getElementById('harmonic-complexity');
+            const harmonicComplexityValue = document.getElementById('harmonic-complexity-value');
+            const temporalDensitySlider = document.getElementById('temporal-density');
+            const temporalDensityValue = document.getElementById('temporal-density-value');
+            
+            // Setup canvas contexts
+            const mobiusCtx = mobiusCanvas.getContext('2d');
+            
+            // Global state
+            let mobiusField = null;
+            let quantumModel = null;
+            let hypergraphComposer = null;
+            let musicStructure = null;
+            let isGenerating = false;
+            
+            // Setup parameter sliders
+            function updateParameterDisplay() {
+                mobiusDimensionsValue.textContent = mobiusDimensionsSlider.value;
+                twistFactorValue.textContent = twistFactorSlider.value;
+                quantumStateSizeValue.textContent = quantumStateSizeSlider.value;
+                evolutionStepsValue.textContent = evolutionStepsSlider.value;
+                harmonicComplexityValue.textContent = harmonicComplexitySlider.value;
+                temporalDensityValue.textContent = temporalDensitySlider.value;
+            }
+            
+            mobiusDimensionsSlider.addEventListener('input', updateParameterDisplay);
+            twistFactorSlider.addEventListener('input', updateParameterDisplay);
+            quantumStateSizeSlider.addEventListener('input', updateParameterDisplay);
+            evolutionStepsSlider.addEventListener('input', updateParameterDisplay);
+            harmonicComplexitySlider.addEventListener('input', updateParameterDisplay);
+            temporalDensitySlider.addEventListener('input', updateParameterDisplay);
+            
+            // Initialize parameter display
+            updateParameterDisplay();
+            
+            // Add log entry
+            function addLogEntry(message) {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.textContent = message;
+                statusLog.appendChild(entry);
+                statusLog.scrollTop = statusLog.scrollHeight;
+            }
+            
+            // Draw mobius field visualization
+            function drawMobiusVisualization() {
+                if (!mobiusField || !quantumModel) return;
+                
+                const width = mobiusCanvas.width;
+                const height = mobiusCanvas.height;
+                
+                // Clear canvas
+                mobiusCtx.clearRect(0, 0, width, height);
+                
+                // Draw quantum state
+                for (const node of quantumModel.visualData) {
+                    mobiusCtx.beginPath();
+                    mobiusCtx.arc(node.x, node.y, 3 + node.magnitude * 10, 0, Math.PI * 2);
+                    mobiusCtx.fillStyle = node.color;
+                    mobiusCtx.fill();
+                    
+                    // Draw connection lines based on mobius field tensors
+                    for (const edge of mobiusField.visualData.edges) {
+                        const fromNode = mobiusField.visualData.nodes[edge.from];
+                        const toNode = mobiusField.visualData.nodes[edge.to];
+                        
+                        mobiusCtx.beginPath();
+                        mobiusCtx.moveTo(fromNode.x, fromNode.y);
+                        
+                        // Calculate control point for curved line
+                        const midX = (fromNode.x + toNode.x) / 2;
+                        const midY = (fromNode.y + toNode.y) / 2;
+                        const dx = toNode.x - fromNode.x;
+                        const dy = toNode.y - fromNode.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // Perpendicular offset for curve
+                        const offsetX = -dy / dist * 20;
+                        const offsetY = dx / dist * 20;
+                        
+                        mobiusCtx.quadraticCurveTo(
+                            midX + offsetX, 
+                            midY + offsetY, 
+                            toNode.x, 
+                            toNode.y
+                        );
+                        
+                        mobiusCtx.strokeStyle = `rgba(3, 218, 198, ${edge.strength * 0.5})`;
+                        mobiusCtx.lineWidth = edge.strength * 3;
+                        mobiusCtx.stroke();
+                    }
+                }
+            }
+            
+            // Draw hypergraph visualization
+            function drawHypergraphVisualization() {
+                if (!hypergraphComposer) return;
+                
+                // Clear container
+                hypergraphContainer.innerHTML = '';
+                
+                // Draw edges first (behind nodes)
+                for (const edge of hypergraphComposer.visualData.edges) {
+                    if (edge.vertices.length < 2) continue;
+                    
+                    // For each connected vertex, draw a line to the center
+                    for (const vertex of edge.vertices) {
+                        const edgeElem = document.createElement('div');
+                        edgeElem.className = 'hypergraph-edge';
+                        
+                        // Calculate line parameters
+                        const dx = edge.center.x - vertex.x;
+                        const dy = edge.center.y - vertex.y;
+                        const length = Math.sqrt(dx * dx + dy * dy);
+                        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                        
+                        // Position and rotate line
+                        edgeElem.style.left = `${vertex.x}px`;
+                        edgeElem.style.top = `${vertex.y}px`;
+                        edgeElem.style.width = `${length}px`;
+                        edgeElem.style.height = `${2 + vertex.size / 4}px`;
+                        edgeElem.style.backgroundColor = edge.color;
+                        edgeElem.style.transform = `rotate(${angle}deg)`;
+                        
+                        hypergraphContainer.appendChild(edgeElem);
+                    }
+                }
+                
+                // Draw vertices
+                for (const vertex of hypergraphComposer.visualData.vertices) {
+                    const nodeElem = document.createElement('div');
+                    nodeElem.className = 'hypergraph-node';
+                    nodeElem.style.left = `${vertex.x}px`;
+                    nodeElem.style.top = `${vertex.y}px`;
+                    nodeElem.style.backgroundColor = vertex.color;
+                    nodeElem.style.width = `${vertex.size}px`;
+                    nodeElem.style.height = `${vertex.size}px`;
+                    
+                    // Add tooltip with info
+                    nodeElem.title = `${vertex.type}: ${JSON.stringify(vertex.properties)}`;
+                    
+                    hypergraphContainer.appendChild(nodeElem);
+                }
+                
+                // If we have a music structure, draw piano roll
+                if (musicStructure && musicStructure.notes.length > 0) {
+                    const duration = musicStructure.duration;
+                    const height = hypergraphContainer.clientHeight;
+                    
+                    for (const note of musicStructure.notes) {
+                        const noteElem = document.createElement('div');
+                        noteElem.className = 'piano-key';
+                        
+                        // Calculate position and size
+                        const left = (note.startTime / duration) * 100;
+                        const width = (note.duration / duration) * 100;
+                        const noteValue = note.note + note.octave * 12;
+                        const top = 100 - ((noteValue - 48) / 36) * 100;
+                        
+                        noteElem.style.left = `${left}%`;
+                        noteElem.style.top = `${top}%`;
+                        noteElem.style.width = `${width}%`;
+                        noteElem.style.height = '4px';
+                        
+                        // Color based on velocity
+                        const hue = 180 + (note.note * 30) % 180;
+                        noteElem.style.backgroundColor = `hsla(${hue}, 80%, 60%, ${note.velocity})`;
+                        
+                        hypergraphContainer.appendChild(noteElem);
+                    }
+                }
+            }
+            
+            // Generate music
+            async function generateMusic() {
+                if (isGenerating) return;
+                
+                isGenerating = true;
+                generateBtn.disabled = true;
+                playBtn.disabled = true;
+                stopBtn.disabled = true;
+                
+                try {
+                    // Show loading overlay
+                    loadingOverlay.classList.add('active');
+                    loadingMessage.textContent = 'Initializing quantum fields...';
+                    
+                    // Get parameters
+                    const seedPhrase = seedInput.value || 'Quantum Harmonic Oscillation';
+                    const mobiusDimensions = parseInt(mobiusDimensionsSlider.value);
+                    const twistFactor = parseFloat(twistFactorSlider.value);
+                    const quantumStateSize = parseInt(quantumStateSizeSlider.value);
+                    const evolutionSteps = parseInt(evolutionStepsSlider.value);
+                    const harmonicComplexity = parseFloat(harmonicComplexitySlider.value);
+                    const temporalDensity = parseFloat(temporalDensitySlider.value);
+                    
+                    // Log start
+                    addLogEntry(`Generating music with seed: "${seedPhrase}"`);
+                    
+                    // Step 1: Create mobius time field
+                    loadingMessage.textContent = 'Creating mobius time field...';
+                    await new Promise(resolve => setTimeout(resolve, 50)); // Allow UI update
+                    
+                    mobiusField = new MobiusTimeField(mobiusDimensions, twistFactor);
+                    addLogEntry(`Created mobius field with ${mobiusDimensions} dimensions`);
+                    
+                    // Step 2: Create quantum instrument model
+                    loadingMessage.textContent = 'Initializing quantum instrument model...';
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    
+                    quantumModel = new QuantumInstrumentModel(quantumStateSize);
+                    addLogEntry(`Initialized quantum instrument with ${quantumStateSize} state dimensions`);
+                    
+                    // Update synthesizer
+                    synthesizer.setModels(mobiusField, quantumModel);
+                    
+                    // Step 3: Create hypergraph composer
+                    loadingMessage.textContent = 'Generating compositional structure...';
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    
+                    hypergraphComposer = new HypergraphComposer(seedPhrase);
+                    addLogEntry(`Created hypergraph with ${hypergraphComposer.vertices.length} vertices and ${hypergraphComposer.hyperedges.length} edges`);
+                    
+                    // Step 4: Evolve the composition
+                    loadingMessage.textContent = 'Evolving musical structure...';
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    
+                    hypergraphComposer.evolve(evolutionSteps);
+                    addLogEntry(`Evolved structure through ${evolutionSteps} steps`);
+                    
+                    // Step 5: Generate the actual music structure
+                    loadingMessage.textContent = 'Creating final music structure...';
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    
+                    musicStructure = hypergraphComposer.generateMusicStructure();
+                    
+                    // Add more notes based on harmonic complexity
+                    const extraNoteCount = Math.floor(harmonicComplexity * 20);
+                    for (let i = 0; i < extraNoteCount; i++) {
+                        const baseNote = musicStructure.notes[i % musicStructure.notes.length];
+                        if (baseNote) {
+                            // Create a harmonic variation
+                            const harmonicOffset = [0, 4, 7, 12, -5, 3, -4][(i * 3) % 7];
+                            const newNote = baseNote.note + harmonicOffset;
+                            const octaveOffset = Math.floor(newNote / 12);
+                            
+                            musicStructure.notes.push({
+                                note: ((newNote % 12) + 12) % 12,
+                                octave: baseNote.octave + octaveOffset,
+                                startTime: (baseNote.startTime + i * 0.2) % (musicStructure.duration - 0.5),
+                                duration: baseNote.duration * (0.7 + Math.random() * 0.6),
+                                velocity: baseNote.velocity * 0.8
+                            });
+                        }
+                    }
+                    
+                    // Adjust note density based on temporal density
+                    const finalNoteCount = Math.floor(musicStructure.notes.length * temporalDensity);
+                    if (finalNoteCount < musicStructure.notes.length) {
+                        musicStructure.notes = musicStructure.notes
+                            .sort(() => 0.5 - Math.random())
+                            .slice(0, finalNoteCount);
+                    }
+                    
+                    addLogEntry(`Generated ${musicStructure.notes.length} notes over ${musicStructure.duration}s`);
+                    
+                    // Update visualizations
+                    drawMobiusVisualization();
+                    drawHypergraphVisualization();
+                    
+                    // Enable playback
+                    playBtn.disabled = false;
+                    
+                    // Set progress callback
+                    synthesizer.setProgressCallback(progress => {
+                        progressBarFill.style.width = `${progress * 100}%`;
+                        if (progress >= 1.0) {
+                            playBtn.disabled = false;
+                            stopBtn.disabled = true;
+                        }
+                    });
+                    
+                } catch (error) {
+                    console.error('Generation error:', error);
+                    addLogEntry(`Error: ${error.message}`);
+                } finally {
+                    isGenerating = false;
+                    generateBtn.disabled = false;
+                    loadingOverlay.classList.remove('active');
+                }
+            }
+            
+            // Play the generated music
+            async function playMusic() {
+                if (!musicStructure || synthesizer.isPlaying) return;
+                
+                // Resume audio context if suspended
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+                
+                playBtn.disabled = true;
+                stopBtn.disabled = false;
+                
+                // Get current parameters for playback
+                const parameters = {
+                    harmonicComplexity: parseFloat(harmonicComplexitySlider.value),
+                    temporalDensity: parseFloat(temporalDensitySlider.value)
+                };
+                
+                // Play
+                const success = await synthesizer.play(musicStructure, parameters);
+                
+                if (!success) {
+                    addLogEntry('Error playing audio');
+                    playBtn.disabled = false;
+                    stopBtn.disabled = true;
+                }
+            }
+            
+            // Stop playback
+            function stopMusic() {
+                synthesizer.stop();
+                playBtn.disabled = false;
+                stopBtn.disabled = true;
+            }
+            
+            // Reset parameters
+            function resetParameters() {
+                mobiusDimensionsSlider.value = 32;
+                twistFactorSlider.value = 0.75;
+                quantumStateSizeSlider.value = 24;
+                evolutionStepsSlider.value = 12;
+                harmonicComplexitySlider.value = 0.6;
+                temporalDensitySlider.value = 0.7;
+                updateParameterDisplay();
+                
+                addLogEntry('Parameters reset to defaults');
+            }
+            
+            // Set up canvas sizing
+            function resizeCanvas() {
+                mobiusCanvas.width = mobiusCanvas.clientWidth;
+                mobiusCanvas.height = mobiusCanvas.clientHeight;
+                
+                // Redraw if we have data
+                if (mobiusField && quantumModel) {
+                    drawMobiusVisualization();
+                }
+                
+                if (hypergraphComposer) {
+                    drawHypergraphVisualization();
+                }
+            }
+            
+            // Attach event listeners
+            generateBtn.addEventListener('click', generateMusic);
+            resetBtn.addEventListener('click', resetParameters);
+            playBtn.addEventListener('click', playMusic);
+            stopBtn.addEventListener('click', stopMusic);
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Initial setup
+            resizeCanvas();
+            addLogEntry('Quantum Mobius Music Generator initialized');
+            addLogEntry('Enter a seed phrase and click Generate to create music');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Mobius Music Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: monospace;
+    }
+    body {
+      background: #111;
+      color: #0fc;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    canvas {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      opacity: 0.8;
+    }
+    #ui {
+      position: relative;
+      padding: 20px;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #0fc;
+      text-align: center;
+      margin: 20px 0;
+      text-shadow: 0 0 10px #0fc;
+    }
+    button {
+      background: #0a0a0a;
+      color: #0fc;
+      border: 1px solid #0fc;
+      padding: 8px 16px;
+      margin: 5px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #0fc;
+      transition: all 0.2s;
+    }
+    button:hover:not(:disabled) {
+      background: #0fc;
+      color: #000;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #controls {
+      display: flex;
+      flex-direction: column;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #0fc;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,255,200,0.3);
+    }
+    #progress {
+      width: 100%;
+      height: 20px;
+      background: #000;
+      margin: 10px 0;
+      box-shadow: 0 0 5px #0fc inset;
+    }
+    #progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #0fc;
+      transition: width 0.3s;
+    }
+    .slider-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    input[type=range] {
+      width: 100%;
+      margin: 10px 0;
+    }
+    input[type=text] {
+      background: #000;
+      border: 1px solid #0fc;
+      color: #0fc;
+      padding: 10px;
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    #log {
+      color: #0fc;
+      height: 120px;
+      overflow-y: auto;
+      border: 1px solid #0fc;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+      background: rgba(0,0,0,0.5);
+    }
+    #log div {
+      border-bottom: 1px solid #050;
+      padding: 4px 0;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      margin: 15px 0;
+    }
+    #permission-notice {
+      color: #0fc;
+      text-align: center;
+      margin: 10px 0;
+      font-weight: bold;
+      padding: 10px;
+      background: rgba(0, 255, 200, 0.1);
+      border: 1px dashed #0fc;
+    }
+    #instruments {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      background: rgba(0,0,0,0.4);
+      padding: 10px;
+      border: 1px solid #077;
+    }
+    .instrument {
+      display: inline-block;
+      padding: 5px 8px;
+      margin: 3px;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid #0fc;
+      font-size: 12px;
+    }
+    .instrument.active {
+      background: rgba(0,255,200,0.2);
+    }
+    #loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      flex-direction: column;
+      color: #0fc;
+      display: none;
+    }
+    #loading.active {
+      display: flex;
+    }
+    .spinner {
+      border: 5px solid #111;
+      border-top: 5px solid #0fc;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @media (max-width: 600px) {
+      .slider-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="visualizer"></canvas>
+  <div id="ui">
+    <h1>Quantum Mobius Music Generator</h1>
+    <div id="controls">
+      <input type="text" id="seed" value="Quantum Symphony" placeholder="Enter a seed phrase...">
+      
+      <div class="slider-group">
+        <div>
+          <label for="dimensions">Mobius Dimensions: <span id="dimensions-value">24</span></label>
+          <input type="range" id="dimensions" min="16" max="32" value="24">
+        </div>
+        <div>
+          <label for="twist">Twist Factor: <span id="twist-value">0.75</span></label>
+          <input type="range" id="twist" min="0.1" max="2.0" step="0.05" value="0.75">
+        </div>
+        <div>
+          <label for="quantum">Quantum States: <span id="quantum-value">16</span></label>
+          <input type="range" id="quantum" min="8" max="24" value="16">
+        </div>
+        <div>
+          <label for="evolution">Evolution Steps: <span id="evolution-value">8</span></label>
+          <input type="range" id="evolution" min="2" max="12" value="8">
+        </div>
+        <div>
+          <label for="complexity">Song Complexity: <span id="complexity-value">7</span></label>
+          <input type="range" id="complexity" min="3" max="10" value="7">
+        </div>
+        <div>
+          <label for="duration">Song Duration: <span id="duration-value">30</span>s</label>
+          <input type="range" id="duration" min="15" max="60" step="5" value="30">
+        </div>
+      </div>
+      
+      <div id="instruments">
+        <div class="instrument active" data-instrument="bass">Bass</div>
+        <div class="instrument active" data-instrument="pads">Pads</div>
+        <div class="instrument active" data-instrument="lead">Lead</div>
+        <div class="instrument active" data-instrument="pluck">Pluck</div>
+        <div class="instrument active" data-instrument="percussion">Percussion</div>
+      </div>
+      
+      <div id="permission-notice">
+        👉 Click Generate then Play to enable audio
+      </div>
+      
+      <div class="buttons">
+        <button id="generate">Generate Music</button>
+        <button id="play" disabled>Play</button>
+        <button id="stop" disabled>Stop</button>
+      </div>
+      
+      <div id="progress"><div id="progress-bar"></div></div>
+    </div>
+    
+    <div id="log"></div>
+  </div>
+  
+  <div id="loading">
+    <div class="spinner"></div>
+    <div id="loading-text">Generating quantum music...</div>
+  </div>
+
+<script>
+(function() {
+  // Constants and utilities
+  const PI = Math.PI;
+  const TAU = PI * 2;
+  
+  // DOM elements
+  const canvas = document.getElementById('visualizer');
+  const ctx = canvas.getContext('2d');
+  const logEl = document.getElementById('log');
+  const seedEl = document.getElementById('seed');
+  const genBtn = document.getElementById('generate');
+  const playBtn = document.getElementById('play');
+  const stopBtn = document.getElementById('stop');
+  const progressBar = document.getElementById('progress-bar');
+  const loadingEl = document.getElementById('loading');
+  const loadingText = document.getElementById('loading-text');
+  
+  // Instrument toggles
+  const instrumentElements = document.querySelectorAll('.instrument');
+  const activeInstruments = {
+    bass: true,
+    pads: true,
+    lead: true,
+    pluck: true,
+    percussion: true
+  };
+  
+  // Set up instrument toggle
+  instrumentElements.forEach(el => {
+    el.addEventListener('click', () => {
+      const instrument = el.getAttribute('data-instrument');
+      if (el.classList.contains('active')) {
+        el.classList.remove('active');
+        activeInstruments[instrument] = false;
+      } else {
+        el.classList.add('active');
+        activeInstruments[instrument] = true;
+      }
+    });
+  });
+  
+  // Sliders
+  const dimensionsSlider = document.getElementById('dimensions');
+  const dimensionsValue = document.getElementById('dimensions-value');
+  const twistSlider = document.getElementById('twist');
+  const twistValue = document.getElementById('twist-value');
+  const quantumSlider = document.getElementById('quantum');
+  const quantumValue = document.getElementById('quantum-value');
+  const evolutionSlider = document.getElementById('evolution');
+  const evolutionValue = document.getElementById('evolution-value');
+  const complexitySlider = document.getElementById('complexity');
+  const complexityValue = document.getElementById('complexity-value');
+  const durationSlider = document.getElementById('duration');
+  const durationValue = document.getElementById('duration-value');
+  
+  // Initialize audio context
+  let audioCtx;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  } catch (e) {
+    log('AudioContext not supported in this browser');
+  }
+  
+  // State
+  let isPlaying = false;
+  let isGenerating = false;
+  let lineCount = 0;
+  let audioBuffer = null;
+  let startTime = 0;
+  let audioNodes = {
+    source: null,
+    gain: null
+  };
+  
+  // Musical information
+  let songData = {
+    duration: 30,
+    bpm: 120,
+    instruments: {},
+    sections: [],
+    currentTime: 0
+  };
+  
+  // Canvas setup
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+  
+  // Update slider displays
+  function updateSliders() {
+    dimensionsValue.textContent = dimensionsSlider.value;
+    twistValue.textContent = twistSlider.value;
+    quantumValue.textContent = quantumSlider.value;
+    evolutionValue.textContent = evolutionSlider.value;
+    complexityValue.textContent = complexitySlider.value;
+    durationValue.textContent = durationSlider.value;
+  }
+  
+  // Attach events to sliders
+  [dimensionsSlider, twistSlider, quantumSlider, evolutionSlider, complexitySlider, durationSlider].forEach(slider => {
+    slider.addEventListener('input', updateSliders);
+  });
+  
+  // Initial update
+  updateSliders();
+  
+  // Logging function
+  function log(msg) {
+    const line = document.createElement('div');
+    line.textContent = `${++lineCount}: ${msg}`;
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  
+  // Seed-based random number generator
+  function createRNG(seed) {
+    let s = hashCode(seed);
+    return function() {
+      s = (s * 9301 + 49297) % 233280;
+      return s / 233280;
+    };
+  }
+  
+  function hashCode(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  }
+  
+  // Musical scale generator
+  function generateScale(seed) {
+    const seedRNG = createRNG(seed);
+    const scaleTypes = [
+      [0, 2, 4, 5, 7, 9, 11], // Major
+      [0, 2, 3, 5, 7, 8, 10], // Minor
+      [0, 2, 4, 7, 9],        // Pentatonic major
+      [0, 3, 5, 7, 10],       // Pentatonic minor
+      [0, 2, 3, 6, 7, 8, 11], // Double harmonic
+      [0, 2, 3, 5, 7, 8, 11]  // Harmonic minor
+    ];
+    
+    const scaleTypeIndex = Math.floor(seedRNG() * scaleTypes.length);
+    const rootNote = Math.floor(seedRNG() * 12);
+    
+    // Return the scale notes adjusted to the root
+    return scaleTypes[scaleTypeIndex].map(interval => (interval + rootNote) % 12);
+  }
+  
+  // Chord progression generator
+  function generateChordProgression(scale, seed) {
+    const seedRNG = createRNG(seed + 'chords');
+    
+    // Common chord positions (scale degrees)
+    const commonProgressions = [
+      [0, 5, 3, 4],    // I-VI-IV-V
+      [0, 3, 4, 0],    // I-IV-V-I
+      [0, 5, 1, 4],    // I-VI-II-V
+      [0, 4, 5, 3],    // I-V-VI-IV
+      [0, 3, 0, 4],    // I-IV-I-V
+      [5, 3, 0, 0],    // VI-IV-I-I
+      [0, 4, 5, 5]     // I-V-VI-VI
+    ];
+    
+    const progIndex = Math.floor(seedRNG() * commonProgressions.length);
+    const progression = commonProgressions[progIndex];
+    
+    // Turn scale degrees into actual chords
+    return progression.map(degree => {
+      const root = scale[degree % scale.length];
+      
+      // Build triads from the scale
+      // Root, 3rd (2 steps), 5th (4 steps)
+      const third = scale[(degree + 2) % scale.length];
+      const fifth = scale[(degree + 4) % scale.length];
+      
+      return { 
+        root, 
+        notes: [root, third, fifth],
+        // Alternate between 7th and no 7th
+        hasSeventh: seedRNG() > 0.5
+      };
+    });
+  }
+  
+  // Generate a section of a song
+  function generateSection(type, seed, scale, chords, duration, bpm) {
+    const seedRNG = createRNG(seed + type);
+    const sectionDuration = duration;
+    const beatsPerBar = 4;
+    const secondsPerBeat = 60 / bpm;
+    const totalBeats = sectionDuration / secondsPerBeat;
+    const totalBars = Math.floor(totalBeats / beatsPerBar);
+    
+    // Section structure based on type
+    let events = [];
+    
+    // Common settings
+    const intensity = 0.4 + seedRNG() * 0.6;
+    const density = 0.3 + seedRNG() * 0.7;
+    
+    switch(type) {
+      case 'intro':
+        events = generateIntro(scale, chords, totalBars, intensity * 0.7, density * 0.6, seedRNG);
+        break;
+      case 'verse':
+        events = generateVerse(scale, chords, totalBars, intensity, density, seedRNG);
+        break;
+      case 'chorus':
+        events = generateChorus(scale, chords, totalBars, intensity * 1.2, density * 1.2, seedRNG);
+        break;
+      case 'bridge':
+        events = generateBridge(scale, chords, totalBars, intensity * 0.9, density * 0.8, seedRNG);
+        break;
+      case 'outro':
+        events = generateOutro(scale, chords, totalBars, intensity * 0.6, density * 0.5, seedRNG);
+        break;
+    }
+    
+    return {
+      type,
+      duration: sectionDuration,
+      events
+    };
+  }
+  
+  // Generate pattern for intro
+  function generateIntro(scale, chords, bars, intensity, density, rng) {
+    const events = [];
+    const secondsPerBar = 4 * (60 / songData.bpm);
+    
+    // Bass line - simple, establishing rhythm
+    if (activeInstruments.bass) {
+      for (let bar = 0; bar < bars; bar++) {
+        const chord = chords[bar % chords.length];
+        
+        // Root bass notes on 1 and 3
+        events.push({
+          instrument: 'bass',
+          note: chord.root + 36, // One octave down
+          time: bar * secondsPerBar,
+          duration: secondsPerBar * 0.8,
+          velocity: 0.7 * intensity
+        });
+        
+        // Sometimes add a note on beat 3
+        if (rng() < 0.6) {
+          events.push({
+            instrument: 'bass',
+            note: chord.root + 36,
+            time: bar * secondsPerBar + 2 * (60 / songData.bpm),
+            duration: secondsPerBar * 0.3,
+            velocity: 0.5 * intensity
+          });
+        }
+      }
+    }
+    
+    // Pads - atmospheric, slow attack
+    if (activeInstruments.pads) {
+      for (let bar = 0; bar < bars; bar += 2) { // Change every 2 bars
+        if (bar >= bars) break;
+        
+        const chord = chords[Math.floor(bar/2) % chords.length];
+        
+        // Add each note in the chord
+        chord.notes.forEach((note, i) => {
+          // Spread the notes across octaves
+          const octave = 4 + Math.floor(i/3);
+          
+          events.push({
+            instrument: 'pads',
+            note: note + octave * 12,
+            time: bar * secondsPerBar,
+            duration: secondsPerBar * (rng() < 0.5 ? 2 : 4), // 2 or 4 bars
+            velocity: (0.3 + rng() * 0.2) * intensity
+          });
+        });
+      }
+    }
+    
+    // Sparse plucks - establishing melody hints
+    if (activeInstruments.pluck && rng() < 0.7) {
+      for (let bar = 0; bar < bars; bar++) {
+        if (rng() < density * 0.7) {
+          const chord = chords[bar % chords.length];
+          const note = chord.notes[Math.floor(rng() * chord.notes.length)];
+          const octave = 4 + Math.floor(rng() * 2);
+          
+          events.push({
+            instrument: 'pluck',
+            note: note + octave * 12,
+            time: bar * secondsPerBar + rng() * secondsPerBar,
+            duration: 0.2 + rng() * 0.5,
+            velocity: (0.4 + rng() * 0.3) * intensity
+          });
+        }
+      }
+    }
+    
+    // Minimal percussion - just establishing time
+    if (activeInstruments.percussion) {
+      for (let bar = 0; bar < bars; bar++) {
+        // Kick on beat 1
+        if (bar > bars/3) { // Start percussion after 1/3 of intro
+          events.push({
+            instrument: 'percussion',
+            note: 36, // Kick
+            time: bar * secondsPerBar,
+            duration: 0.1,
+            velocity: 0.5 * intensity
+          });
+        }
+        
+        // Hi-hat patterns
+        if (bar > bars/2 && rng() < 0.6) { // Only in second half of intro
+          for (let beat = 0; beat < 4; beat++) {
+            if (rng() < density * 0.4) {
+              events.push({
+                instrument: 'percussion',
+                note: 42, // Closed hi-hat
+                time: bar * secondsPerBar + beat * (60 / songData.bpm),
+                duration: 0.05,
+                velocity: (0.2 + rng() * 0.2) * intensity
+              });
+            }
+          }
+        }
+      }
+    }
+    
+    return events;
+  }
+  
+  // Generate verse pattern
+  function generateVerse(scale, chords, bars, intensity, density, rng) {
+    const events = [];
+    const secondsPerBar = 4 * (60 / songData.bpm);
+    
+    // Bass - more rhythmic
+    if (activeInstruments.bass) {
+      for (let bar = 0; bar < bars; bar++) {
+        const chord = chords[bar % chords.length];
+        
+        // Root on beat 1
+        events.push({
+          instrument: 'bass',
+          note: chord.root + 36,
+          time: bar * secondsPerBar,
+          duration: secondsPerBar * 0.5,
+          velocity: 0.75 * intensity
+        });
+        
+        // Rhythmic pattern
+        const pattern = Math.floor(rng() * 3); // 3 different patterns
+        
+        if (pattern === 0) {
+          // Pattern 1: beat 3
+          events.push({
+            instrument: 'bass',
+            note: chord.root + 36,
+            time: bar * secondsPerBar + 2 * (60 / songData.bpm),
+            duration: secondsPerBar * 0.4,
+            velocity: 0.6 * intensity
+          });
+        } else if (pattern === 1) {
+          // Pattern 2: beats 2 and 4
+          events.push({
+            instrument: 'bass',
+            note: chord.root + 36,
+            time: bar * secondsPerBar + 1 * (60 / songData.bpm),
+            duration: secondsPerBar * 0.3,
+            velocity: 0.5 * intensity
+          });
+          events.push({
+            instrument: 'bass',
+            note: chord.root + 36,
+            time: bar * secondsPerBar + 3 * (60 / songData.bpm),
+            duration: secondsPerBar * 0.3,
+            velocity: 0.5 * intensity
+          });
+        } else {
+          // Pattern 3: walking bass
+          const fifthNote = (chord.root + 7) % 12;
+          events.push({
+            instrument: 'bass',
+            note: chord.root + 36,
+            time: bar * secondsPerBar + 1 * (60 / songData.bpm),
+            duration: secondsPerBar * 0.3,
+            velocity: 0.5 * intensity
+          });
+          events.push({
+            instrument: 'bass',
+            note: fifthNote + 36,
+            time: bar * secondsPerBar + 2 * (60 / songData.bpm),
+            duration: secondsPerBar * 0.3,
+            velocity: 0.5 * intensity
+          });
+          events.push({
+            instrument: 'bass',
+            note: chord.root + 36,
+            time: bar * secondsPerBar + 3 * (60 / songData.bpm),
+            duration: secondsPerBar * 0.3,
+            velocity: 0.5 * intensity
+          });
+        }
+      }
+    }
+    
+    // Pads - subtler than intro
+    if (activeInstruments.pads) {
+      for (let bar = 0; bar < bars; bar += 2) {
+        if (bar >= bars) break;
+        
+        const chord = chords[Math.floor(bar/2) % chords.length];
+        
+        // Add selective chord notes for texture
+        const noteCount = 1 + Math.floor(rng() * 2); // 1-2 notes
+        const chordNotes = [...chord.notes];
+        
+        for (let i = 0; i < noteCount; i++) {
+          if (chordNotes.length === 0) break;
+          
+          const noteIndex = Math.floor(rng() * chordNotes.length);
+          const note = chordNotes[noteIndex];
+          chordNotes.splice(noteIndex, 1); // Remove so we don't pick it again
+          
+          const octave = 4 + Math.floor(i/2);
+          
+          events.push({
+            instrument: 'pads',
+            note: note + octave * 12,
+            time: bar * secondsPerBar,
+            duration: secondsPerBar * 1.8, // Almost 2 bars
+            velocity: (0.2 + rng() * 0.2) * intensity
+          });
+        }
+      }
+    }
+    
+    // Lead - melodic elements
+    if (activeInstruments.lead && rng() < 0.6) {
+      // Generate a simple recurring motif
+      const motifLength = 1 + Math.floor(rng() * 2); // 1-2 bars
+      const motifNotes = [];
+      
+      // Create a motif from scale notes
+      for (let i = 0; i < 4 * motifLength; i++) {
+        if (rng() < density * 0.7) {
+          const scaleNote = scale[Math.floor(rng() * scale.length)];
+          const octave = 4 + Math.floor(rng() * 2);
+          motifNotes.push({
+            note: scaleNote + octave * 12,
+            beat: i * 0.25, // 16th notes
+            duration: 0.1 + rng() * 0.3,
+            velocity: (0.4 + rng() * 0.3) * intensity
+          });
+        }
+      }
+      
+      // Repeat the motif throughout verse with variations
+      for (let bar = 0; bar < bars; bar += motifLength) {
+        if (rng() < 0.7) { // 70% chance to play the motif in each position
+          motifNotes.forEach(note => {
+            // Add some rhythmic variation
+            const timeVar = (rng() < 0.8) ? 0 : (rng() * 0.1 - 0.05);
+            
+            events.push({
+              instrument: 'lead',
+              note: note.note,
+              time: (bar + note.beat) * secondsPerBar + timeVar,
+              duration: note.duration,
+              velocity: note.velocity * (0.8 + rng() * 0.4) // Some velocity variation
+            });
+          });
+        }
+      }
+    }
+    
+    // Plucks - arpeggios and accents
+    if (activeInstruments.pluck) {
+      for (let bar = 0; bar < bars; bar++) {
+        const chord = chords[bar % chords.length];
+        
+        // Chance to add arpeggios
+        if (rng() < density * 0.6) {
+          const arpCount = 3 + Math.floor(rng() * 5); // 3-7 notes
+          const arpNotes = [...chord.notes];
+          
+          // Add the octave for more arp variety
+          arpNotes.forEach(note => arpNotes.push(note + 12));
+          
+          for (let i = 0; i < arpCount; i++) {
+            const noteIndex = Math.floor(rng() * arpNotes.length);
+            const beat = i / arpCount * 4; // Spread evenly across bar
+            const octave = 4;
+            
+            events.push({
+              instrument: 'pluck',
+              note: arpNotes[noteIndex] + octave * 12,
+              time: bar * secondsPerBar + beat * (60 / songData.bpm),
+              duration: 0.2,
+              velocity: (0.3 + rng() * 0.2) * intensity
+            });
+          }
+        }
+      }
+    }
+    
+    // Percussion - full rhythm
+    if (activeInstruments.percussion) {
+      for (let bar = 0; bar < bars; bar++) {
+        // Kick pattern
+        events.push({
+          instrument: 'percussion',
+          note: 36, // Kick
+          time: bar * secondsPerBar, // Beat 1
+          duration: 0.1,
+          velocity: 0.8 * intensity
+        });
+        
+        // Occasionally on beat 3
+        if (rng() < 0.7) {
+          events.push({
+            instrument: 'percussion',
+            note: 36, // Kick
+            time: bar * secondsPerBar + 2 * (60 / songData.bpm), // Beat 3
+            duration: 0.1,
+            velocity: 0.6 * intensity
+          });
+        }
+        
+        // Snare on beats 2 and 4
+        events.push({
+          instrument: 'percussion',
+          note: 38, // Snare
+          time: bar * secondsPerBar + 1 * (60 / songData.bpm), // Beat 2
+          duration: 0.1,
+          velocity: 0.6 * intensity
+        });
+        events.push({
+          instrument: 'percussion',
+          note: 38, // Snare
+          time: bar * secondsPerBar + 3 * (60 / songData.bpm), // Beat 4
+          duration: 0.1,
+          velocity: 0.7 * intensity
+        });
+        
+        // Hi-hats - 8th notes
+        for (let eighth = 0; eighth < 8; eighth++) {
+          if (rng() < density * 0.9) { // High probability for hi-hats
+            events.push({
+              instrument: 'percussion',
+              note: 42, // Closed hi-hat
+              time: bar * secondsPerBar + eighth * 0.5 * (60 / songData.bpm),
+              duration: 0.05,
+              velocity: (0.3 + (eighth % 2 === 0 ? 0.2 : 0)) * intensity // Accents on downbeats
+            });
+          }
+        }
+      }
+    }
+    
+    return events;
+  }
+  
+  // Generate chorus pattern
+  function generateChorus(scale, chords, bars, intensity, density, rng) {
+    const events = [];
+    const secondsPerBar = 4 * (60 / songData.bpm);
+    
+    // Bass - driving, energetic
+    if (activeInstruments.bass) {
+      for (let bar = 0; bar < bars; bar++) {
+        const chord = chords[bar % chords.length];
+        
+        // Root on beat 1 with longer duration
+        events.push({
+          instrument: 'bass',
+          note: chord.root + 36,
+          time: bar * secondsPerBar,
+          duration: secondsPerBar * 0.7,
+          velocity: 0.9 * intensity
+        });
+        
+        // More active rhythm
+        for (let beat = 1; beat < 4; beat++) {
+          if (rng() < density * 0.7) {
+            let note = chord.root;
+            
+            // Sometimes use 5th or other chord tone
+            if (rng() < 0.3) {
+              note = chord.notes[Math.floor(rng() * chord.notes.length)];
+            }
+            
+            events.push({
+              instrument: 'bass',
+              note: note + 36,
+              time: bar * secondsPerBar + beat * (60 / songData.bpm),
+              duration: secondsPerBar * 0.3,
+              velocity: 0.7 * intensity
+            });
+          }
+        }
+      }
+    }
+    
+    // Pads - fuller chords
+    if (activeInstruments.pads) {
+      for (let bar = 0; bar < bars; bar += 1) { // Change every bar for more energy
+        const chord = chords[bar % chords.length];
+        
+        // Full chord pads
+        chord.notes.forEach((note, i) => {
+          const octave = 4 + Math.floor(i/3);
+          
+          events.push({
+            instrument: 'pads',
+            note: note + octave * 12,
+            time: bar * secondsPerBar,
+            duration: secondsPerBar * 0.9,
+            velocity: (0.4 + rng() * 0.3) * intensity
+          });
+        });
+      }
+    }
+    
+    // Lead - strong chorus melody
+    if (activeInstruments.lead) {
+      // Create a memorable chorus motif
+      const chorusNotes = [];
+      
+      // Select notes from scale with emphasis on chord tones
+      for (let i = 0; i < 8; i++) { // 8 potential notes in the motif
+        if (rng() < density * 0.9) { // High chance of notes
+          let note;
+          if (rng() < 0.7) {
+            // Use chord tones for strong melody
+            const chord = chords[Math.floor(i/2) % chords.length];
+            note = chord.notes[Math.floor(rng() * chord.notes.length)];
+          } else {
+            // Use any scale tone
+            note = scale[Math.floor(rng() * scale.length)];
+          }
+          
+          const octave = 4 + (rng() < 0.3 ? 1 : 0); // Occasionally jump up an octave
+          
+          chorusNotes.push({
+            note: note + octave * 12,
+            beat: i * 0.5, // 8th notes
+            duration: 0.3 + rng() * 0.4,
+            velocity: (0.6 + rng() * 0.4) * intensity
+          });
+        }
+      }
+      
+      // Repeat the motif throughout chorus
+      for (let bar = 0; bar < bars; bar += 2) { // 2-bar pattern
+        chorusNotes.forEach(note => {
+          events.push({
+            instrument: 'lead',
+            note: note.note,
+            time: (bar + note.beat) * secondsPerBar,
+            duration: note.duration,
+            velocity: note.velocity
+          });
+        });
+      }
+    }
+    
+    // Plucks - energetic arpeggios
+    if (activeInstruments.pluck) {
+      for (let bar = 0; bar < bars; bar++) {
+        const chord = chords[bar % chords.length];
+        
+        // 16th note arpeggios
+        for (let sixteenth = 0; sixteenth < 16; sixteenth++) {
+          if (rng() < density * 0.5) {
+            const chordNote = chord.notes[sixteenth % chord.notes.length];
+            const octave = 4 + Math.floor(sixteenth / 12); // Occasional octave jump
+            
+            events.push({
+              instrument: 'pluck',
+              note: chordNote + octave * 12,
+              time: bar * secondsPerBar + sixteenth * 0.25 * (60 / songData.bpm),
+              duration: 0.2,
+              velocity: (0.4 + rng() * 0.4) * intensity
+            });
+          }
+        }
+      }
+    }
+    
+    // Percussion - full energy
+    if (activeInstruments.percussion) {
+      for (let bar = 0; bar < bars; bar++) {
+        // Kick on beats 1, 2, 3, 4 for maximum energy
+        for (let beat = 0; beat < 4; beat++) {
+          const kickIntensity = (beat === 0 || beat === 2) ? 0.9 : 0.7; // Emphasize 1 and 3
+          
+          events.push({
+            instrument: 'percussion',
+            note: 36, // Kick
+            time: bar * secondsPerBar + beat * (60 / songData.bpm),
+            duration: 0.1,
+            velocity: kickIntensity * intensity
+          });
+        }
+        
+        // Snare on beats 2 and 4
+        events.push({
+          instrument: 'percussion',
+          note: 38, // Snare
+          time: bar * secondsPerBar + 1 * (60 / songData.bpm), // Beat 2
+          duration: 0.1,
+          velocity: 0.7 * intensity
+        });
+        events.push({
+          instrument: 'percussion',
+          note: 38, // Snare
+          time: bar * secondsPerBar + 3 * (60 / songData.bpm), // Beat 4
+          duration: 0.1,
+          velocity: 0.8 * intensity
+        });
+        
+        // Hi-hats - 16th notes for high energy
+        for (let sixteenth = 0; sixteenth < 16; sixteenth++) {
+          if (rng() < density * 0.95) { // Very high probability for hi-hats
+            events.push({
+              instrument: 'percussion',
+              note: 42, // Closed hi-hat
+              time: bar * secondsPerBar + sixteenth * 0.25 * (60 / songData.bpm),
+              duration: 0.05,
+              velocity: (0.3 + (sixteenth % 4 === 0 ? 0.3 : 0)) * intensity // Accent on quarter notes
+            });
+          }
+        }
+        
+        // Occasional cymbal crash on bar start
+        if (bar % 4 === 0 || rng() < 0.2) {
+          events.push({
+            instrument: 'percussion',
+            note: 49, // Crash
+            time: bar * secondsPerBar,
+            duration: 0.3,
+            velocity: 0.8 * intensity
+          });
+        }
+      }
+    }
+    
+    return events;
+  }
+  
+  // Generate bridge pattern
+  function generateBridge(scale, chords, bars, intensity, density, rng) {
+    const events = [];
+    const secondsPerBar = 4 * (60 / songData.bpm);
+    
+    // Use different chord progression for bridge
+    const bridgeChords = [];
+    const originalRoot = chords[0].root;
+    
+    // Create more experimental chords
+    for (let i = 0; i < chords.length; i++) {
+      const degreeOffset = [2, 6, 1, 3][i % 4]; // Different scale positions
+      const root = scale[(scale.indexOf(originalRoot) + degreeOffset) % scale.length];
+      const third = scale[(scale.indexOf(root) + 2) % scale.length];
+      const fifth = scale[(scale.indexOf(root) + 4) % scale.length];
+      
+      bridgeChords.push({
+        root,
+        notes: [root, third, fifth],
+        hasSeventh: true
+      });
+    }
+    
+    // Bass - sparser, more experimental
+    if (activeInstruments.bass) {
+      for (let bar = 0; bar < bars; bar++) {
+        const chord = bridgeChords[bar % bridgeChords.length];
+        
+        // Only root on beat 1
+        if (bar % 2 === 0) { // Every other bar
+          events.push({
+            instrument: 'bass',
+            note: chord.root + 36,
+            time: bar * secondsPerBar,
+            duration: secondsPerBar * 1.8, // Long notes
+            velocity: 0.6 * intensity
+          });
+        }
+      }
+    }
+    
+    // Pads - atmospheric, unusual harmonies
+    if (activeInstruments.pads) {
+      for (let bar = 0; bar < bars; bar += 2) {
+        if (bar >= bars) break;
+        
+        const chord = bridgeChords[Math.floor(bar/2) % bridgeChords.length];
+        
+        // Add each note in the chord
+        chord.notes.forEach((note, i) => {
+          // Spread across octaves
+          const octave = 4 + Math.floor(i/2);
+          
+          // Add some 7ths and 9ths for more color
+          const actualNote = (i === chord.notes.length - 1 && rng() < 0.5) 
+            ? (note + [3, 7][Math.floor(rng() * 2)]) % 12 // Add 7th or 9th
+            : note;
+          
+          events.push({
+            instrument: 'pads',
+            note: actualNote + octave * 12,
+            time: bar * secondsPerBar,
+            duration: secondsPerBar * 1.9,
+            velocity: (0.3 + rng() * 0.2) * intensity
+          });
+        });
+      }
+    }
+    
+    // Lead - experimental sounds
+    if (activeInstruments.lead) {
+      // Create a more ambient, sparse lead part
+      for (let bar = 0; bar < bars; bar++) {
+        if (rng() < density * 0.4) { // Much sparser
+          const chord = bridgeChords[bar % bridgeChords.length];
+          const note = chord.notes[Math.floor(rng() * chord.notes.length)];
+          const octave = 4 + Math.floor(rng() * 2);
+          
+          events.push({
+            instrument: 'lead',
+            note: note + octave * 12,
+            time: bar * secondsPerBar + rng() * secondsPerBar,
+            duration: 1 + rng() * 2, // Long notes
+            velocity: (0.3 + rng() * 0.3) * intensity
+          });
+        }
+      }
+    }
+    
+    // Plucks - reversed sound effect
+    if (activeInstruments.pluck) {
+      for (let bar = 0; bar < bars; bar++) {
+        if (rng() < density * 0.3) {
+          const chord = bridgeChords[bar % bridgeChords.length];
+          
+          // Build cluster of notes
+          const noteCount = 2 + Math.floor(rng() * 4);
+          
+          for (let n = 0; n < noteCount; n++) {
+            const scaleNote = scale[Math.floor(rng() * scale.length)];
+            const octave = 3 + Math.floor(rng() * 3);
+            
+            events.push({
+              instrument: 'pluck',
+              note: scaleNote + octave * 12,
+              time: bar * secondsPerBar + rng() * secondsPerBar,
+              duration: 0.4 + rng() * 0.6,
+              velocity: (0.2 + rng() * 0.2) * intensity,
+              reverse: true // Special effect flag
+            });
+          }
+        }
+      }
+    }
+    
+    // Percussion - minimal, glitchy
+    if (activeInstruments.percussion) {
+      for (let bar = 0; bar < bars; bar++) {
+        // Sparse kick pattern
+        if (bar % 2 === 0) { // Every other bar
+          events.push({
+            instrument: 'percussion',
+            note: 36, // Kick
+            time: bar * secondsPerBar,
+            duration: 0.1,
+            velocity: 0.5 * intensity
+          });
+        }
+        
+        // Occasional snares
+        if (rng() < density * 0.6) {
+          events.push({
+            instrument: 'percussion',
+            note: 38, // Snare
+            time: bar * secondsPerBar + Math.floor(rng() * 4) * (60 / songData.bpm),
+            duration: 0.1,
+            velocity: 0.4 * intensity
+          });
+        }
+        
+        // Glitchy hi-hat pattern
+        for (let beat = 0; beat < 4; beat++) {
+          if (rng() < density * 0.4) {
+            events.push({
+              instrument: 'percussion',
+              note: 42, // Closed hi-hat
+              time: bar * secondsPerBar + beat * (60 / songData.bpm) + (rng() * 0.1),
+              duration: 0.05,
+              velocity: 0.3 * intensity
+            });
+          }
+        }
+      }
+    }
+    
+    return events;
+  }
+  
+  // Generate outro pattern
+  function generateOutro(scale, chords, bars, intensity, density, rng) {
+    const events = [];
+    const secondsPerBar = 4 * (60 / songData.bpm);
+    
+    // Bass - simplifying
+    if (activeInstruments.bass) {
+      for (let bar = 0; bar < bars; bar++) {
+        const chord = chords[bar % chords.length];
+        
+        // Simple root notes, getting sparser toward the end
+        if (rng() < (1 - bar/bars) * 0.8) {
+          events.push({
+            instrument: 'bass',
+            note: chord.root + 36,
+            time: bar * secondsPerBar,
+            duration: secondsPerBar * 0.8,
+            velocity: (0.7 - bar/bars * 0.3) * intensity // Gradually decreasing
+          });
+        }
+      }
+    }
+    
+    // Pads - sustaining, fading
+    if (activeInstruments.pads) {
+      for (let bar = 0; bar < bars; bar += 2) {
+        if (bar >= bars) break;
+        
+        const chord = chords[Math.floor(bar/2) % chords.length];
+        
+        // Just root and fifth for clarity
+        [chord.root, chord.notes[2]].forEach((note, i) => {
+          const octave = 4 + Math.floor(i/2);
+          
+          events.push({
+            instrument: 'pads',
+            note: note + octave * 12,
+            time: bar * secondsPerBar,
+            duration: secondsPerBar * 3.9, // Long sustain
+            velocity: (0.5 - bar/bars * 0.3) * intensity // Gradually fading
+          });
+        });
+      }
+    }
+    
+    // Lead - echoing fragments of chorus melody
+    if (activeInstruments.lead) {
+      for (let bar = 0; bar < bars; bar++) {
+        if (rng() < density * 0.3 * (1 - bar/bars)) { // Getting sparser
+          const chord = chords[bar % chords.length];
+          const note = chord.notes[Math.floor(rng() * chord.notes.length)];
+          const octave = 4 + Math.floor(rng() * 2);
+          
+          events.push({
+            instrument: 'lead',
+            note: note + octave * 12,
+            time: bar * secondsPerBar + rng() * secondsPerBar,
+            duration: 0.5 + rng() * 1.5,
+            velocity: (0.4 - bar/bars * 0.3) * intensity // Gradually fading
+          });
+        }
+      }
+    }
+    
+    // Percussion - simplifying
+    if (activeInstruments.percussion) {
+      for (let bar = 0; bar < Math.floor(bars * 0.7); bar++) { // Stop percussion before the end
+        // Kick getting sparser
+        if (rng() < (1 - bar/bars) * 0.8) {
+          events.push({
+            instrument: 'percussion',
+            note: 36, // Kick
+            time: bar * secondsPerBar,
+            duration: 0.1,
+            velocity: (0.7 - bar/bars * 0.4) * intensity
+          });
+        }
+        
+        // Snare getting sparser
+        if (rng() < (1 - bar/bars) * 0.7) {
+          events.push({
+            instrument: 'percussion',
+            note: 38, // Snare
+            time: bar * secondsPerBar + 2 * (60 / songData.bpm),
+            duration: 0.1,
+            velocity: (0.6 - bar/bars * 0.4) * intensity
+          });
+        }
+        
+        // Sparse hi-hats
+        for (let beat = 0; beat < 4; beat++) {
+          if (rng() < density * 0.4 * (1 - bar/bars)) {
+            events.push({
+              instrument: 'percussion',
+              note: 42, // Closed hi-hat
+              time: bar * secondsPerBar + beat * (60 / songData.bpm),
+              duration: 0.05,
+              velocity: (0.4 - bar/bars * 0.3) * intensity
+            });
+          }
+        }
+      }
+      
+      // Final cymbal
+      if (bars > 3) {
+        events.push({
+          instrument: 'percussion',
+          note: 49, // Crash
+          time: (bars - 3) * secondsPerBar,
+          duration: 2.0,
+          velocity: 0.6 * intensity
+        });
+      }
+    }
+    
+    return events;
+  }
+  
+  // Create song structure
+  function generateSongStructure(seed, duration, complexity) {
+    const seedRNG = createRNG(seed + 'structure');
+    
+    // Determine BPM based on seed
+    const bpm = 90 + Math.floor(seedRNG() * 40); // 90-130 BPM
+    
+    // Generate musical scale
+    const scale = generateScale(seed);
+    
+    // Generate chord progression
+    const chords = generateChordProgression(scale, seed);
+    
+    // Structure based on complexity
+    let sections = [];
+    const totalBars = Math.floor(duration / (4 * 60 / bpm)); // convert to bars
+    
+    // Allocation percentages based on complexity
+    // Higher complexity = more varied sections
+    let allocation;
+    if (complexity <= 5) {
+      // Simple structure - intro, verse, chorus, verse, chorus, outro
+      allocation = {
+        intro: 0.15,
+        verse: 0.3,
+        chorus: 0.35,
+        bridge: 0,
+        outro: 0.2
+      };
+    } else if (complexity <= 8) {
+      // Medium structure with bridge
+      allocation = {
+        intro: 0.1,
+        verse: 0.25,
+        chorus: 0.3,
+        bridge: 0.2,
+        outro: 0.15
+      };
+    } else {
+      // Complex structure with multiple parts
+      allocation = {
+        intro: 0.1,
+        verse: 0.2,
+        chorus: 0.3,
+        bridge: 0.25,
+        outro: 0.15
+      };
+    }
+    
+    // Calculate bars for each section
+    const introBars = Math.max(4, Math.floor(totalBars * allocation.intro));
+    const verseBars = Math.max(8, Math.floor(totalBars * allocation.verse));
+    const chorusBars = Math.max(8, Math.floor(totalBars * allocation.chorus));
+    const bridgeBars = Math.max(0, Math.floor(totalBars * allocation.bridge));
+    const outroBars = Math.max(4, Math.floor(totalBars * allocation.outro));
+    
+    // Create sections
+    const introSection = {
+      type: 'intro',
+      bars: introBars,
+      duration: introBars * 4 * (60 / bpm)
+    };
+    
+    const verseSection = {
+      type: 'verse',
+      bars: verseBars,
+      duration: verseBars * 4 * (60 / bpm)
+    };
+    
+    const chorusSection = {
+      type: 'chorus',
+      bars: chorusBars,
+      duration: chorusBars * 4 * (60 / bpm)
+    };
+    
+    const bridgeSection = {
+      type: 'bridge',
+      bars: bridgeBars,
+      duration: bridgeBars * 4 * (60 / bpm)
+    };
+    
+    const outroSection = {
+      type: 'outro',
+      bars: outroBars,
+      duration: outroBars * 4 * (60 / bpm)
+    };
+    
+    // Build song structure based on complexity
+    if (complexity <= 5) {
+      // Simple: Intro, Verse, Chorus, Verse, Chorus, Outro
+      sections = [
+        introSection,
+        verseSection,
+        chorusSection,
+        verseSection,
+        chorusSection,
+        outroSection
+      ];
+    } else if (complexity <= 8) {
+      // Medium: Intro, Verse, Chorus, Verse, Chorus, Bridge, Chorus, Outro
+      sections = [
+        introSection,
+        verseSection,
+        chorusSection,
+        verseSection,
+        chorusSection,
+        bridgeSection,
+        chorusSection,
+        outroSection
+      ];
+    } else {
+      // Complex: Intro, Verse, Chorus, Verse, Chorus, Bridge, Verse, Chorus, Chorus, Outro
+      sections = [
+        introSection,
+        verseSection,
+        chorusSection,
+        verseSection,
+        chorusSection,
+        bridgeSection,
+        {
+          type: 'verse',
+          bars: Math.floor(verseBars * 0.75), // Shorter final verse
+          duration: Math.floor(verseBars * 0.75) * 4 * (60 / bpm)
+        },
+        chorusSection,
+        chorusSection,
+        outroSection
+      ];
+    }
+    
+    // Render section events
+    let currentTime = 0;
+    sections.forEach(section => {
+      section.startTime = currentTime;
+      
+      // Generate events for each section
+      section.events = generateSection(
+        section.type, 
+        seed + section.type, 
+        scale, 
+        chords, 
+        section.duration, 
+        bpm
+      );
+      
+      currentTime += section.duration;
+    });
+    
+    return {
+      bpm,
+      scale,
+      chords,
+      duration: currentTime, // Actual total duration
+      sections
+    };
+  }
+  
+  // Synthesize bass sound
+  function createBassSynth(attack = 0.01, decay = 0.2, sustain = 0.3, release = 0.4) {
+    return function(time, note, duration, velocity) {
+      const osc = audioCtx.createOscillator();
+      const gainEnv = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+      
+      // Convert MIDI note to frequency
+      const freq = 440 * Math.pow(2, (note - 69) / 12);
+      
+      // Configure oscillator
+      osc.type = 'sawtooth';
+      osc.frequency.value = freq;
+      
+      // Configure filter
+      filter.type = 'lowpass';
+      filter.frequency.value = 500; // Heavy filtering for bass
+      filter.Q.value = 2;
+      
+      // Configure envelope
+      gainEnv.gain.value = 0;
+      
+      // ADSR envelope
+      const now = audioCtx.currentTime;
+      gainEnv.gain.setValueAtTime(0, now + time);
+      gainEnv.gain.linearRampToValueAtTime(velocity, now + time + attack);
+      gainEnv.gain.linearRampToValueAtTime(velocity * sustain, now + time + attack + decay);
+      gainEnv.gain.linearRampToValueAtTime(0, now + time + duration + release);
+      
+      // Sub-oscillator for extra bass
+      const subOsc = audioCtx.createOscillator();
+      subOsc.type = 'sine';
+      subOsc.frequency.value = freq / 2; // One octave below
+      
+      const subGain = audioCtx.createGain();
+      subGain.gain.value = velocity * 0.5;
+      
+      // Connect everything
+      osc.connect(filter);
+      subOsc.connect(subGain);
+      subGain.connect(filter);
+      filter.connect(gainEnv);
+      gainEnv.connect(audioNodes.gain);
+      
+      // Start and stop
+      osc.start(now + time);
+      osc.stop(now + time + duration + release);
+      
+      subOsc.start(now + time);
+      subOsc.stop(now + time + duration + release);
+      
+      return {
+        oscillators: [osc, subOsc],
+        gains: [gainEnv, subGain]
+      };
+    };
+  }
+  
+  // Synthesize pad sound
+  function createPadSynth(attack = 0.5, decay = 0.5, sustain = 0.8, release = 1.0) {
+    return function(time, note, duration, velocity) {
+      const voices = [];
+      const gainEnv = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+      
+      // Convert MIDI note to frequency
+      const freq = 440 * Math.pow(2, (note - 69) / 12);
+      
+      // Create detuned voices for chorus effect
+      const detuneAmounts = [-10, -5, 0, 5, 10]; // cents
+      
+      detuneAmounts.forEach(detune => {
+        const osc = audioCtx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        osc.detune.value = detune;
+        voices.push(osc);
+      });
+      
+      // Configure filter
+      filter.type = 'lowpass';
+      filter.frequency.value = 1500;
+      filter.Q.value = 1;
+      
+      // Configure envelope
+      gainEnv.gain.value = 0;
+      
+      // ADSR envelope
+      const now = audioCtx.currentTime;
+      gainEnv.gain.setValueAtTime(0, now + time);
+      gainEnv.gain.linearRampToValueAtTime(velocity * 0.8, now + time + attack);
+      gainEnv.gain.linearRampToValueAtTime(velocity * sustain * 0.8, now + time + attack + decay);
+      gainEnv.gain.linearRampToValueAtTime(0, now + time + duration + release);
+      
+      // Connect everything
+      voices.forEach(osc => osc.connect(filter));
+      filter.connect(gainEnv);
+      gainEnv.connect(audioNodes.gain);
+      
+      // Start and stop
+      voices.forEach(osc => {
+        osc.start(now + time);
+        osc.stop(now + time + duration + release);
+      });
+      
+      return {
+        oscillators: voices,
+        gains: [gainEnv]
+      };
+    };
+  }
+  
+  // Synthesize lead sound
+  function createLeadSynth(attack = 0.05, decay = 0.2, sustain = 0.6, release = 0.4) {
+    return function(time, note, duration, velocity) {
+      const osc = audioCtx.createOscillator();
+      const gainEnv = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+      
+      // Convert MIDI note to frequency
+      const freq = 440 * Math.pow(2, (note - 69) / 12);
+      
+      // Configure oscillator
+      osc.type = 'sawtooth';
+      osc.frequency.value = freq;
+      
+      // Configure filter
+      filter.type = 'lowpass';
+      filter.frequency.value = 3000;
+      filter.Q.value = 3;
+      
+      // Configure envelope
+      gainEnv.gain.value = 0;
+      
+      // ADSR envelope
+      const now = audioCtx.currentTime;
+      gainEnv.gain.setValueAtTime(0, now + time);
+      gainEnv.gain.linearRampToValueAtTime(velocity, now + time + attack);
+      gainEnv.gain.linearRampToValueAtTime(velocity * sustain, now + time + attack + decay);
+      gainEnv.gain.linearRampToValueAtTime(0, now + time + duration + release);
+      
+      // Filter envelope for brightness
+      filter.frequency.setValueAtTime(1000, now + time);
+      filter.frequency.linearRampToValueAtTime(3000, now + time + attack);
+      filter.frequency.linearRampToValueAtTime(2000, now + time + attack + decay + duration);
+      
+      // Connect everything
+      osc.connect(filter);
+      filter.connect(gainEnv);
+      gainEnv.connect(audioNodes.gain);
+      
+      // Start and stop
+      osc.start(now + time);
+      osc.stop(now + time + duration + release);
+      
+      return {
+        oscillators: [osc],
+        gains: [gainEnv]
+      };
+    };
+  }
+  
+  // Synthesize pluck sound
+  function createPluckSynth(attack = 0.005, decay = 0.1, sustain = 0.3, release = 0.2) {
+    return function(time, note, duration, velocity, options = {}) {
+      const osc = audioCtx.createOscillator();
+      const gainEnv = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+      
+      // Convert MIDI note to frequency
+      const freq = 440 * Math.pow(2, (note - 69) / 12);
+      
+      // Configure oscillator
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      
+      // Configure filter
+      filter.type = 'lowpass';
+      filter.frequency.value = 5000;
+      filter.Q.value = 2;
+      
+      // Configure envelope
+      gainEnv.gain.value = 0;
+      
+      // ADSR envelope
+      const now = audioCtx.currentTime;
+      
+      if (options.reverse) {
+        // Reverse effect (slow attack, sharp release)
+        gainEnv.gain.setValueAtTime(0, now + time);
+        gainEnv.gain.linearRampToValueAtTime(velocity, now + time + duration * 0.8);
+        gainEnv.gain.linearRampToValueAtTime(0, now + time + duration);
+      } else {
+        // Normal pluck (sharp attack, exponential decay)
+        gainEnv.gain.setValueAtTime(0, now + time);
+        gainEnv.gain.linearRampToValueAtTime(velocity, now + time + attack);
+        gainEnv.gain.linearRampToValueAtTime(velocity * sustain, now + time + attack + decay);
+        gainEnv.gain.linearRampToValueAtTime(0, now + time + duration + release);
+      }
+      
+      // Filter envelope for brightness
+      filter.frequency.setValueAtTime(8000, now + time);
+      filter.frequency.exponentialRampToValueAtTime(1000, now + time + duration);
+      
+      // Connect everything
+      osc.connect(filter);
+      filter.connect(gainEnv);
+      gainEnv.connect(audioNodes.gain);
+      
+      // Start and stop
+      osc.start(now + time);
+      osc.stop(now + time + duration + release);
+      
+      return {
+        oscillators: [osc],
+        gains: [gainEnv]
+      };
+    };
+  }
+  
+  // Synthesize percussion sounds
+  function createPercussionSynth() {
+    return function(time, note, duration, velocity) {
+      const now = audioCtx.currentTime;
+      
+      // Different treatment based on note number (36=kick, 38=snare, 42=hi-hat, 49=crash)
+      if (note === 36) { // Kick
+        // Kick drum - sine with pitch envelope
+        const osc = audioCtx.createOscillator();
+        const gainEnv = audioCtx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(120, now + time);
+        osc.frequency.exponentialRampToValueAtTime(40, now + time + 0.1);
+        
+        gainEnv.gain.setValueAtTime(0, now + time);
+        gainEnv.gain.linearRampToValueAtTime(velocity, now + time + 0.005);
+        gainEnv.gain.exponentialRampToValueAtTime(0.001, now + time + 0.4);
+        
+        osc.connect(gainEnv);
+        gainEnv.connect(audioNodes.gain);
+        
+        osc.start(now + time);
+        osc.stop(now + time + 0.4);
+        
+        return {
+          oscillators: [osc],
+          gains: [gainEnv]
+        };
+      } 
+      else if (note === 38) { // Snare
+        // Snare - noise + tone
+        const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0, now + time);
+        noiseGain.gain.linearRampToValueAtTime(velocity * 0.8, now + time + 0.005);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + time + 0.2);
+        
+        // Tone component
+        const osc = audioCtx.createOscillator();
+        osc.type = 'triangle';
+        osc.frequency.value = 180;
+        
+        const oscGain = audioCtx.createGain();
+        oscGain.gain.setValueAtTime(0, now + time);
+        oscGain.gain.linearRampToValueAtTime(velocity * 0.5, now + time + 0.005);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, now + time + 0.1);
+        
+        // Filter for noise
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 1000;
+        
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(audioNodes.gain);
+        
+        osc.connect(oscGain);
+        oscGain.connect(audioNodes.gain);
+        
+        noise.start(now + time);
+        osc.start(now + time);
+        osc.stop(now + time + 0.2);
+        
+        return {
+          oscillators: [osc, noise],
+          gains: [noiseGain, oscGain]
+        };
+      }
+      else if (note === 42) { // Hi-hat
+        // Hi-hat - filtered noise, short duration
+        const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.1, audioCtx.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0, now + time);
+        noiseGain.gain.linearRampToValueAtTime(velocity * 0.7, now + time + 0.001);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + time + 0.08);
+        
+        // Filter for noise
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 7000;
+        
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(audioNodes.gain);
+        
+        noise.start(now + time);
+        
+        return {
+          oscillators: [noise],
+          gains: [noiseGain]
+        };
+      }
+      else if (note === 49) { // Crash
+        // Crash cymbal - filtered noise with longer decay
+        const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 1.5, audioCtx.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0, now + time);
+        noiseGain.gain.linearRampToValueAtTime(velocity * 0.8, now + time + 0.005);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + time + 1.5);
+        
+        // Filter for noise
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 5000;
+        
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(audioNodes.gain);
+        
+        noise.start(now + time);
+        
+        return {
+          oscillators: [noise],
+          gains: [noiseGain]
+        };
+      }
+      else {
+        // Default percussion - simple sine tone
+        const osc = audioCtx.createOscillator();
+        const gainEnv = audioCtx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.value = 440 * Math.pow(2, (note - 69) / 12);
+        
+        gainEnv.gain.setValueAtTime(0, now + time);
+        gainEnv.gain.linearRampToValueAtTime(velocity, now + time + 0.005);
+        gainEnv.gain.exponentialRampToValueAtTime(0.001, now + time + 0.1);
+        
+        osc.connect(gainEnv);
+        gainEnv.connect(audioNodes.gain);
+        
+        osc.start(now + time);
+        osc.stop(now + time + 0.1);
+        
+        return {
+          oscillators: [osc],
+          gains: [gainEnv]
+        };
+      }
+    };
+  }
+  
+  // Initialize instruments
+  function initInstruments() {
+    return {
+      bass: createBassSynth(0.01, 0.2, 0.3, 0.3),
+      pads: createPadSynth(0.5, 0.5, 0.8, 1.0),
+      lead: createLeadSynth(0.05, 0.2, 0.6, 0.4),
+      pluck: createPluckSynth(0.005, 0.1, 0.3, 0.2),
+      percussion: createPercussionSynth()
+    };
+  }
+  
+  // Create full song buffer
+  function createSongBuffer(songData) {
+    const totalDuration = songData.duration;
+    const sampleRate = audioCtx.sampleRate;
+    const bufferSize = Math.ceil(sampleRate * totalDuration);
+    const buffer = audioCtx.createBuffer(2, bufferSize, sampleRate); // Stereo
+    const leftChannel = buffer.getChannelData(0);
+    const rightChannel = buffer.getChannelData(1);
+    
+    // Clear buffer
+    for (let i = 0; i < bufferSize; i++) {
+      leftChannel[i] = 0;
+      rightChannel[i] = 0;
+    }
+    
+    // Temporary rendering context
+    const offlineCtx = new OfflineAudioContext(2, bufferSize, sampleRate);
+    
+    // Create gain node for master output
+    const masterGain = offlineCtx.createGain();
+    masterGain.gain.value = 0.8; // Prevent clipping
+    masterGain.connect(offlineCtx.destination);
+    
+    // Initialize instruments in offline context
+    const instruments = {
+      bass: {
+        synth: createBassSynth(0.01, 0.2, 0.3, 0.3),
+        gain: offlineCtx.createGain()
+      },
+      pads: {
+        synth: createPadSynth(0.5, 0.5, 0.8, 1.0),
+        gain: offlineCtx.createGain()
+      },
+      lead: {
+        synth: createLeadSynth(0.05, 0.2, 0.6, 0.4),
+        gain: offlineCtx.createGain()
+      },
+      pluck: {
+        synth: createPluckSynth(0.005, 0.1, 0.3, 0.2),
+        gain: offlineCtx.createGain()
+      },
+      percussion: {
+        synth: createPercussionSynth(),
+        gain: offlineCtx.createGain()
+      }
+    };
+    
+    // Set instrument levels
+    instruments.bass.gain.gain.value = 0.8;
+    instruments.pads.gain.gain.value = 0.6;
+    instruments.lead.gain.gain.value = 0.7;
+    instruments.pluck.gain.gain.value = 0.5;
+    instruments.percussion.gain.gain.value = 0.9;
+    
+    // Connect instrument gains to master
+    Object.values(instruments).forEach(inst => {
+      inst.gain.connect(masterGain);
+    });
+    
+    // Process all events across all sections
+    let allEvents = [];
+    
+    songData.sections.forEach(section => {
+      section.events.forEach(event => {
+        allEvents.push({
+          ...event,
+          time: section.startTime + event.time
+        });
+      });
+    });
+    
+    // Sort events by time
+    allEvents.sort((a, b) => a.time - b.time);
+    
+    // Schedule all events
+    allEvents.forEach(event => {
+      if (!instruments[event.instrument]) return;
+      
+      const inst = instruments[event.instrument];
+      
+      // Use the original AudioContext's time as reference for the synth
+      const synth = inst.synth(
+        event.time, 
+        event.note, 
+        event.duration, 
+        event.velocity, 
+        { reverse: event.reverse }
+      );
+      
+      if (synth && synth.gains) {
+        synth.gains.forEach(gain => gain.connect(inst.gain));
+      }
+    });
+    
+    // Render the audio
+    return offlineCtx.startRendering().then(renderedBuffer => {
+      // Copy the rendered buffer to our output buffer
+      const renderedLeft = renderedBuffer.getChannelData(0);
+      const renderedRight = renderedBuffer.getChannelData(1);
+      
+      for (let i = 0; i < bufferSize; i++) {
+        leftChannel[i] = renderedLeft[i];
+        rightChannel[i] = renderedRight[i];
+      }
+      
+      return buffer;
+    });
+  }
+  
+  // Generate music function
+  function generate() {
+    if (isGenerating) return;
+    
+    isGenerating = true;
+    loadingEl.classList.add('active');
+    log('Generating quantum music...');
+    genBtn.disabled = true;
+    playBtn.disabled = true;
+    stopBtn.disabled = true;
+    
+    // Get parameters
+    const seed = seedEl.value || 'Quantum Harmonic Oscillation';
+    const dimensions = parseInt(dimensionsSlider.value);
+    const twist = parseFloat(twistSlider.value);
+    const quantumStates = parseInt(quantumSlider.value);
+    const evolutionSteps = parseInt(evolutionSlider.value);
+    const complexity = parseInt(complexitySlider.value);
+    const duration = parseInt(durationSlider.value);
+    
+    // Generate song structure
+    loadingText.textContent = "Creating quantum music structure...";
+    
+    // Use setTimeout to allow UI to update
+    setTimeout(() => {
+      try {
+        log('Generating song structure...');
+        songData = generateSongStructure(seed, duration, complexity);
+        
+        // Log what we generated
+        log(`Generated ${songData.duration.toFixed(2)}s song at ${songData.bpm} BPM`);
+        log(`Structure: ${songData.sections.map(s => s.type).join(', ')}`);
+        
+        // Generate audio buffer (this is intensive)
+        loadingText.textContent = "Synthesizing audio...";
+        
+        setTimeout(() => {
+          createSongBuffer(songData).then(buffer => {
+            audioBuffer = buffer;
+            
+            loadingEl.classList.remove('active');
+            isGenerating = false;
+            genBtn.disabled = false;
+            playBtn.disabled = false;
+            
+            log('Quantum music generation complete!');
+            log('Click Play to hear your quantum song');
+          }).catch(err => {
+            log(`Error rendering audio: ${err.message}`);
+            loadingEl.classList.remove('active');
+            isGenerating = false;
+            genBtn.disabled = false;
+          });
+        }, 100);
+      } catch (err) {
+        log(`Generation error: ${err.message}`);
+        console.error(err);
+        loadingEl.classList.remove('active');
+        isGenerating = false;
+        genBtn.disabled = false;
+      }
+    }, 100);
+    
+    // Try to wake up audio context
+    if (audioCtx && audioCtx.state !== "running") {
+      audioCtx.resume().then(() => {
+        log('Audio context activated');
+      }).catch(err => {
+        log('Audio permission needed: click Play');
+      });
+    }
+  }
+  
+  // Play function
+  function play() {
+    if (!audioBuffer) {
+      log('Please generate music first');
+      return;
+    }
+    
+    if (isPlaying) {
+      stop();
+    }
+    
+    // Ensure audio context is running (needs user gesture)
+    if (audioCtx.state !== 'running') {
+      audioCtx.resume().then(() => {
+        startPlayback();
+      }).catch(err => {
+        log(`Could not start audio: ${err.message}`);
+        playBtn.disabled = false;
+      });
+    } else {
+      startPlayback();
+    }
+  }
+  
+  function startPlayback() {
+    try {
+      // Create nodes
+      audioNodes.source = audioCtx.createBufferSource();
+      audioNodes.gain = audioCtx.createGain();
+      
+      // Configure
+      audioNodes.source.buffer = audioBuffer;
+      audioNodes.gain.gain.value = 0.7;
+      
+      // Connect
+      audioNodes.source.connect(audioNodes.gain);
+      audioNodes.gain.connect(audioCtx.destination);
+      
+      // Start playback
+      audioNodes.source.start();
+      startTime = audioCtx.currentTime;
+      isPlaying = true;
+      songData.currentTime = 0;
+      
+      // Update UI
+      playBtn.disabled = true;
+      stopBtn.disabled = false;
+      log('Playback started');
+      
+      // Update progress
+      updateProgress();
+      
+      // Handle completion
+      audioNodes.source.onended = () => {
+        isPlaying = false;
+        audioNodes.source = null;
+        audioNodes.gain = null;
+        
+        // Update UI
+        playBtn.disabled = false;
+        stopBtn.disabled = true;
+        progressBar.style.width = '0%';
+        log('Playback completed');
+      };
+    } catch (err) {
+      log(`Playback error: ${err.message}`);
+      playBtn.disabled = false;
+      stopBtn.disabled = true;
+    }
+  }
+  
+  // Stop function
+  function stop() {
+    if (isPlaying && audioNodes.source) {
+      audioNodes.source.stop();
+      isPlaying = false;
+      audioNodes.source = null;
+      audioNodes.gain = null;
+      
+      // Update UI
+      playBtn.disabled = false;
+      stopBtn.disabled = true;
+      progressBar.style.width = '0%';
+      log('Playback stopped');
+    }
+  }
+  
+  // Update progress bar and current time
+  function updateProgress() {
+    if (!isPlaying || !audioNodes.source || !audioBuffer) return;
+    
+    const elapsed = audioCtx.currentTime - startTime;
+    const duration = audioBuffer.duration;
+    const progress = Math.min(elapsed / duration, 1);
+    songData.currentTime = elapsed;
+    
+    progressBar.style.width = `${progress * 100}%`;
+    
+    // Find current section
+    if (songData.sections) {
+      let currentSection = null;
+      for (let i = 0; i < songData.sections.length; i++) {
+        const section = songData.sections[i];
+        if (elapsed >= section.startTime && 
+            (i === songData.sections.length - 1 || elapsed < songData.sections[i + 1].startTime)) {
+          currentSection = section;
+          break;
+        }
+      }
+      
+      if (currentSection && !currentSection.announced) {
+        log(`Now playing: ${currentSection.type}`);
+        
+        // Mark as announced
+        currentSection.announced = true;
+        
+        // Reset other sections
+        songData.sections.forEach(s => {
+          if (s !== currentSection) s.announced = false;
+        });
+      }
+    }
+    
+    if (progress < 1) {
+      requestAnimationFrame(updateProgress);
+    }
+  }
+  
+  // Visualization
+  function visualize() {
+    // Clear with fade effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    if (isPlaying && audioBuffer && songData) {
+      const elapsed = songData.currentTime;
+      const totalDuration = audioBuffer.duration;
+      
+      // Get current section
+      let currentSection = null;
+      for (let i = 0; i < songData.sections.length; i++) {
+        const section = songData.sections[i];
+        if (elapsed >= section.startTime && 
+            (i === songData.sections.length - 1 || elapsed < songData.sections[i + 1].startTime)) {
+          currentSection = section;
+          break;
+        }
+      }
+      
+      // Find active notes at this timestamp
+      const activeNotes = [];
+      
+      if (currentSection) {
+        // Local time within section
+        const sectionTime = elapsed - currentSection.startTime;
+        
+        // Find events that are currently active
+        currentSection.events.forEach(event => {
+          if (sectionTime >= event.time && sectionTime <= event.time + event.duration) {
+            activeNotes.push({
+              ...event,
+              progress: (sectionTime - event.time) / event.duration
+            });
+          }
+        });
+      }
+      
+      // Draw based on section type
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const maxRadius = Math.min(canvas.width, canvas.height) * 0.4;
+      
+      // Draw section indicator
+      if (currentSection) {
+        ctx.fillStyle = 'rgba(0, 255, 200, 0.2)';
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 24px monospace';
+        ctx.fillText(currentSection.type.toUpperCase(), centerX, 40);
+      }
+      
+      // Draw progress ring
+      const progress = elapsed / totalDuration;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, maxRadius * 1.1, 0, progress * TAU);
+      ctx.strokeStyle = 'rgba(0, 255, 200, 0.5)';
+      ctx.lineWidth = 5;
+      ctx.stroke();
+      
+      // Draw active notes
+      activeNotes.forEach(note => {
+        // Parameters based on note properties
+        const noteAngle = (note.note / 127) * TAU;
+        const noteRadius = maxRadius * (0.2 + 0.7 * note.velocity);
+        const x = centerX + Math.cos(noteAngle) * noteRadius;
+        const y = centerY + Math.sin(noteAngle) * noteRadius;
+        
+        // Calculate color based on instrument
+        let hue = 0;
+        let size = 5 + note.velocity * 20;
+        
+        switch(note.instrument) {
+          case 'bass':
+            hue = 220; // Blue
+            size = 10 + note.velocity * 15;
+            break;
+          case 'pads':
+            hue = 180; // Cyan
+            size = 8 + note.velocity * 12;
+            break;
+          case 'lead':
+            hue = 120; // Green
+            size = 6 + note.velocity * 20;
+            break;
+          case 'pluck':
+            hue = 300; // Magenta
+            size = 4 + note.velocity * 12;
+            break;
+          case 'percussion':
+            hue = 60; // Yellow
+            size = 5 + note.velocity * 10;
+            break;
+        }
+        
+        // Draw note
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, TAU);
+        ctx.fillStyle = `hsla(${hue}, 80%, 60%, ${0.7 * note.velocity})`;
+        ctx.fill();
+        
+        // Draw ripple effect
+        const rippleSize = size * (1 + note.progress * 2);
+        ctx.beginPath();
+        ctx.arc(x, y, rippleSize, 0, TAU);
+        ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${0.5 * (1 - note.progress)})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Draw line to center
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${0.2 * note.velocity})`;
+        ctx.lineWidth = 1 + 3 * note.velocity;
+        ctx.stroke();
+      });
+      
+      // Draw central orb
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 10 + 5 * Math.sin(elapsed * 3), 0, TAU);
+      const glowIntensity = 0.3 + 0.2 * Math.sin(elapsed * 2);
+      ctx.fillStyle = `rgba(0, 255, 200, ${glowIntensity})`;
+      ctx.fill();
+      
+      // Central glow effect
+      const gradient = ctx.createRadialGradient(
+        centerX, centerY, 5,
+        centerX, centerY, 50
+      );
+      gradient.addColorStop(0, `rgba(0, 255, 200, ${glowIntensity})`);
+      gradient.addColorStop(1, 'rgba(0, 255, 200, 0)');
+      
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 50, 0, TAU);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+    } else {
+      // Static visualization when not playing
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const dimensions = parseInt(dimensionsSlider.value);
+      
+      // Draw static particles
+      for (let i = 0; i < dimensions; i++) {
+        const angle = (i / dimensions) * TAU;
+        const radius = Math.min(canvas.width, canvas.height) * 0.3;
+        
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        
+        const timeOffset = Date.now() / 1000;
+        const pulseSize = 3 + Math.sin(timeOffset + i * 0.2) * 2;
+        const hue = (i / dimensions * 360 + timeOffset * 20) % 360;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, pulseSize, 0, TAU);
+        ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.6)`;
+        ctx.fill();
+        
+        // Connection lines
+        if (i % 3 === 0) {
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(x, y);
+          ctx.strokeStyle = `hsla(${hue}, 70%, 50%, 0.1)`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+      
+      // Central orb pulse
+      const timeOffset = Date.now() / 1000;
+      const pulseSize = 10 + Math.sin(timeOffset * 2) * 5;
+      
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, pulseSize, 0, TAU);
+      ctx.fillStyle = `rgba(0, 255, 200, ${0.3 + 0.1 * Math.sin(timeOffset * 3)})`;
+      ctx.fill();
+    }
+    
+    // Continue animation
+    requestAnimationFrame(visualize);
+  }
+  
+  // Set up button events
+  genBtn.addEventListener('click', () => {
+    // Try to resume audio context on user gesture
+    if (audioCtx && audioCtx.state !== "running") {
+      audioCtx.resume().catch(e => {
+        log('Audio will need permission when you play');
+      });
+    }
+    generate();
+  });
+  
+  playBtn.addEventListener('click', play);
+  stopBtn.addEventListener('click', stop);
+  
+  // Initialize
+  log('Quantum Mobius Music Generator initialized');
+  log('Enter a seed phrase and click Generate to begin');
+  
+  // Start visualization
+  visualize();
+})();
+</script>
+</body>
+</html>

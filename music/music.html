@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobius Music Showcase</title>
+  <style>
+    body {
+      background: #111;
+      color: #0fc;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    select, button {
+      margin: 10px;
+      padding: 8px;
+      background: #0fc;
+      color: #111;
+      border: none;
+      font-family: monospace;
+    }
+    iframe {
+      width: 90vw;
+      height: 80vh;
+      border: 1px solid #0fc;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quantum Möbius Music Showcase</h1>
+  <select id="musicSelect">
+    <option value="music0.html">music0.html</option>
+    <option value="music1.html">music1.html</option>
+    <option value="music2.html">music2.html</option>
+    <option value="music3.html">music3.html</option>
+    <option value="music4.html">music4.html</option>
+    <option value="music5.html">music5.html</option>
+    <option value="music6.html">music6.html</option>
+    <option value="music7.html">music7.html</option>
+    <option value="music8.html">music8.html</option>
+    <option value="music9.html">music9.html</option>
+    <option value="music10.html">music10.html</option>
+    <option value="music11.html">music11.html</option>
+    <option value="music12.html">music12.html</option>
+    <option value="music13.html">music13.html</option>
+    <option value="music14.html">music14.html</option>
+    <option value="music15.html">music15.html</option>
+  </select>
+  <button onclick="loadSelectedMusic()">Load</button>
+
+  <iframe id="musicFrame" src="music0.html"></iframe>
+
+  <script>
+    function loadSelectedMusic() {
+      const select = document.getElementById('musicSelect');
+      const frame = document.getElementById('musicFrame');
+      frame.src = select.value;
+    }
+  </script>
+</body>
+</html>

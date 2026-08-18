@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Mobius Music Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: monospace;
+    }
+    body {
+      background: #111;
+      color: #0fc;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    canvas {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      opacity: 0.8;
+    }
+    #ui {
+      position: relative;
+      padding: 20px;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #0fc;
+      text-align: center;
+      margin: 20px 0;
+      text-shadow: 0 0 10px #0fc;
+    }
+    button {
+      background: #0a0a0a;
+      color: #0fc;
+      border: 1px solid #0fc;
+      padding: 8px 16px;
+      margin: 5px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #0fc;
+      transition: all 0.2s;
+    }
+    button:hover:not(:disabled) {
+      background: #0fc;
+      color: #000;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #controls {
+      display: flex;
+      flex-direction: column;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #0fc;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,255,200,0.3);
+    }
+    #progress {
+      width: 100%;
+      height: 20px;
+      background: #000;
+      margin: 10px 0;
+      box-shadow: 0 0 5px #0fc inset;
+    }
+    #progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #0fc;
+      transition: width 0.3s;
+    }
+    .slider-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    input[type=range] {
+      width: 100%;
+      margin: 10px 0;
+    }
+    input[type=text] {
+      background: #000;
+      border: 1px solid #0fc;
+      color: #0fc;
+      padding: 10px;
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    #log {
+      color: #0fc;
+      height: 100px;
+      overflow-y: auto;
+      border: 1px solid #0fc;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+      background: rgba(0,0,0,0.5);
+    }
+    #log div {
+      border-bottom: 1px solid #050;
+      padding: 4px 0;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      margin: 15px 0;
+    }
+    #permission-notice {
+      color: #0fc;
+      text-align: center;
+      margin: 10px 0;
+      font-weight: bold;
+      padding: 10px;
+      background: rgba(0, 255, 200, 0.1);
+      border: 1px dashed #0fc;
+    }
+    @media (max-width: 600px) {
+      .slider-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="visualizer"></canvas>
+  <div id="ui">
+    <h1>Quantum Mobius Music Generator</h1>
+    <div id="controls">
+      <input type="text" id="seed" value="Mobius Time Quantum Field" placeholder="Enter a seed phrase...">
+      
+      <div class="slider-group">
+        <div>
+          <label for="dimensions">Mobius Dimensions: <span id="dimensions-value">24</span></label>
+          <input type="range" id="dimensions" min="16" max="32" value="24">
+        </div>
+        <div>
+          <label for="twist">Twist Factor: <span id="twist-value">0.75</span></label>
+          <input type="range" id="twist" min="0.1" max="2.0" step="0.05" value="0.75">
+        </div>
+        <div>
+          <label for="quantum">Quantum States: <span id="quantum-value">16</span></label>
+          <input type="range" id="quantum" min="8" max="24" value="16">
+        </div>
+        <div>
+          <label for="evolution">Evolution Steps: <span id="evolution-value">8</span></label>
+          <input type="range" id="evolution" min="2" max="12" value="8">
+        </div>
+      </div>
+      
+      <div id="permission-notice">
+        👉 Click Generate then Play to enable audio
+      </div>
+      
+      <div class="buttons">
+        <button id="generate">Generate Music</button>
+        <button id="play" disabled>Play</button>
+        <button id="stop" disabled>Stop</button>
+      </div>
+      
+      <div id="progress"><div id="progress-bar"></div></div>
+    </div>
+    
+    <div id="log"></div>
+  </div>
+
+<script>
+(function() {
+  // Constants and utilities
+  const PI = Math.PI;
+  const TAU = PI * 2;
+  
+  // DOM elements
+  const canvas = document.getElementById('visualizer');
+  const ctx = canvas.getContext('2d');
+  const logEl = document.getElementById('log');
+  const seedEl = document.getElementById('seed');
+  const genBtn = document.getElementById('generate');
+  const playBtn = document.getElementById('play');
+  const stopBtn = document.getElementById('stop');
+  const progressBar = document.getElementById('progress-bar');
+  
+  // Sliders
+  const dimensionsSlider = document.getElementById('dimensions');
+  const dimensionsValue = document.getElementById('dimensions-value');
+  const twistSlider = document.getElementById('twist');
+  const twistValue = document.getElementById('twist-value');
+  const quantumSlider = document.getElementById('quantum');
+  const quantumValue = document.getElementById('quantum-value');
+  const evolutionSlider = document.getElementById('evolution');
+  const evolutionValue = document.getElementById('evolution-value');
+  
+  // Initialize audio context
+  let audioCtx;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  } catch (e) {
+    log('AudioContext not supported in this browser');
+  }
+  
+  // State
+  let isPlaying = false;
+  let sourceNode = null;
+  let gainNode = null;
+  let lineCount = 0;
+  let audioBuffer = null;
+  let startTime = 0;
+  
+  // Canvas setup
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+  
+  // Update slider displays
+  function updateSliders() {
+    dimensionsValue.textContent = dimensionsSlider.value;
+    twistValue.textContent = twistSlider.value;
+    quantumValue.textContent = quantumSlider.value;
+    evolutionValue.textContent = evolutionSlider.value;
+  }
+  
+  // Attach events to sliders
+  [dimensionsSlider, twistSlider, quantumSlider, evolutionSlider].forEach(slider => {
+    slider.addEventListener('input', updateSliders);
+  });
+  
+  // Initial update
+  updateSliders();
+  
+  // Logging function
+  function log(msg) {
+    const line = document.createElement('div');
+    line.textContent = `${++lineCount}: ${msg}`;
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  
+  // Seed-based random number generator
+  function createRNG(seed) {
+    let s = hashCode(seed);
+    return function() {
+      s = (s * 9301 + 49297) % 233280;
+      return s / 233280;
+    };
+  }
+  
+  function hashCode(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  }
+  
+  // Generate a quantum waveform based on seed and parameters
+  function generateQuantumWaveform(seed, dimensions, twist, quantumStates, evolutionSteps) {
+    const length = 2 * audioCtx.sampleRate; // 2 seconds of audio
+    const waveform = new Float32Array(length);
+    const seedRNG = createRNG(seed);
+    
+    // Generate base frequencies
+    let frequencies = [];
+    const baseFreq = 220; // A3
+    
+    // Generate a scale based on the seed
+    const scale = [0, 2, 4, 5, 7, 9, 11]; // Major scale
+    
+    // Generate some notes based on the seed
+    const noteCount = Math.floor(seedRNG() * 8) + 8;
+    
+    for (let i = 0; i < noteCount; i++) {
+      const octave = Math.floor(seedRNG() * 3) + 3; // 3-5
+      const scaleDegree = Math.floor(seedRNG() * scale.length);
+      const note = scale[scaleDegree] + (octave * 12);
+      frequencies.push(baseFreq * Math.pow(2, note / 12));
+    }
+    
+    // Fill the buffer with the waveform
+    for (let i = 0; i < length; i++) {
+      const time = i / audioCtx.sampleRate;
+      let sample = 0;
+      
+      // Mix frequencies with quantum-inspired modulation
+      for (let j = 0; j < frequencies.length; j++) {
+        const freq = frequencies[j];
+        const phase = (seedRNG() * TAU) + (j * twist);
+        const evolve = Math.sin(time * evolutionSteps * 0.5);
+        
+        // Apply "quantum" effects - interference patterns
+        sample += Math.sin(time * freq * TAU + phase) * 
+                 (0.5 + 0.5 * Math.sin(time * freq * 0.1)) * 
+                 Math.pow(Math.sin(time * 2 + j * 0.1), 2) * 
+                 (0.7 + 0.3 * evolve);
+      }
+      
+      // Apply envelope
+      const envTime = time / 2; // Envelope over 2 seconds
+      let env = 1;
+      
+      if (envTime < 0.01) {
+        env = envTime / 0.01; // Attack
+      } else if (envTime > 1.7) {
+        env = (2 - envTime) / 0.3; // Release
+      }
+      
+      // Apply dimensions as a filter
+      const dimensionFactor = dimensions / 24;
+      const filter = 0.5 + 0.5 * Math.sin(time * dimensionFactor * 4);
+      
+      waveform[i] = sample * env * filter * 0.2; // Scale down to avoid clipping
+    }
+    
+    // Normalize to prevent clipping
+    let max = 0.001;
+    for (let i = 0; i < length; i++) {
+      max = Math.max(max, Math.abs(waveform[i]));
+    }
+    
+    for (let i = 0; i < length; i++) {
+      waveform[i] = waveform[i] / max * 0.8;
+    }
+    
+    return waveform;
+  }
+  
+  // Create audio buffer from waveform
+  function createAudioBuffer(waveform) {
+    const buffer = audioCtx.createBuffer(1, waveform.length, audioCtx.sampleRate);
+    const channelData = buffer.getChannelData(0);
+    
+    for (let i = 0; i < waveform.length; i++) {
+      channelData[i] = waveform[i];
+    }
+    
+    return buffer;
+  }
+  
+  // Generate music function
+  function generate() {
+    log('Generating quantum music...');
+    genBtn.disabled = true;
+    playBtn.disabled = true;
+    stopBtn.disabled = true;
+    
+    // Get parameters
+    const seed = seedEl.value || 'Quantum Harmonic Oscillation';
+    const dimensions = parseInt(dimensionsSlider.value);
+    const twist = parseFloat(twistSlider.value);
+    const quantumStates = parseInt(quantumSlider.value);
+    const evolutionSteps = parseInt(evolutionSlider.value);
+    
+    // Generate waveform (with artificial delay to show "processing")
+    setTimeout(() => {
+      try {
+        const waveform = generateQuantumWaveform(seed, dimensions, twist, quantumStates, evolutionSteps);
+        audioBuffer = createAudioBuffer(waveform);
+        
+        log(`Generated quantum music (${audioBuffer.duration.toFixed(2)}s)`);
+        log('Click Play to hear the music');
+        
+        genBtn.disabled = false;
+        playBtn.disabled = false;
+      } catch (err) {
+        log(`Error generating music: ${err.message}`);
+        genBtn.disabled = false;
+      }
+    }, 500);
+    
+    // Try to wake up audio context
+    if (audioCtx && audioCtx.state !== "running") {
+      audioCtx.resume().then(() => {
+        log('Audio context activated');
+      }).catch(err => {
+        log('Audio permission needed: click Play');
+      });
+    }
+  }
+  
+  // Play function
+  function play() {
+    if (!audioBuffer) {
+      log('Please generate music first');
+      return;
+    }
+    
+    if (isPlaying) {
+      stop();
+    }
+    
+    // Ensure audio context is running (needs user gesture)
+    if (audioCtx.state !== 'running') {
+      audioCtx.resume().then(() => {
+        startPlayback();
+      }).catch(err => {
+        log(`Could not start audio: ${err.message}`);
+        playBtn.disabled = false;
+      });
+    } else {
+      startPlayback();
+    }
+  }
+  
+  function startPlayback() {
+    try {
+      // Create nodes
+      sourceNode = audioCtx.createBufferSource();
+      gainNode = audioCtx.createGain();
+      
+      // Configure
+      sourceNode.buffer = audioBuffer;
+      gainNode.gain.value = 0.7;
+      
+      // Connect
+      sourceNode.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      // Start playback
+      sourceNode.start();
+      startTime = audioCtx.currentTime;
+      isPlaying = true;
+      
+      // Update UI
+      playBtn.disabled = true;
+      stopBtn.disabled = false;
+      log('Playback started');
+      
+      // Update progress
+      updateProgress();
+      
+      // Handle completion
+      sourceNode.onended = () => {
+        isPlaying = false;
+        sourceNode = null;
+        gainNode = null;
+        
+        // Update UI
+        playBtn.disabled = false;
+        stopBtn.disabled = true;
+        progressBar.style.width = '0%';
+        log('Playback completed');
+      };
+    } catch (err) {
+      log(`Playback error: ${err.message}`);
+      playBtn.disabled = false;
+      stopBtn.disabled = true;
+    }
+  }
+  
+  // Stop function
+  function stop() {
+    if (isPlaying && sourceNode) {
+      sourceNode.stop();
+      isPlaying = false;
+      sourceNode = null;
+      gainNode = null;
+      
+      // Update UI
+      playBtn.disabled = false;
+      stopBtn.disabled = true;
+      progressBar.style.width = '0%';
+      log('Playback stopped');
+    }
+  }
+  
+  // Update progress bar
+  function updateProgress() {
+    if (!isPlaying || !sourceNode || !audioBuffer) return;
+    
+    const elapsed = audioCtx.currentTime - startTime;
+    const duration = audioBuffer.duration;
+    const progress = Math.min(elapsed / duration, 1);
+    
+    progressBar.style.width = `${progress * 100}%`;
+    
+    if (progress < 1) {
+      requestAnimationFrame(updateProgress);
+    }
+  }
+  
+  // Visualization
+  function visualize() {
+    // Clear with fade effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    if (isPlaying && audioBuffer) {
+      const elapsed = audioCtx.currentTime - startTime;
+      const duration = audioBuffer.duration;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Draw orbiting particles
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const maxRadius = Math.min(canvas.width, canvas.height) * 0.4;
+      
+      // Get parameters
+      const dimensions = parseInt(dimensionsSlider.value);
+      const twist = parseFloat(twistSlider.value);
+      const evolutionSteps = parseInt(evolutionSlider.value);
+      
+      // Draw particles
+      for (let i = 0; i < dimensions; i++) {
+        const angle = (i / dimensions) * TAU + (elapsed * twist);
+        const radius = maxRadius * (0.6 + 0.4 * Math.sin(elapsed * evolutionSteps + i * 0.2));
+        
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        
+        // Particle size and color based on audio amplitude simulation
+        const size = 5 + 15 * Math.pow(Math.sin(elapsed * 5 + i), 2);
+        const hue = (i / dimensions * 360 + elapsed * 20) % 360;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, TAU);
+        ctx.fillStyle = `hsla(${hue}, 80%, 60%, 0.8)`;
+        ctx.fill();
+        
+        // Connection lines
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = `hsla(${hue}, 80%, 60%, 0.2)`;
+        ctx.lineWidth = 2 * Math.pow(Math.sin(elapsed * 3 + i * 0.5), 2);
+        ctx.stroke();
+      }
+      
+      // Central glow
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 20 + 10 * Math.sin(elapsed * 4), 0, TAU);
+      ctx.fillStyle = `rgba(0, 255, 200, ${0.3 + 0.2 * Math.sin(elapsed * 2)})`;
+      ctx.fill();
+    } else {
+      // Static visualization when not playing
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const dimensions = parseInt(dimensionsSlider.value);
+      
+      // Draw static particles
+      for (let i = 0; i < dimensions; i++) {
+        const angle = (i / dimensions) * TAU;
+        const radius = Math.min(canvas.width, canvas.height) * 0.3;
+        
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        
+        const hue = (i / dimensions * 360) % 360;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, TAU);
+        ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.6)`;
+        ctx.fill();
+        
+        // Connection lines
+        if (i % 3 === 0) {
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(x, y);
+          ctx.strokeStyle = `hsla(${hue}, 70%, 50%, 0.1)`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+    
+    // Continue animation
+    requestAnimationFrame(visualize);
+  }
+  
+  // Set up button events
+  genBtn.addEventListener('click', () => {
+    // Try to resume audio context on user gesture
+    if (audioCtx && audioCtx.state !== "running") {
+      audioCtx.resume().catch(e => {
+        log('Audio will need permission when you play');
+      });
+    }
+    generate();
+  });
+  
+  playBtn.addEventListener('click', play);
+  stopBtn.addEventListener('click', stop);
+  
+  // Initialize
+  log('Quantum Mobius Music Generator initialized');
+  log('Enter a seed phrase and click Generate to begin');
+  
+  // Start visualization
+  visualize();
+})();
+</script>
+</body>
+</html>

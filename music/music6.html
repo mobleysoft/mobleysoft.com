@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Mobius Music Generator</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}body{background:#111;color:#0fc;overflow-x:hidden}#c{position:absolute;width:100%;height:100%;left:0;top:0;z-index:-1;opacity:.8}#ui{position:relative;padding:20px;width:100%;max-width:800px;margin:0 auto}h1{color:#0fc;text-align:center;margin:20px 0;text-shadow:0 0 10px #0fc}button{background:#0a0a0a;color:#0fc;border:1px solid #0fc;padding:8px 16px;margin:5px;cursor:pointer;box-shadow:0 0 5px #0fc;transition:all .2s}button:hover{background:#0fc;color:#000}#m,#s{display:flex;flex-direction:column;background:rgba(0,0,0,.7);border:1px solid #0fc;padding:10px;margin-bottom:10px;box-shadow:0 0 10px rgba(0,255,200,.3)}#p{width:100%;height:20px;background:#000;margin:10px 0;box-shadow:0 0 5px #0fc inset}#b{width:0%;height:100%;background:#0fc;transition:width .3s}input[type=range]{width:100%;margin:10px 0}input[type=text]{background:#000;border:1px solid #0fc;color:#0fc;padding:5px;width:100%;margin-bottom:10px}#o{color:#0fc;height:100px;overflow-y:auto;border:1px solid #0fc;padding:5px;margin-top:10px;font-size:12px;background:rgba(0,0,0,.5)}#o div{border-bottom:1px solid #050;padding:2px 0}.l{width:30px;display:inline-block;text-align:right;color:#090;padding-right:5px}.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:600px){.menu{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div id="ui">
+    <h1>Quantum Mobius Music Generator</h1>
+    <div id="m">
+      <input type="text" id="seed" value="Mobius Time Quantum Field" placeholder="Seed phrase...">
+      <div class="menu">
+        <div>
+          <label for="d">Mobius Dimensions: <span id="dv">32</span></label>
+          <input type="range" id="d" min="16" max="64" value="32">
+        </div>
+        <div>
+          <label for="t">Twist Factor: <span id="tv">0.75</span></label>
+          <input type="range" id="t" min="0.1" max="2.0" step="0.05" value="0.75">
+        </div>
+        <div>
+          <label for="q">Quantum States: <span id="qv">24</span></label>
+          <input type="range" id="q" min="8" max="48" value="24">
+        </div>
+        <div>
+          <label for="e">Evolution Steps: <span id="ev">12</span></label>
+          <input type="range" id="e" min="4" max="24" value="12">
+        </div>
+      </div>
+      <div>
+        <button id="g">Generate Music</button>
+        <button id="play">Play</button>
+        <button id="stop">Stop</button>
+      </div>
+      <div id="p"><div id="b"></div></div>
+    </div>
+    <div id="s">
+      <div id="o"></div>
+    </div>
+  </div>
+
+<script>
+(function(w,d,M,A,T,H){
+  var PI = Math.PI;
+  var TAU = PI*2;
+  var sin = Math.sin;
+  var cos = Math.cos;
+  var exp = Math.exp;
+  var ran = Math.random;
+  var pow = Math.pow;
+  var sqrt = Math.sqrt;
+  var abs = Math.abs;
+  var floor = Math.floor;
+  var max = Math.max;
+  var min = Math.min;
+  var atan2 = Math.atan2;
+  
+  function iota(n,f){ 
+    var arr = [];
+    for(var i=0; i<n; i++) {
+      arr.push(f ? f(i) : i);
+    }
+    return arr;
+  }
+  
+  function mixin(a,b){ return Object.assign(a,b); }
+  
+  var primes = [2,3,5,7,11,13,17,19,23,29,31];
+  
+  function hash(s){
+    return s.split('').reduce(function(a,c){ return ((a<<5)-a)+c.charCodeAt(0); }, 0) >>> 0;
+  }
+  
+  function memo(f){
+    return function(){
+      var c = {};
+      return function(){
+        var a = Array.prototype.slice.call(arguments);
+        var k = JSON.stringify(a);
+        return k in c ? c[k] : (c[k]=f.apply(null, a));
+      };
+    }();
+  }
+  
+  function genTable(n,f){
+    return memo(function(i){ return i<n ? f(i) : null; });
+  }
+  
+  function ComplexFactory(r,i){
+    return {
+      r: r, i: i,
+      m: function(){ return sqrt(r*r+i*i); },
+      theta: function(){ return atan2(i,r); },
+      a: function(c){ return ComplexFactory(r+c.r, i+c.i); },
+      s: function(s){ return ComplexFactory(r*s, i*s); },
+      m: function(c){ return ComplexFactory(r*c.r-i*c.i, r*c.i+i*c.r); },
+      c: function(){ return ComplexFactory(r, -i); }
+    };
+  }
+  
+  var C = ComplexFactory(0,0);
+
+  function decompressQuantumField(seed, d, t){
+    function fieldPrimitives(i, j){
+      var s = sin(i*t+cos(j))*cos(j*t+sin(i));
+      return s*s;
+    }
+    
+    function tensorGen(i, j){
+      return fieldPrimitives(i/d*TAU, j/d*TAU);
+    }
+    
+    var tensorField = [];
+    for(var i=0; i<d*d; i++) {
+      tensorField.push(tensorGen(i%d, Math.floor(i/d)));
+    }
+    
+    return function(x, steps){
+      steps = steps || 1;
+      
+      var result = [];
+      for(var i=0; i<x.length; i++) {
+        result.push(0); // Start with zeros
+      }
+      
+      // Process through steps
+      for(var step=0; step<steps; step++) {
+        var nextResult = Array(x.length).fill(0);
+        
+        for(var j=0; j<x.length; j++) {
+          for(var k=0; k<x.length; k++) {
+            var tIdx = (j%d)*d+(k%d);
+            var tJ = (k+Math.floor(j/d)*Math.floor(t*10))%x.length;
+            nextResult[j] += x[tJ]*tensorField[tIdx];
+          }
+        }
+        
+        // Normalize
+        var maxVal = 0.0001;
+        for(var j=0; j<nextResult.length; j++) {
+          if(abs(nextResult[j]) > maxVal) maxVal = abs(nextResult[j]);
+        }
+        for(var j=0; j<nextResult.length; j++) {
+          nextResult[j] /= maxVal;
+        }
+        
+        x = nextResult;
+      }
+      
+      return x;
+    };
+  }
+
+  function genQuantumState(d, seed){
+    var initialRaw = [];
+    for(var i=0; i<d; i++) {
+      var phi = i/d*TAU;
+      initialRaw.push([cos(phi), sin(phi)]);
+    }
+    
+    var magnitude = 0;
+    for(var i=0; i<initialRaw.length; i++) {
+      var p = initialRaw[i];
+      magnitude += p[0]*p[0] + p[1]*p[1];
+    }
+    magnitude = sqrt(magnitude);
+    
+    var normalized = [];
+    for(var i=0; i<initialRaw.length; i++) {
+      var p = initialRaw[i];
+      normalized.push([p[0]/magnitude, p[1]/magnitude]);
+    }
+    
+    var sv = normalized;
+    
+    return {
+      get: function(){ return sv; },
+      
+      apply: function(op, intensity){
+        var newState = [];
+        
+        for(var i=0; i<d; i++) {
+          var sum = [0, 0];
+          
+          for(var j=0; j<d; j++) {
+            // Complex multiplication: (a+bi)(c+di) = (ac-bd) + (ad+bc)i
+            var real = sv[j][0]*op[i][j][0] - sv[j][1]*op[i][j][1];
+            var imag = sv[j][0]*op[i][j][1] + sv[j][1]*op[i][j][0];
+            
+            sum[0] += real * intensity;
+            sum[1] += imag * intensity;
+          }
+          
+          newState.push(sum);
+        }
+        
+        var mag = 0;
+        for(var i=0; i<newState.length; i++) {
+          var p = newState[i];
+          mag += p[0]*p[0] + p[1]*p[1];
+        }
+        mag = sqrt(mag);
+        
+        sv = [];
+        for(var i=0; i<newState.length; i++) {
+          var p = newState[i];
+          sv.push([p[0]/mag, p[1]/mag]);
+        }
+        
+        return true;
+      },
+      
+      waveform: function(points, mobiusField){
+        var basic = [];
+        
+        for(var t=0; t<points; t++) {
+          var phase = t/points;
+          var sum = 0;
+          
+          for(var i=0; i<d; i++) {
+            var p = phase*TAU*i;
+            var mr = cos(p);
+            var mi = sin(p);
+            
+            // Projection along state vector
+            sum += (mr*sv[i][0] + mi*sv[i][1]);
+          }
+          
+          basic.push(sum);
+        }
+        
+        // Apply mobius field for richer sound
+        return mobiusField(basic, 3);
+      }
+    };
+  }
+  
+  function genOperator(d, type){
+    function pHarmonic(i, j){
+      var psum = 0;
+      for(var k=0; k<min(primes.length, d/4); k++){
+        psum += sin(TAU*((i*j)%d)*primes[k]/d)/primes[k];
+      }
+      
+      return 0.3 + 0.7*abs(psum/sqrt(d));
+    }
+    
+    var opFuncs = {
+      pluck: function(i, j){
+        var h = pHarmonic(i, j);
+        var phi = (i-j)*PI/d;
+        return [h*cos(phi), h*sin(phi)];
+      },
+      
+      bow: function(i, j){
+        var h = j===0 ? 0.8 : 0.8/j;
+        var phi = i*PI/d;
+        return [h*cos(phi), h*sin(phi)];
+      },
+      
+      strike: function(i, j){
+        var dist = abs(i-j)/d;
+        var h = exp(-dist*3)*(0.5+0.5*ran());
+        return [h*(ran()-0.5), h*(ran()-0.5)];
+      }
+    };
+    
+    var result = [];
+    for(var i=0; i<d; i++) {
+      var row = [];
+      for(var j=0; j<d; j++) {
+        row.push(opFuncs[type](i, j));
+      }
+      result.push(row);
+    }
+    return result;
+  }
+  
+  function genHypergraph(seed, steps){
+    var h = hash(seed);
+    var vTypes = ['pitch', 'rhythm', 'timbre'];
+    var eTypes = ['progression', 'structure', 'texture'];
+    
+    function vType(i){ 
+      return vTypes[((h*(i+1))%1000)%vTypes.length]; 
+    }
+    
+    function eType(i){ 
+      return eTypes[((h*(i+100))%1000)%eTypes.length]; 
+    }
+    
+    function vProps(t, s){
+      if(t === 'pitch'){
+        return {
+          note: s%12,
+          octave: Math.floor(s/12)%3+3,
+          duration: (s%4)/4+0.25
+        };
+      }
+      else if(t === 'rhythm'){
+        return {
+          pulses: (s%4)+1,
+          steps: (s%4)+4,
+          velocity: (s%40)+80
+        };
+      }
+      else {
+        return {
+          brightness: (s%100)/100,
+          harmonicity: (s%100)/100,
+          attackTime: ((s%10)+1)/100
+        };
+      }
+    }
+    
+    var vCount = (h%7)+5;
+    
+    var vertices = [];
+    for(var i=0; i<vCount; i++) {
+      var s = (h*(i+1))%1000000;
+      var t = vType(i);
+      vertices.push({id:i, type:t, props:vProps(t,s)});
+    }
+    
+    var eCount = (h%5)+3;
+    
+    function selectVertices(s){
+      var c = (s%3)+2;
+      var result = [];
+      for(var i=0; i<c; i++) {
+        var idx = (s+i*17)%vertices.length;
+        result.push(idx);
+      }
+      return result;
+    }
+    
+    var edges = [];
+    for(var i=0; i<eCount; i++) {
+      var s = (h*(i+100))%1000000;
+      edges.push({
+        id: i,
+        type: eType(i),
+        vertices: selectVertices(s),
+        props: {
+          strength: (s%100)/100,
+          duration: (s%4)+1
+        }
+      });
+    }
+    
+    var rCount = (h%3)+2;
+    
+    function rType(i){
+      return ['split','merge','transform'][((h*(i+200))%1000)%3];
+    }
+    
+    var rules = [];
+    for(var i=0; i<rCount; i++) {
+      var s = (h*(i+200))%1000000;
+      rules.push({
+        type: rType(i),
+        probability: ((s%50)+30)/100,
+        params: {
+          intensity: (s%100)/100,
+          target: (s%3)
+        }
+      });
+    }
+    
+    var g = {vertices:vertices, edges:edges};
+    
+    // Apply evolution steps
+    for(var step=0; step<steps; step++){
+      rules.forEach(function(rule){
+        if(ran() < rule.probability){
+          if(rule.type === 'split'){
+            // Split vertex or edge based on target
+            if(rule.params.target === 0 || rule.params.target === 2){
+              // Split vertex
+              if(vertices.length > 0){
+                var vIdx = Math.floor(ran()*vertices.length);
+                var v = vertices[vIdx];
+                
+                // Create new vertex
+                var nv = {
+                  id: vertices.length,
+                  type: v.type,
+                  props: {}
+                };
+                
+                // Copy and modify properties
+                for(var key in v.props){
+                  if(typeof v.props[key] === 'number'){
+                    nv.props[key] = v.props[key] * (1+(ran()-0.5)*rule.params.intensity);
+                  } else {
+                    nv.props[key] = v.props[key];
+                  }
+                }
+                
+                vertices.push(nv);
+                
+                // Add to edges
+                edges.forEach(function(e){
+                  if(e.vertices.indexOf(v.id) >= 0 && ran()<0.5){
+                    e.vertices.push(nv.id);
+                  }
+                });
+              }
+            }
+            
+            if(rule.params.target === 1 || rule.params.target === 2){
+              // Split edge
+              if(edges.length > 0){
+                var eIdx = Math.floor(ran()*edges.length);
+                var e = edges[eIdx];
+                
+                if(e.vertices.length >= 3){
+                  // Select subset of vertices
+                  var vCount = Math.floor(e.vertices.length/2)+1;
+                  var shuffled = e.vertices.slice();
+                  for(var i=shuffled.length-1; i>0; i--) {
+                    var j = Math.floor(ran()*(i+1));
+                    var temp = shuffled[i];
+                    shuffled[i] = shuffled[j];
+                    shuffled[j] = temp;
+                  }
+                  var newVerts = shuffled.slice(0, vCount);
+                  
+                  // Create new edge
+                  var newEdge = {
+                    id: edges.length,
+                    type: e.type,
+                    vertices: newVerts,
+                    props: {}
+                  };
+                  
+                  for(var key in e.props) {
+                    newEdge.props[key] = e.props[key];
+                  }
+                  
+                  edges.push(newEdge);
+                }
+              }
+            }
+          }
+          else if(rule.type === 'merge'){
+            // Merge edges (only implemented for edges)
+            if(rule.params.target === 1 || rule.params.target === 2){
+              if(edges.length >= 2){
+                var e1Idx = Math.floor(ran()*edges.length);
+                var e2Idx;
+                do {
+                  e2Idx = Math.floor(ran()*edges.length);
+                } while(e1Idx === e2Idx);
+                
+                var e1 = edges[e1Idx];
+                var e2 = edges[e2Idx];
+                
+                // Combine vertices
+                var combinedVerts = [];
+                var vertSet = {};
+                
+                for(var i=0; i<e1.vertices.length; i++) {
+                  var v = e1.vertices[i];
+                  vertSet[v] = true;
+                  combinedVerts.push(v);
+                }
+                
+                for(var i=0; i<e2.vertices.length; i++) {
+                  var v = e2.vertices[i];
+                  if(!vertSet[v]) {
+                    combinedVerts.push(v);
+                  }
+                }
+                
+                e1.vertices = combinedVerts;
+                
+                // Average properties
+                for(var key in e1.props){
+                  if(typeof e1.props[key] === 'number' && 
+                     typeof e2.props[key] === 'number'){
+                    e1.props[key] = (e1.props[key] + e2.props[key])/2;
+                  }
+                }
+                
+                // Remove second edge
+                edges.splice(e2Idx, 1);
+                
+                // Update ids
+                for(var i=0; i<edges.length; i++) {
+                  edges[i].id = i;
+                }
+              }
+            }
+          }
+          else if(rule.type === 'transform'){
+            // Transform properties
+            if(rule.params.target === 0 || rule.params.target === 2){
+              // Transform vertex
+              if(vertices.length > 0){
+                var vIdx = Math.floor(ran()*vertices.length);
+                var v = vertices[vIdx];
+                
+                // Modify properties
+                for(var key in v.props){
+                  if(typeof v.props[key] === 'number'){
+                    var transform = ran()<0.5 ?
+                      1+ran()*rule.params.intensity :
+                      1/(1+ran()*rule.params.intensity);
+                    
+                    v.props[key] *= transform;
+                    
+                    // Keep within bounds
+                    if(key === 'note'){
+                      v.props[key] = Math.floor(v.props[key])%12;
+                    }
+                    else if(key === 'octave'){
+                      v.props[key] = max(2, min(6, Math.floor(v.props[key])));
+                    }
+                  }
+                }
+              }
+            }
+            
+            if(rule.params.target === 1 || rule.params.target === 2){
+              // Transform edge
+              if(edges.length > 0){
+                var eIdx = Math.floor(ran()*edges.length);
+                var e = edges[eIdx];
+                
+                // Modify properties
+                for(var key in e.props){
+                  if(typeof e.props[key] === 'number'){
+                    e.props[key] *= 1+(ran()-0.5)*rule.params.intensity;
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    return g;
+  }
+  
+  function genMusicStructure(g, complexity, density){
+    var structure = {
+      notes: [],
+      duration: 8
+    };
+    
+    var pitches = g.vertices.filter(function(v){
+      return v.type === 'pitch';
+    });
+    
+    var baseNotes = [];
+    for(var i=0; i<pitches.length; i++) {
+      var v = pitches[i];
+      baseNotes.push({
+        vertexId: v.id,
+        note: v.props.note,
+        octave: v.props.octave,
+        startTime: ran()*(structure.duration-v.props.duration),
+        duration: v.props.duration,
+        velocity: 0.8
+      });
+    }
+    
+    // Create final structure
+    structure = {
+      notes: baseNotes.slice(),
+      duration: 8
+    };
+    
+    // Process edges for musical relationships
+    for(var ei=0; ei<g.edges.length; ei++) {
+      var edge = g.edges[ei];
+      
+      if(edge.type === 'progression'){
+        // Generate progression notes
+        var connectedPitches = pitches.filter(function(v){
+          return edge.vertices.indexOf(v.id) >= 0;
+        });
+        
+        if(connectedPitches.length >= 2){
+          // Sort by pitch
+          var sortedPitches = connectedPitches.slice();
+          sortedPitches.sort(function(a, b){
+            var noteA = a.props.note + a.props.octave * 12;
+            var noteB = b.props.note + b.props.octave * 12;
+            return noteA - noteB;
+          });
+          
+          // Generate intermediate notes
+          for(var i=0; i<sortedPitches.length-1; i++){
+            var current = sortedPitches[i];
+            var next = sortedPitches[i+1];
+            
+            var startNote = current.props.note + current.props.octave * 12;
+            var endNote = next.props.note + next.props.octave * 12;
+            
+            var steps = abs(endNote - startNote);
+            
+            for(var step=1; step<steps; step++){
+              if(ran() < 0.6){
+                var noteValue = startNote + step * Math.sign(endNote - startNote);
+                var note = noteValue % 12;
+                var octave = Math.floor(noteValue / 12);
+                
+                structure.notes.push({
+                  note: note,
+                  octave: octave,
+                  startTime: ran() * (structure.duration - 0.5),
+                  duration: 0.5,
+                  velocity: 0.6
+                });
+              }
+            }
+          }
+        }
+      }
+      else if(edge.type === 'texture'){
+        // Modify velocities
+        var connectedPitchIds = [];
+        for(var i=0; i<pitches.length; i++) {
+          var v = pitches[i];
+          if(edge.vertices.indexOf(v.id) >= 0) {
+            connectedPitchIds.push(v.id);
+          }
+        }
+          
+        var factor = 0.5 + edge.props.strength;
+        
+        for(var i=0; i<structure.notes.length; i++) {
+          var note = structure.notes[i];
+          if(connectedPitchIds.indexOf(note.vertexId) >= 0){
+            note.velocity *= factor;
+          }
+        }
+      }
+    }
+    
+    // Add harmonic complexity
+    var extraCount = Math.floor(complexity * 20);
+    
+    for(var i=0; i<extraCount; i++){
+      if(i < structure.notes.length){
+        var baseNote = structure.notes[i % structure.notes.length];
+        var harmonicOffset = [0,4,7,12,-5,3,-4][(i*3)%7];
+        var newNote = baseNote.note + harmonicOffset;
+        var octaveOffset = Math.floor(newNote/12);
+        
+        structure.notes.push({
+          note: ((newNote%12)+12)%12,
+          octave: baseNote.octave + octaveOffset,
+          startTime: (baseNote.startTime + i*0.2) % (structure.duration-0.5),
+          duration: baseNote.duration * (0.7 + ran()*0.6),
+          velocity: baseNote.velocity * 0.8
+        });
+      }
+    }
+    
+    // Adjust density
+    var finalCount = Math.floor(structure.notes.length * density);
+    if(finalCount < structure.notes.length){
+      // Shuffle notes
+      for(var i=structure.notes.length-1; i>0; i--) {
+        var j = Math.floor(ran()*(i+1));
+        var temp = structure.notes[i];
+        structure.notes[i] = structure.notes[j];
+        structure.notes[j] = temp;
+      }
+      
+      structure.notes = structure.notes.slice(0, finalCount);
+    }
+    
+    return structure;
+  }
+  
+  function createSynthesizer(audioCtx){
+    var oscillators = [];
+    var gainNodes = [];
+    var isPlaying = false;
+    var currentTime = 0;
+    var durationSeconds = 0;
+    var progressCallback = null;
+    
+    function envelope(t, type){
+      if(type === 'strike'){
+        return exp(-t*8) * (1-exp(-t*80));
+      }
+      else if(type === 'pluck'){
+        return exp(-t*5) * (1-exp(-t*100));
+      }
+      else if(type === 'bow'){
+        return (1-exp(-t*5)) * exp(-t*2);
+      }
+      return 1.0;
+    }
+    
+    // Test oscillator to verify audio works
+    function testBeep() {
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      
+      osc.frequency.value = 440;
+      gain.gain.value = 0.1;
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start();
+      setTimeout(function() {
+        osc.stop();
+      }, 100);
+    }
+    
+    return {
+      setProgress: function(cb){
+        progressCallback = cb;
+      },
+      
+      testAudio: function() {
+        testBeep();
+      },
+      
+      generateBuffer: function(mobiusField, quantumState, musicStructure, params, logFunction){
+        logFunction = logFunction || function(){};
+        
+        var sampleRate = audioCtx.sampleRate;
+        var duration = musicStructure.duration;
+        var bufferSize = Math.floor(sampleRate * duration);
+        var audioBuffer = audioCtx.createBuffer(1, bufferSize, sampleRate);
+        var channelData = audioBuffer.getChannelData(0);
+        
+        logFunction("Creating buffer: " + bufferSize + " samples at " + sampleRate + "Hz");
+        
+        // Fill with silence
+        for(var i=0; i<bufferSize; i++) {
+          channelData[i] = 0;
+        }
+        
+        function generateNote(freq, start, dur, vel){
+          var operatorType = freq < 220 ? 'strike' : freq < 880 ? 'pluck' : 'bow';
+          var noteSamples = Math.floor(sampleRate * dur);
+          var startSample = Math.floor(start * sampleRate);
+          
+          logFunction("Generating note: " + freq + "Hz, " + operatorType + ", " + noteSamples + " samples");
+          
+          // Apply quantum operator
+          quantumState.apply(genOperator(quantumState.get().length, operatorType), 0.5 + 0.5*ran());
+          
+          // Generate waveform
+          var waveform = quantumState.waveform(noteSamples, mobiusField);
+          
+          // Log waveform stats
+          var waveMax = 0, waveMin = 0;
+          for(var i=0; i<waveform.length; i++) {
+            waveMax = Math.max(waveMax, waveform[i]);
+            waveMin = Math.min(waveMin, waveform[i]);
+          }
+          logFunction("Waveform range: " + waveMin + " to " + waveMax);
+          
+          // Apply waveform with forced amplitude
+          for(var i=0; i<noteSamples; i++){
+            if(i + startSample < channelData.length){
+              // Force amplitude to reasonable range
+              channelData[i + startSample] += waveform[i] * envelope(i/noteSamples, operatorType) * vel;
+            }
+          }
+        }
+        
+        // Generate all notes
+        logFunction("Generating " + musicStructure.notes.length + " notes");
+        
+        for(var i=0; i<musicStructure.notes.length; i++) {
+          var note = musicStructure.notes[i];
+          var midiNote = note.note + note.octave * 12;
+          var freq = 440 * pow(2, (midiNote-69)/12);
+          generateNote(freq, note.startTime, note.duration, note.velocity);
+          
+          // Add a simple sine wave for testing
+          if (i === 0) {
+            var testFreq = freq;
+            var testDuration = note.duration;
+            var testStart = note.startTime;
+            var samples = Math.floor(sampleRate * testDuration);
+            var startSample = Math.floor(testStart * sampleRate);
+            
+            for(var j=0; j<samples; j++) {
+              if(j + startSample < channelData.length) {
+                // Add a simple sine wave to ensure audio works
+                channelData[j + startSample] += 0.1 * Math.sin(j * testFreq * TAU / sampleRate);
+              }
+            }
+          }
+        }
+        
+        // Check buffer for silence
+        var bufferMax = 0;
+        for(var i=0; i<bufferSize; i++) {
+          bufferMax = Math.max(bufferMax, Math.abs(channelData[i]));
+        }
+        logFunction("Buffer max amplitude: " + bufferMax);
+        
+        // Force minimum amplitude if too quiet
+        if(bufferMax < 0.01) {
+          logFunction("Buffer too quiet, boosting amplitude");
+          for(var i=0; i<bufferSize; i++) {
+            channelData[i] *= 0.1 / bufferMax; // Boost to 10% volume
+          }
+          
+          bufferMax = 0.1;
+        }
+        
+        // Normalize to prevent clipping
+        logFunction("Normalizing buffer...");
+        for(var i=0; i<bufferSize; i++) {
+          channelData[i] *= 0.9 / bufferMax;
+        }
+        
+        return audioBuffer;
+      },
+      
+      play: function(mobiusField, quantumState, musicStructure, params){
+        var self = this;
+        
+        if(isPlaying){
+          this.stop();
+        }
+        
+        // Explicitly resume audio context first
+        if(audioCtx.state !== 'running') {
+          logToScreen("Resuming audio context...");
+          
+          // First try to wake up the audio context with a test sound
+          this.testAudio();
+          
+          audioCtx.resume().then(function(){
+            logToScreen("Audio context resumed, generating audio...");
+            self.playAudio(mobiusField, quantumState, musicStructure, params);
+          }).catch(function(err){
+            logToScreen("Error resuming audio: " + err);
+            console.error("Error resuming audio:", err);
+          });
+        } else {
+          logToScreen("Audio context already running");
+          this.playAudio(mobiusField, quantumState, musicStructure, params);
+        }
+      },
+      
+      playAudio: function(mobiusField, quantumState, musicStructure, params) {
+        logToScreen("Generating audio buffer...");
+        
+        durationSeconds = musicStructure.duration;
+        isPlaying = true;
+        
+        var buffer = this.generateBuffer(mobiusField, quantumState, musicStructure, params, logToScreen);
+        logToScreen("Audio buffer created, playback starting...");
+        
+        var source = audioCtx.createBufferSource();
+        var gainNode = audioCtx.createGain();
+        
+        source.buffer = buffer;
+        gainNode.gain.value = 0.8;
+        source.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillators.push(source);
+        gainNodes.push(gainNode);
+        
+        source.start();
+        logToScreen("Playback started");
+        
+        var startTime = audioCtx.currentTime;
+        
+        // Track progress
+        var self = this;
+        var progressInterval;
+        
+        if(progressCallback){
+          progressInterval = setInterval(function(){
+            currentTime = audioCtx.currentTime - startTime;
+            
+            if(currentTime >= durationSeconds || !isPlaying){
+              clearInterval(progressInterval);
+              isPlaying = false;
+              progressCallback(1.0);
+            } else {
+              progressCallback(currentTime / durationSeconds);
+            }
+          }, 50);
+        }
+        
+        source.onended = function(){
+          logToScreen("Playback ended");
+          isPlaying = false;
+          
+          // Remove from arrays
+          var sourceIndex = oscillators.indexOf(source);
+          if(sourceIndex !== -1) {
+            oscillators.splice(sourceIndex, 1);
+          }
+          
+          var gainIndex = gainNodes.indexOf(gainNode);
+          if(gainIndex !== -1) {
+            gainNodes.splice(gainIndex, 1);
+          }
+        };
+      },
+      
+      stop: function(){
+        // Stop all oscillators
+        for(var i=0; i<oscillators.length; i++) {
+          try { oscillators[i].stop(); } catch(e){}
+        }
+        
+        oscillators = [];
+        gainNodes = [];
+        isPlaying = false;
+        
+        if(progressCallback){
+          progressCallback(0);
+        }
+        
+        return true;
+      }
+    };
+  }
+  
+  function init(){
+    var c = d.getElementById('c');
+    var ctx = c.getContext('2d');
+    var logEl = d.getElementById('o');
+    var seedEl = d.getElementById('seed');
+    var genBtn = d.getElementById('g');
+    var playBtn = d.getElementById('play');
+    var stopBtn = d.getElementById('stop');
+    var progressEl = d.getElementById('b');
+    var dSlider = d.getElementById('d');
+    var tSlider = d.getElementById('t');
+    var qSlider = d.getElementById('q');
+    var eSlider = d.getElementById('e');
+    var dVal = d.getElementById('dv');
+    var tVal = d.getElementById('tv');
+    var qVal = d.getElementById('qv');
+    var eVal = d.getElementById('ev');
+          
+    var audioCtx = new (w.AudioContext||w.webkitAudioContext)();
+    var synth = createSynthesizer(audioCtx);
+    
+    synth.setProgress(function(p){
+      progressEl.style.width = p*100 + '%';
+    });
+    
+    var mobiusDecompressor = null;
+    var quantumStateGen = null;
+    var musicStructure = null;
+    var lineCount = 0;
+    
+    // Global log function for debugging
+    window.logToScreen = function(msg){
+      log(msg);
+      console.log(msg);
+    };
+    
+    function log(msg){
+      var line = d.createElement('div');
+      line.innerHTML = '<span class="l">' + (++lineCount) + '</span>' + msg;
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+    
+    function updateSliders(){
+      dVal.textContent = dSlider.value;
+      tVal.textContent = tSlider.value;
+      qVal.textContent = qSlider.value;
+      eVal.textContent = eSlider.value;
+    }
+    
+    [dSlider,tSlider,qSlider,eSlider].forEach(function(s){
+      s.addEventListener('input', updateSliders);
+    });
+    
+    updateSliders();
+    
+    function resizeCanvas(){
+      c.width = w.innerWidth;
+      c.height = w.innerHeight;
+    }
+    
+    w.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    
+    function visualize(){
+      ctx.fillStyle = 'rgba(0,0,0,0.05)';
+      ctx.fillRect(0, 0, c.width, c.height);
+      
+      if(quantumStateGen){
+        var state = quantumStateGen.get();
+        var d = state.length;
+        
+        for(var i=0; i<d; i++){
+          var r = min(c.width, c.height) * 0.3;
+          var angle = i/d * TAU;
+          var real = state[i][0];
+          var imag = state[i][1];
+          var mag = sqrt(real*real + imag*imag) * 3;
+          var phase = atan2(imag, real);
+          var hue = ((phase/TAU) * 360 + 360) % 360;
+          
+          var x = c.width/2 + cos(angle) * r;
+          var y = c.height/2 + sin(angle) * r;
+          
+          ctx.beginPath();
+          ctx.arc(x, y, 3+mag*10, 0, TAU);
+          ctx.fillStyle = 'hsla('+hue+',80%,60%,0.8)';
+          ctx.fill();
+          
+          ctx.beginPath();
+          ctx.moveTo(c.width/2, c.height/2);
+          ctx.lineTo(x, y);
+          ctx.strokeStyle = 'hsla('+hue+',80%,60%,0.2)';
+          ctx.lineWidth = mag*3;
+          ctx.stroke();
+        }
+      }
+      
+      requestAnimationFrame(visualize);
+    }
+    
+    visualize();
+    
+    // Simple test tone to verify audio works
+    function playTestTone() {
+      log("Playing test tone...");
+      
+      if(audioCtx.state !== 'running') {
+        audioCtx.resume().then(function(){
+          log("Audio context resumed");
+          synth.testAudio();
+        });
+      } else {
+        synth.testAudio();
+      }
+    }
+    
+    // Play test tone on first user interaction
+    document.body.addEventListener('click', function() {
+      if(audioCtx.state !== 'running' && !window.audioInitialized) {
+        window.audioInitialized = true;
+        playTestTone();
+      }
+    }, {once: true});
+    
+    function generate(){
+      genBtn.disabled = playBtn.disabled = stopBtn.disabled = true;
+      
+      try {
+        var seedPhrase = seedEl.value || 'Quantum Harmonic Oscillation';
+        var mobiusDimensions = parseInt(dSlider.value);
+        var twistFactor = parseFloat(tSlider.value);
+        var quantumStateSize = parseInt(qSlider.value);
+        var evolutionSteps = parseInt(eSlider.value);
+        
+        log('Generating music with seed: "' + seedPhrase + '"');
+        
+        log('Creating mobius time field...');
+        mobiusDecompressor = decompressQuantumField(seedPhrase, mobiusDimensions, twistFactor);
+        
+        log('Initializing quantum state with ' + quantumStateSize + ' dimensions...');
+        quantumStateGen = genQuantumState(quantumStateSize, seedPhrase);
+        
+        log('Generating hypergraph structure...');
+        var hypergraph = genHypergraph(seedPhrase, evolutionSteps);
+        log('Created graph with ' + hypergraph.vertices.length + ' vertices and ' + hypergraph.edges.length + ' edges');
+        
+        log('Creating music structure...');
+        musicStructure = genMusicStructure(hypergraph, 0.7, 0.7);
+        log('Generated ' + musicStructure.notes.length + ' notes over ' + musicStructure.duration + 's');
+        
+        playBtn.disabled = false;
+        
+        // Unlock audio context on first generation
+        if(audioCtx.state !== 'running') {
+          log('Unlocking audio context...');
+          playTestTone();
+        }
+        
+      } catch(err) {
+        log('ERROR: ' + err.message);
+        console.error(err);
+      } finally {
+        genBtn.disabled = false;
+      }
+    }
+    
+    function play(){
+      if(!musicStructure || !mobiusDecompressor || !quantumStateGen) return;
+      
+      try {
+        playBtn.disabled = true;
+        stopBtn.disabled = false;
+        
+        // Use the synth's new play method
+        synth.play(mobiusDecompressor, quantumStateGen, musicStructure, {});
+      } catch(err) {
+        log('Playback error: ' + err.message);
+        console.error(err);
+        
+        playBtn.disabled = false;
+        stopBtn.disabled = true;
+      }
+    }
+    
+    function stop(){
+      synth.stop();
+      playBtn.disabled = false;
+      stopBtn.disabled = true;
+    }
+    
+    genBtn.addEventListener('click', generate);
+    playBtn.addEventListener('click', play);
+    stopBtn.addEventListener('click', stop);
+    
+    log('Quantum Mobius Music Generator initialized');
+    log('Click anywhere to unlock audio');
+    log('Enter seed phrase and click Generate to begin');
+  }
+
+  d.addEventListener('DOMContentLoaded', init);
+})(window, document, Math, Array, Object, {});
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "count": 1,
+  "frames": [
+    {
+      "commit": "source-6b39672c7f49ff1466999a66ff379ea5b83e32b10c866598dbbe843a6e70221d",
+      "id": "current",
+      "image": "/evolution/current.png",
+      "label": "Unlost restoration working tree",
+      "observed_at": "2026-08-13T22:22:09+00:00",
+      "tier": "verified-release"
+    }
+  ],
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "mobile_trigger": "pi",
+  "movie": "/genetic_timelapse/evolution_timelapse.mp4",
+  "schema_version": "1.0",
+  "shortcut": "Control+Shift+~",
+  "site": "mobleysoft.com"
+}

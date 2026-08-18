@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MobleySoft Collab Terminal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+    body {
+      margin: 0;
+      background: #000;
+      color: #00ff00;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #auth-screen {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .input-box {
+      background: #111;
+      border: 1px solid #333;
+      color: #0f0;
+      padding: 10px;
+      font-family: inherit;
+      width: 300px;
+      margin-bottom: 10px;
+    }
+    .btn {
+      background: #0f0;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: bold;
+    }
+    .btn:hover { background: #0c0; }
+    
+    #terminal-header {
+      background: #222;
+      color: #ccc;
+      padding: 5px 10px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+    #terminal-output {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    #terminal-input-container {
+      display: flex;
+      padding: 10px;
+      background: #111;
+      border-top: 1px solid #333;
+    }
+    #terminal-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+    .prompt-char {
+      color: #0f0;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="auth-screen">
+    <div style="margin-bottom:20px; text-align:center;">
+      <h2 style="margin:0;">MobleySoft Collab</h2>
+      <p style="color:#888; font-size:12px;">Terminal Projection Link</p>
+    </div>
+    <input type="password" id="passcode" class="input-box" placeholder="Enter Passcode..." />
+    <button class="btn" onclick="authenticate()">Establish Uplink</button>
+  </div>
+
+  <div id="terminal-header">
+    <span>Terminal — mobley@mainframe — 80x24</span>
+    <span id="status-indicator" style="color:#0f0;">● LIVE</span>
+  </div>
+
+  <div id="terminal-output"></div>
+
+  <div id="terminal-input-container">
+    <span class="prompt-char">Collab&gt;</span>
+    <input type="text" id="terminal-input" placeholder="Type command to queue to Architect's terminal..." autocomplete="off" />
+  </div>
+
+  <script>
+    const API = window.location.origin;
+    let authHeader = '';
+    const deviceId = Math.random().toString(36).substr(2, 6);
+
+    async function authenticate() {
+      const pass = document.getElementById('passcode').value;
+      authHeader = `Bearer ${pass}`;
+      
+      const res = await fetch(`${API}/api/collab/screen`, {
+        headers: { 'Authorization': authHeader }
+      });
+      
+      if (res.status === 401) {
+        alert("ACCESS DENIED");
+      } else {
+        document.getElementById('auth-screen').style.display = 'none';
+        pollScreen();
+        setInterval(pollScreen, 3000);
+      }
+    }
+
+    async function pollScreen() {
+      try {
+        const res = await fetch(`${API}/api/collab/screen`, {
+          headers: { 'Authorization': authHeader }
+        });
+        const data = await res.json();
+        if (data.ok) {
+          const outBox = document.getElementById('terminal-output');
+          const isAtBottom = outBox.scrollHeight - outBox.scrollTop <= outBox.clientHeight + 50;
+          outBox.textContent = data.screen;
+          if (isAtBottom) {
+            outBox.scrollTop = outBox.scrollHeight;
+          }
+        }
+      } catch(e) {}
+    }
+
+    document.getElementById('terminal-input').addEventListener('keypress', async (e) => {
+      if (e.key === 'Enter') {
+        const input = document.getElementById('terminal-input');
+        const msg = input.value.trim();
+        if (!msg) return;
+        
+        input.value = '';
+        input.disabled = true;
+        
+        try {
+          await fetch(`${API}/api/collab/input`, {
+            method: 'POST',
+            headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: msg, device_id: deviceId })
+          });
+          
+          // Optimistically echo it locally
+          document.getElementById('terminal-output').textContent += `\n[Queued from ${deviceId}]> ${msg}\n`;
+        } catch(err) {
+          alert("Failed to queue message.");
+        }
+        input.disabled = false;
+        input.focus();
+      }
+    });
+  </script>
+</body>
+</html>

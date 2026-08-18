@@ -1,0 +1,28 @@
+{
+  "artifact_kind": "playable-handoff-prototype",
+  "claim_boundary": "This is a Mobleysoft integration canary exercising nine venture handoff contracts. It is not represented as an NBCUniversal commission, customer delivery, or proof that each venture's independent production runtime generated its assigned artifact.",
+  "controls": {
+    "keyboard": "ArrowRight or Space advances; ArrowLeft reviews",
+    "pointer": "select the next stage"
+  },
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "implementation": "/showbiz/canary/canary.js",
+  "input": {
+    "path": "/showbiz/canary/artifacts/07-finish/master.json",
+    "sha256": "f6f076d09eb436c4f7fefcea0c1f8bed6dd79634b91cc5e689672c6f81c905b2"
+  },
+  "objective": "Activate all nine production contracts in order without losing lineage.",
+  "play_url": "/showbiz/canary/#play",
+  "position": 8,
+  "product": "GameGob",
+  "project_id": "showbizca-the-handoff-2026",
+  "rules": [
+    "Only the next unlocked stage accepts input.",
+    "Every activation exposes the input and output hashes.",
+    "Completion unlocks the final campaign artifact."
+  ],
+  "schema_version": "1.0",
+  "stage": "Extend",
+  "status": "generated-integration-canary",
+  "venture_contract": "gamegob.com"
+}

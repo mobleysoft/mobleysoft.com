@@ -1,0 +1,48 @@
+{
+  "connectors": {
+    "antigravity_jsonl": "available",
+    "codex_jsonl": "available",
+    "cross_device": "available",
+    "gmail_live": "not-installed",
+    "gmail_mbox": "available",
+    "google_drive_folder": "available",
+    "google_drive_live": "not-installed",
+    "local_files": "available",
+    "sqlite_read_only": "available",
+    "zip_tar": "available"
+  },
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "observed_baseline": {
+    "benchmark_queries": null,
+    "federated_shards": 2,
+    "find_median_seconds": null,
+    "find_p95_seconds": null,
+    "frontier_queued": 9888,
+    "frontier_retryable_errors": 221,
+    "local_artifacts_indexed": 716540,
+    "search_median_seconds": null,
+    "search_p95_seconds": null
+  },
+  "payment": {
+    "public_download": false,
+    "reason": "Checkout and entitlement delivery require a verified payment route.",
+    "status": "not-connected"
+  },
+  "price_usd": 1,
+  "product": "Unlost",
+  "release": {
+    "artifact": null,
+    "clean_install_verified": false,
+    "first_search_verified": false,
+    "localhost_interface_verified": false,
+    "platform": "macOS",
+    "public_path": null,
+    "ready": false,
+    "sha256": null,
+    "signed": false,
+    "size": null
+  },
+  "schema_version": "1.0",
+  "status": "source-alpha",
+  "version": "0.5.0"
+}

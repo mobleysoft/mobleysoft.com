@@ -1,0 +1,184 @@
+:root {
+  color-scheme: dark;
+  --void: #050505;
+  --paper: #e8e0d2;
+  --muted: #8f8a81;
+  --line: rgba(232, 224, 210, 0.18);
+  --gold: #d8a541;
+  --rust: #7b2f20;
+  --panel: #0b0b0a;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--void); }
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 92% 4%, rgba(216, 165, 65, 0.13), transparent 27rem),
+    repeating-linear-gradient(90deg, transparent 0 79px, rgba(255,255,255,0.018) 80px),
+    var(--void);
+  color: var(--paper);
+  font-family: "Avenir Next Condensed", "Franklin Gothic Medium", sans-serif;
+}
+
+a { color: inherit; }
+
+.archive-head {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.5fr) minmax(320px, 2fr) minmax(220px, 0.8fr);
+  gap: clamp(24px, 4vw, 72px);
+  align-items: end;
+  padding: clamp(28px, 5vw, 78px);
+  border-bottom: 1px solid var(--line);
+}
+
+.back-link {
+  align-self: start;
+  color: var(--gold);
+  font: 700 12px/1 "SFMono-Regular", monospace;
+  letter-spacing: 0.17em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.kicker,
+.candidate-head p {
+  margin: 0 0 8px;
+  color: var(--gold);
+  font: 600 10px/1.2 "SFMono-Regular", monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+h1 {
+  max-width: 840px;
+  margin: 0;
+  font: 400 clamp(52px, 8vw, 118px)/0.84 "Iowan Old Style", Baskerville, serif;
+  letter-spacing: -0.055em;
+}
+
+.title-block > p:last-child {
+  max-width: 740px;
+  margin: 28px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.instruction {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+  border-left: 2px solid var(--gold);
+}
+
+.instruction strong {
+  font: 500 24px/1.1 "Iowan Old Style", Baskerville, serif;
+}
+
+.instruction span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+}
+
+.candidate {
+  min-width: 0;
+  background: var(--panel);
+}
+
+.candidate-primary { box-shadow: inset 0 3px 0 var(--gold); }
+.candidate[data-selected="true"] .candidate-letter { background: var(--gold); color: var(--void); }
+.candidate-warning { box-shadow: inset 0 3px 0 var(--rust); }
+
+.candidate-head {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  min-height: 104px;
+  padding: 20px clamp(18px, 3vw, 38px);
+  border-bottom: 1px solid var(--line);
+}
+
+.candidate-letter {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font: 500 28px/1 "Iowan Old Style", Baskerville, serif;
+}
+
+.candidate-head h2 {
+  margin: 0;
+  font: 500 clamp(20px, 2.4vw, 34px)/1 "Iowan Old Style", Baskerville, serif;
+}
+
+.renderer {
+  color: var(--muted);
+  font: 600 10px/1 "SFMono-Regular", monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+iframe {
+  display: block;
+  width: 100%;
+  height: clamp(360px, 42vw, 650px);
+  border: 0;
+  background: #000;
+}
+
+.candidate footer {
+  display: flex;
+  min-height: 54px;
+  gap: 18px;
+  align-items: center;
+  padding: 12px clamp(18px, 3vw, 38px);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font: 10px/1.3 "SFMono-Regular", monospace;
+  text-transform: uppercase;
+}
+
+.candidate footer a {
+  margin-left: auto;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.archive-foot {
+  padding: 30px clamp(20px, 5vw, 78px) 48px;
+  color: var(--muted);
+  font: 11px/1.5 "SFMono-Regular", monospace;
+}
+
+.archive-foot a { color: var(--gold); }
+
+@media (max-width: 900px) {
+  .archive-head { grid-template-columns: 1fr; align-items: start; }
+  .candidate-grid { grid-template-columns: 1fr; }
+  iframe { height: 62vw; min-height: 350px; }
+}
+
+@media (max-width: 560px) {
+  .archive-head { padding: 28px 20px 38px; }
+  .candidate-head { grid-template-columns: 42px minmax(0, 1fr); padding: 16px; }
+  .candidate-letter { width: 40px; height: 40px; }
+  .renderer { display: none; }
+  .candidate footer { flex-wrap: wrap; padding: 12px 16px; }
+  .candidate footer a { width: 100%; margin: 0; }
+  iframe { height: 72vw; min-height: 320px; }
+}

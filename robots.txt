@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
+Disallow: /build.json
 Sitemap: https://mobleysoft.com/sitemap.xml

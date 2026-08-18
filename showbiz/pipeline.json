@@ -1,0 +1,120 @@
+{
+  "count": 9,
+  "event": "ShowBizCA: Small Business Connections",
+  "event_date": "2026-08-13",
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "schema_version": "1.0",
+  "source": "ventures.json",
+  "source_sha256": "92e902384155f14f1894c37e7fdc3c83bb28593784f155a1bcc163e8c841323d",
+  "stages": [
+    {
+      "application": "Develop and refine original written IP.",
+      "canonical_spec": "Autonomous literary publishing and distribution platform, exclusively populated by a massive swarm of sovereign synthetic authors.",
+      "delivery_status": "proposed-integrated-handoff",
+      "division": "media",
+      "domain": "literacraft.com",
+      "handoff": "Manuscript, story bible, and rights record",
+      "position": 1,
+      "product": "Story Forge",
+      "role_status": "verified-in-canonical-ledger",
+      "stage": "Source"
+    },
+    {
+      "application": "Package, discover, and manage adaptable titles.",
+      "canonical_spec": "AI-powered publishing and distribution platform revolutionizing how books are created, discovered, and consumed.",
+      "delivery_status": "proposed-integrated-handoff",
+      "division": "media",
+      "domain": "mobleybooks.com",
+      "handoff": "Searchable title and rights catalog",
+      "position": 2,
+      "product": "Title Library",
+      "role_status": "verified-in-canonical-ledger",
+      "stage": "Catalog"
+    },
+    {
+      "application": "Transform written content into production-ready scripts.",
+      "canonical_spec": "Automated IP adaptation platform transforming written content into screenplays and production-ready scripts using AI.",
+      "delivery_status": "proposed-integrated-handoff",
+      "division": "media",
+      "domain": "book2film.cc",
+      "handoff": "Screenplay, scene map, and production brief",
+      "position": 3,
+      "product": "Book2Film",
+      "role_status": "verified-in-canonical-ledger",
+      "stage": "Adapt"
+    },
+    {
+      "application": "Turn the production brief into spatial and manufactured design data.",
+      "canonical_spec": "AGI-first CAD/engineering platform revolutionizing 3D design and manufacturing through intuitive AI interfaces.",
+      "delivery_status": "proposed-integrated-handoff",
+      "division": "science",
+      "domain": "conseiv.com",
+      "handoff": "Sets, props, layouts, and fabrication models",
+      "position": 4,
+      "product": "Conseiv",
+      "role_status": "verified-in-canonical-ledger",
+      "stage": "Design"
+    },
+    {
+      "application": "Generate animation, previsualization, and visual sequences.",
+      "canonical_spec": "AI-powered animation studio specializing in automated content generation for anime, manga, and related entertainment properties.",
+      "delivery_status": "proposed-integrated-handoff",
+      "division": "media",
+      "domain": "animetrope.com",
+      "handoff": "Boards, animatics, and animated shots",
+      "position": 5,
+      "product": "Animetrope",
+      "role_status": "verified-in-canonical-ledger",
+      "stage": "Visualize"
+    },
+    {
+      "application": "Create synchronized sound, voice, music, and visual timing.",
+      "canonical_spec": "Multi-sensory content creation platform using AI to generate synchronized audio-visual experiences for marketing and entertainment.",
+      "delivery_status": "proposed-integrated-handoff",
+      "division": "media",
+      "domain": "audiovizai.com",
+      "handoff": "Timed audiovisual package",
+      "position": 6,
+      "product": "AudioVizAI",
+      "role_status": "verified-in-canonical-ledger",
+      "stage": "Score"
+    },
+    {
+      "application": "Assemble virtual production, editing, and final delivery.",
+      "canonical_spec": "End-to-end film production platform using AI for virtual production, automated editing, and content generation.",
+      "delivery_status": "proposed-integrated-handoff",
+      "division": "media",
+      "domain": "filmline.cc",
+      "handoff": "Master, trailer, and delivery package",
+      "position": 7,
+      "product": "Filmline",
+      "role_status": "verified-in-canonical-ledger",
+      "stage": "Finish"
+    },
+    {
+      "application": "Convert the same world and assets into interactive experiences.",
+      "canonical_spec": "AI game development studio automatically generating and publishing interactive entertainment experiences.",
+      "delivery_status": "proposed-integrated-handoff",
+      "division": "media",
+      "domain": "gamegob.com",
+      "handoff": "Playable prototype and reusable world assets",
+      "position": 8,
+      "product": "GameGob",
+      "role_status": "verified-in-canonical-ledger",
+      "stage": "Extend"
+    },
+    {
+      "application": "Package, test, distribute, and measure the campaign.",
+      "canonical_spec": "Full-stack marketing automation platform optimizing campaigns across all channels using AI.",
+      "delivery_status": "proposed-integrated-handoff",
+      "division": "agents",
+      "domain": "marketingium.com",
+      "handoff": "Campaign, audience funnel, and performance record",
+      "position": 9,
+      "product": "Marketingium",
+      "role_status": "verified-in-canonical-ledger",
+      "stage": "Reach"
+    }
+  ],
+  "status_boundary": "Venture roles are verified in the canonical ledger. The integrated handoffs are the proposed operating model and are not represented as completed customer delivery."
+}

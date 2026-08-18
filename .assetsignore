@@ -1,0 +1,7 @@
+.git/
+.venv-valuation/
+.DS_Store
+**/.DS_Store
+tools/
+GAME_DESIGN.md
+requirements-valuation.txt

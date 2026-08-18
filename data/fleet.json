@@ -1,0 +1,501 @@
+{
+  "count": 123,
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "schema_version": "1.0",
+  "source": "ventures.json",
+  "source_sha256": "92e902384155f14f1894c37e7fdc3c83bb28593784f155a1bcc163e8c841323d",
+  "ventures": [
+    {
+      "domain": "abstergo.cc",
+      "url": "https://abstergo.cc/"
+    },
+    {
+      "domain": "accountdrac.com",
+      "url": "https://accountdrac.com/"
+    },
+    {
+      "domain": "agentropi.com",
+      "url": "https://agentropi.com/"
+    },
+    {
+      "domain": "agentzaar.com",
+      "url": "https://agentzaar.com/"
+    },
+    {
+      "domain": "agewinder.com",
+      "url": "https://agewinder.com/"
+    },
+    {
+      "domain": "aicossic.com",
+      "url": "https://aicossic.com/"
+    },
+    {
+      "domain": "aiopencommerce.com",
+      "url": "https://aiopencommerce.com/"
+    },
+    {
+      "domain": "alhena.cc",
+      "url": "https://alhena.cc/"
+    },
+    {
+      "domain": "americanagi.cc",
+      "url": "https://americanagi.cc/"
+    },
+    {
+      "domain": "americnagi.cc",
+      "url": "https://americnagi.cc/"
+    },
+    {
+      "domain": "anattar.com",
+      "url": "https://anattar.com/"
+    },
+    {
+      "domain": "animetrope.com",
+      "url": "https://animetrope.com/"
+    },
+    {
+      "domain": "areshiva.com",
+      "url": "https://areshiva.com/"
+    },
+    {
+      "domain": "audiovizai.com",
+      "url": "https://audiovizai.com/"
+    },
+    {
+      "domain": "authfor.com",
+      "url": "https://authfor.com/"
+    },
+    {
+      "domain": "bignice.cc",
+      "url": "https://bignice.cc/"
+    },
+    {
+      "domain": "bitdoggo.com",
+      "url": "https://bitdoggo.com/"
+    },
+    {
+      "domain": "bloomagi.cc",
+      "url": "https://bloomagi.cc/"
+    },
+    {
+      "domain": "bondwright.com",
+      "url": "https://bondwright.com/"
+    },
+    {
+      "domain": "book2film.cc",
+      "url": "https://book2film.cc/"
+    },
+    {
+      "domain": "bookclubs.cc",
+      "url": "https://bookclubs.cc/"
+    },
+    {
+      "domain": "bookeepr.cc",
+      "url": "https://bookeepr.cc/"
+    },
+    {
+      "domain": "brocade.cc",
+      "url": "https://brocade.cc/"
+    },
+    {
+      "domain": "brynhildai.com",
+      "url": "https://brynhildai.com/"
+    },
+    {
+      "domain": "conseiv.com",
+      "url": "https://conseiv.com/"
+    },
+    {
+      "domain": "consenta.cc",
+      "url": "https://consenta.cc/"
+    },
+    {
+      "domain": "cryptosmart.cc",
+      "url": "https://cryptosmart.cc/"
+    },
+    {
+      "domain": "danzoa.com",
+      "url": "https://danzoa.com/"
+    },
+    {
+      "domain": "devducky.com",
+      "url": "https://devducky.com/"
+    },
+    {
+      "domain": "devtoolai.com",
+      "url": "https://devtoolai.com/"
+    },
+    {
+      "domain": "devtoolbx.com",
+      "url": "https://devtoolbx.com/"
+    },
+    {
+      "domain": "dofura.com",
+      "url": "https://dofura.com/"
+    },
+    {
+      "domain": "domainwombat.com",
+      "url": "https://domainwombat.com/"
+    },
+    {
+      "domain": "draknir.com",
+      "url": "https://draknir.com/"
+    },
+    {
+      "domain": "draugr.cc",
+      "url": "https://draugr.cc/"
+    },
+    {
+      "domain": "ecofixai.com",
+      "url": "https://ecofixai.com/"
+    },
+    {
+      "domain": "emissionhub.cc",
+      "url": "https://emissionhub.cc/"
+    },
+    {
+      "domain": "enablinghomes.com",
+      "url": "https://enablinghomes.com/"
+    },
+    {
+      "domain": "encoverai.com",
+      "url": "https://encoverai.com/"
+    },
+    {
+      "domain": "entoolize.com",
+      "url": "https://entoolize.com/"
+    },
+    {
+      "domain": "equifiant.com",
+      "url": "https://equifiant.com/"
+    },
+    {
+      "domain": "extraterran.com",
+      "url": "https://extraterran.com/"
+    },
+    {
+      "domain": "fedbank.cc",
+      "url": "https://fedbank.cc/"
+    },
+    {
+      "domain": "fedtalent.cc",
+      "url": "https://fedtalent.cc/"
+    },
+    {
+      "domain": "femptocom.com",
+      "url": "https://femptocom.com/"
+    },
+    {
+      "domain": "filmline.cc",
+      "url": "https://filmline.cc/"
+    },
+    {
+      "domain": "firmcreate.com",
+      "url": "https://firmcreate.com/"
+    },
+    {
+      "domain": "fundyai.com",
+      "url": "https://fundyai.com/"
+    },
+    {
+      "domain": "fystz.com",
+      "url": "https://fystz.com/"
+    },
+    {
+      "domain": "galadul.com",
+      "url": "https://galadul.com/"
+    },
+    {
+      "domain": "gamegob.com",
+      "url": "https://gamegob.com/"
+    },
+    {
+      "domain": "glcx.cc",
+      "url": "https://glcx.cc/"
+    },
+    {
+      "domain": "glyphyai.com",
+      "url": "https://glyphyai.com/"
+    },
+    {
+      "domain": "golfcad.cc",
+      "url": "https://golfcad.cc/"
+    },
+    {
+      "domain": "golfdad.cc",
+      "url": "https://golfdad.cc/"
+    },
+    {
+      "domain": "golflink.cc",
+      "url": "https://golflink.cc/"
+    },
+    {
+      "domain": "golfmind.cc",
+      "url": "https://golfmind.cc/"
+    },
+    {
+      "domain": "gravnova.com",
+      "url": "https://gravnova.com/"
+    },
+    {
+      "domain": "greenhandcapital.com",
+      "url": "https://greenhandcapital.com/"
+    },
+    {
+      "domain": "greybeardai.com",
+      "url": "https://greybeardai.com/"
+    },
+    {
+      "domain": "gurukle.com",
+      "url": "https://gurukle.com/"
+    },
+    {
+      "domain": "halside.com",
+      "url": "https://halside.com/"
+    },
+    {
+      "domain": "healspell.com",
+      "url": "https://healspell.com/"
+    },
+    {
+      "domain": "helmcorp.cc",
+      "url": "https://helmcorp.cc/"
+    },
+    {
+      "domain": "helmdir.com",
+      "url": "https://helmdir.com/"
+    },
+    {
+      "domain": "helmscorp.cc",
+      "url": "https://helmscorp.cc/"
+    },
+    {
+      "domain": "hildrai.com",
+      "url": "https://hildrai.com/"
+    },
+    {
+      "domain": "industrize.com",
+      "url": "https://industrize.com/"
+    },
+    {
+      "domain": "instantiability.com",
+      "url": "https://instantiability.com/"
+    },
+    {
+      "domain": "intfer.cc",
+      "url": "https://intfer.cc/"
+    },
+    {
+      "domain": "kubaki.cc",
+      "url": "https://kubaki.cc/"
+    },
+    {
+      "domain": "lawyik.com",
+      "url": "https://lawyik.com/"
+    },
+    {
+      "domain": "leadersclub.cc",
+      "url": "https://leadersclub.cc/"
+    },
+    {
+      "domain": "legibleweights.com",
+      "url": "https://legibleweights.com/"
+    },
+    {
+      "domain": "legionicai.com",
+      "url": "https://legionicai.com/"
+    },
+    {
+      "domain": "literacraft.com",
+      "url": "https://literacraft.com/"
+    },
+    {
+      "domain": "lovemaint.com",
+      "url": "https://lovemaint.com/"
+    },
+    {
+      "domain": "mailguyai.com",
+      "url": "https://mailguyai.com/"
+    },
+    {
+      "domain": "malathor.com",
+      "url": "https://malathor.com/"
+    },
+    {
+      "domain": "marketingium.com",
+      "url": "https://marketingium.com/"
+    },
+    {
+      "domain": "meeva.io",
+      "url": "https://meeva.io/"
+    },
+    {
+      "domain": "mobcoin.cc",
+      "url": "https://mobcoin.cc/"
+    },
+    {
+      "domain": "mobcorp.cc",
+      "url": "https://mobcorp.cc/"
+    },
+    {
+      "domain": "mobleybooks.com",
+      "url": "https://mobleybooks.com/"
+    },
+    {
+      "domain": "mobleyhelms.com",
+      "url": "https://mobleyhelms.com/"
+    },
+    {
+      "domain": "mobleymetal.com",
+      "url": "https://mobleymetal.com/"
+    },
+    {
+      "domain": "mobleyreport.com",
+      "url": "https://mobleyreport.com/"
+    },
+    {
+      "domain": "mobleysoft.com",
+      "url": "https://mobleysoft.com/"
+    },
+    {
+      "domain": "newgameplus.cc",
+      "url": "https://newgameplus.cc/"
+    },
+    {
+      "domain": "ownschool.cc",
+      "url": "https://ownschool.cc/"
+    },
+    {
+      "domain": "paintedwhore.cc",
+      "url": "https://paintedwhore.cc/"
+    },
+    {
+      "domain": "pandorachat.cc",
+      "url": "https://pandorachat.cc/"
+    },
+    {
+      "domain": "patentkin.com",
+      "url": "https://patentkin.com/"
+    },
+    {
+      "domain": "powerhost.cc",
+      "url": "https://powerhost.cc/"
+    },
+    {
+      "domain": "quanticfork.com",
+      "url": "https://quanticfork.com/"
+    },
+    {
+      "domain": "reasontodate.com",
+      "url": "https://reasontodate.com/"
+    },
+    {
+      "domain": "rebrief.me",
+      "url": "https://rebrief.me/"
+    },
+    {
+      "domain": "recovai.com",
+      "url": "https://recovai.com/"
+    },
+    {
+      "domain": "roncorp.cc",
+      "url": "https://roncorp.cc/"
+    },
+    {
+      "domain": "ronhelms.cc",
+      "url": "https://ronhelms.cc/"
+    },
+    {
+      "domain": "salesfactorai.com",
+      "url": "https://salesfactorai.com/"
+    },
+    {
+      "domain": "sanctuaryui.com",
+      "url": "https://sanctuaryui.com/"
+    },
+    {
+      "domain": "scalarflux.com",
+      "url": "https://scalarflux.com/"
+    },
+    {
+      "domain": "selfcoin.cc",
+      "url": "https://selfcoin.cc/"
+    },
+    {
+      "domain": "sentiantai.com",
+      "url": "https://sentiantai.com/"
+    },
+    {
+      "domain": "singularityui.com",
+      "url": "https://singularityui.com/"
+    },
+    {
+      "domain": "syncropy.com",
+      "url": "https://syncropy.com/"
+    },
+    {
+      "domain": "talkingmind.cc",
+      "url": "https://talkingmind.cc/"
+    },
+    {
+      "domain": "taskgridai.com",
+      "url": "https://taskgridai.com/"
+    },
+    {
+      "domain": "tenancyai.com",
+      "url": "https://tenancyai.com/"
+    },
+    {
+      "domain": "traceformer.com",
+      "url": "https://traceformer.com/"
+    },
+    {
+      "domain": "transcendantai.com",
+      "url": "https://transcendantai.com/"
+    },
+    {
+      "domain": "twill.finance",
+      "url": "https://twill.finance/"
+    },
+    {
+      "domain": "valdring.com",
+      "url": "https://valdring.com/"
+    },
+    {
+      "domain": "valkrai.com",
+      "url": "https://valkrai.com/"
+    },
+    {
+      "domain": "vendyai.com",
+      "url": "https://vendyai.com/"
+    },
+    {
+      "domain": "ventraleye.com",
+      "url": "https://ventraleye.com/"
+    },
+    {
+      "domain": "warpdrive.cc",
+      "url": "https://warpdrive.cc/"
+    },
+    {
+      "domain": "watchforce.cc",
+      "url": "https://watchforce.cc/"
+    },
+    {
+      "domain": "weylandai.com",
+      "url": "https://weylandai.com/"
+    },
+    {
+      "domain": "workshrinker.com",
+      "url": "https://workshrinker.com/"
+    },
+    {
+      "domain": "youthmend.com",
+      "url": "https://youthmend.com/"
+    },
+    {
+      "domain": "yutaniai.com",
+      "url": "https://yutaniai.com/"
+    }
+  ]
+}

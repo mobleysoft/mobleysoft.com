@@ -1,0 +1,55 @@
+{
+  "artifact_kind": "interactive-master-manifest",
+  "claim_boundary": "This is a Mobleysoft integration canary exercising nine venture handoff contracts. It is not represented as an NBCUniversal commission, customer delivery, or proof that each venture's independent production runtime generated its assigned artifact.",
+  "delivery": {
+    "autoplay": false,
+    "captions": true,
+    "url": "/showbiz/canary/#master"
+  },
+  "edit_decisions": [
+    {
+      "audio": "low pulse",
+      "in": 0.0,
+      "out": 1.25,
+      "picture": "verified brief"
+    },
+    {
+      "audio": "stage pulses 1-4",
+      "in": 1.25,
+      "out": 5.0,
+      "picture": "source through design"
+    },
+    {
+      "audio": "stage pulses 5-8",
+      "in": 5.0,
+      "out": 9.75,
+      "picture": "visual through interactive"
+    },
+    {
+      "audio": "stage pulse 9 and resolve",
+      "in": 9.75,
+      "out": 12.0,
+      "picture": "campaign lockup and call to action"
+    }
+  ],
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "input": {
+    "path": "/showbiz/canary/artifacts/06-score/cue-sheet.json",
+    "sha256": "c716dd2daceadab2a422e43f292e59fe5c481d7200f6ca97e313a1deec603a97"
+  },
+  "master": {
+    "aspect_ratios": [
+      "16:9",
+      "9:16"
+    ],
+    "duration_seconds": 12,
+    "format": "browser-native-interactive-master"
+  },
+  "position": 7,
+  "product": "Filmline",
+  "project_id": "showbizca-the-handoff-2026",
+  "schema_version": "1.0",
+  "stage": "Finish",
+  "status": "generated-integration-canary",
+  "venture_contract": "filmline.cc"
+}

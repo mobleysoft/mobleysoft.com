@@ -1,0 +1,37 @@
+{
+  "artifact_kind": "story-bible",
+  "beats": [
+    "Source: Manuscript, story bible, and rights record",
+    "Catalog: Searchable title and rights catalog",
+    "Adapt: Screenplay, scene map, and production brief",
+    "Design: Sets, props, layouts, and fabrication models",
+    "Visualize: Boards, animatics, and animated shots",
+    "Score: Timed audiovisual package",
+    "Finish: Master, trailer, and delivery package",
+    "Extend: Playable prototype and reusable world assets",
+    "Reach: Campaign, audience funnel, and performance record"
+  ],
+  "claim_boundary": "This is a Mobleysoft integration canary exercising nine venture handoff contracts. It is not represented as an NBCUniversal commission, customer delivery, or proof that each venture's independent production runtime generated its assigned artifact.",
+  "format": "12-second interactive proof; expandable to a 60-second supplier film",
+  "generated_at": "2026-08-13T22:48:51+00:00",
+  "input": {
+    "path": "/showbiz/canary/artifacts/00-brief/event-brief.json",
+    "sha256": "426c04fec425460bbfde98b7bf153d6469c17eded523fbb6411481f0bbedd631"
+  },
+  "logline": "A single production brief crosses nine accountable thresholds and arrives as a world that remembers how it was made.",
+  "position": 1,
+  "product": "Story Forge",
+  "project_id": "showbizca-the-handoff-2026",
+  "rights": "Original Mobleysoft promotional concept derived from public-facing event logistics.",
+  "schema_version": "1.0",
+  "stage": "Source",
+  "status": "generated-integration-canary",
+  "theme": "Context should compound across production boundaries instead of being discarded.",
+  "title": "THE HANDOFF",
+  "venture_contract": "literacraft.com",
+  "visual_grammar": [
+    "one object transforming",
+    "visible thresholds",
+    "persistent gold lineage line"
+  ]
+}
