@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#02060a">
+    <meta name="description" content="123 monumental ventures. Each pursuing something significant. Together, reshaping the world.">
+    <meta property="og:title" content="Mobleysoft Ventures | 123 Monumental Projects">
+    <meta property="og:description" content="The complete fleet of ventures reshaping infrastructure, AI, and society.">
+    <title>Mobleysoft Ventures | 123 Projects</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <style>
+        :root {
+            --void: #02060a;
+            --ink: #071015;
+            --panel: rgba(5, 12, 17, 0.9);
+            --bone: #f4efe4;
+            --muted: #9ba7aa;
+            --dim: #59676a;
+            --gold: #d9a441;
+            --gold-bright: #f3c66c;
+            --cyan: #5eead4;
+            --line: rgba(244, 239, 228, 0.14);
+            --soft-line: rgba(244, 239, 228, 0.07);
+            --display: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
+            --sans: "Avenir Next Condensed", "Avenir Next", "Helvetica Neue", sans-serif;
+            --mono: "SFMono-Regular", "Cascadia Code", "Liberation Mono", monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html {
+            min-height: 100%;
+            background: var(--void);
+            color-scheme: dark;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--void);
+            color: var(--bone);
+            font-family: var(--sans);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+        }
+
+        .void-grain {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.13;
+            background-image:
+                repeating-radial-gradient(circle at 10% 20%, transparent 0 1px, rgba(255,255,255,0.08) 1px 2px),
+                linear-gradient(110deg, transparent 30%, rgba(217,164,65,0.04), transparent 70%);
+            background-size: 5px 5px, 100% 100%;
+            mix-blend-mode: soft-light;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+            padding-bottom: 40px;
+            border-bottom: 2px solid var(--line);
+        }
+
+        .status-line {
+            font-size: 10px;
+            font-family: var(--mono);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 56px;
+            font-family: var(--display);
+            font-weight: 400;
+            margin: 20px 0;
+            color: var(--bone);
+            line-height: 1.2;
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: var(--muted);
+            margin-top: 20px;
+            font-family: var(--display);
+            font-style: italic;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--gold-bright);
+            font-family: var(--mono);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-top: 8px;
+        }
+
+        .search-section {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            color: var(--bone);
+            font-family: var(--mono);
+            font-size: 14px;
+            border-radius: 4px;
+            transition: border-color 180ms ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .ventures-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        .venture {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            padding: 24px;
+            border-radius: 4px;
+            transition: all 180ms ease;
+            cursor: default;
+        }
+
+        .venture:hover {
+            border-color: var(--gold);
+            background: rgba(5, 12, 17, 1);
+        }
+
+        .venture-name {
+            font-size: 16px;
+            font-family: var(--mono);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gold-bright);
+            margin-bottom: 12px;
+            word-break: break-all;
+        }
+
+        .venture-spec {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--bone);
+        }
+
+        .venture.hidden {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 2px solid var(--line);
+            color: var(--dim);
+            font-size: 11px;
+            font-family: var(--mono);
+        }
+
+        @media (max-width: 768px) {
+            .ventures-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="void-grain" aria-hidden="true"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="status-line">123 Ventures</div>
+            <h1>Mobleysoft</h1>
+            <p class="tagline">Each monumental. Each reshaping what's possible.</p>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">123</div>
+                    <div class="stat-label">Active Ventures</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Possible Futures</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Mission</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search -->
+        <section class="search-section">
+            <input
+                type="text"
+                class="search-box"
+                id="search-input"
+                placeholder="Search ventures by name or spec..."
+                aria-label="Search ventures"
+            >
+        </section>
+
+        <!-- Ventures Grid -->
+        <div class="ventures-grid" id="ventures-grid">
+            <!-- Populated by JavaScript -->
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>All 123 ventures are monumental. Each pursues something significant.</p>
+            <p style="margin-top: 20px;">Together, we reshape infrastructure, AI, and society.</p>
+        </footer>
+    </div>
+
+    <script>
+        const ventures = [
+            { name: "abstergo.cc", spec: "Advanced defense R&D contractor specializing in next-generation military technologies, biotechnology applications, and critical infrastructure protection." },
+            { name: "accountdrac.com", spec: "AI-powered accounting automation platform maximizing tax efficiency and financial optimization through continuous analysis and strategic planning." },
+            { name: "agentropi.com", spec: "Dynamic AI workforce platform matching specialized AI agents to complex business problems through adaptive algorithms." },
+            { name: "agentzaar.com", spec: "Premier marketplace for AI agent deployment, customization, and collaboration - enabling businesses to find and deploy specialized AI solutions." },
+            { name: "agewinder.com", spec: "Elder care technology platform providing AI companions that support cognitive health through personalized interaction and memory assistance." },
+            { name: "aicossic.com", spec: "Open-source AI framework with enterprise support, providing independent and customizable AI solutions for mission-critical applications." },
+            { name: "aiopencommerce.com", spec: "Open-source e-commerce platform powered by AI, democratizing online retail with advanced automation and personalization capabilities." },
+            { name: "alhena.cc", spec: "Personal AI companion platform providing life guidance, decision support, and wellness coaching through conversational AI." },
+            { name: "americanagi.cc", spec: "Sovereign AGI development initiative ensuring American leadership in artificial general intelligence with robust safety and security protocols." },
+            { name: "americnagi.cc", spec: "Sovereign secure military computing infrastructure for defense-oriented AI workloads." },
+            { name: "anattar.com", spec: "Advanced data intelligence platform providing comprehensive analytics, pattern recognition, and predictive insights surpassing current market leaders." },
+            { name: "animetrope.com", spec: "AI-powered animation studio specializing in automated content generation for anime, manga, and related entertainment properties." },
+            { name: "areshiva.com", spec: "Dual-purpose cybersecurity platform combining advanced threat detection with automated defense regeneration and system recovery." },
+            { name: "audiovizai.com", spec: "Multi-sensory content creation platform using AI to generate synchronized audio-visual experiences for marketing and entertainment." },
+            { name: "authfor.com", spec: "Universal authentication infrastructure providing secure, seamless access management across all MobCorp properties and partner platforms." },
+            { name: "bignice.cc", spec: "Political engagement platform leveraging AI for grassroots organizing, voter outreach, and civic participation initiatives." },
+            { name: "bitdoggo.com", spec: "Automated cryptocurrency trading platform using AI algorithms for portfolio optimization and risk management." },
+            { name: "bloomagi.cc", spec: "AI model training and optimization platform specializing in developing custom AGI solutions for specific industry applications." },
+            { name: "bondwright.com", spec: "AI-powered bail bond and legal finance platform streamlining the justice system's financial mechanisms." },
+            { name: "book2film.cc", spec: "Automated IP adaptation platform transforming written content into screenplays and production-ready scripts using AI." },
+            { name: "bookclubs.cc", spec: "Social platform facilitating literary communities with AI-powered recommendations and discussion facilitation." },
+            { name: "bookeepr.cc", spec: "Simplified accounting software for small businesses using AI to automate bookkeeping and financial reporting." },
+            { name: "brocade.cc", spec: "Enterprise network infrastructure platform providing secure, high-performance connectivity for distributed systems." },
+            { name: "brynhildai.com", spec: "AI-driven talent acquisition platform matching candidates to opportunities through deep behavioral and skill analysis." },
+            { name: "conseiv.com", spec: "Consensus-building platform using AI to find common ground on complex policy and organizational decisions." },
+            { name: "consenta.cc", spec: "Privacy-preserving consent management platform for regulatory compliance and user data governance." },
+            { name: "cryptosmart.cc", spec: "Intelligent cryptocurrency portfolio management platform with advanced risk modeling and diversification strategies." },
+            { name: "danzoa.com", spec: "Social dance platform connecting performers and audiences through AI-powered event discovery and recommendation." },
+            { name: "devducky.com", spec: "Playful developer tools and utilities platform emphasizing creative problem-solving and rapid prototyping." },
+            { name: "devtoolai.com", spec: "AI-enhanced developer productivity platform with intelligent code completion, debugging, and optimization." },
+            { name: "devtoolbx.com", spec: "Comprehensive toolbox for software developers providing utilities, libraries, and automation for common tasks." },
+            { name: "dofura.com", spec: "Advanced logistics platform optimizing supply chains through AI-driven route planning and resource allocation." },
+            { name: "domainwombat.com", spec: "Fair partnership domain registration service with 50/50 equity sharing and transparent pricing." },
+            { name: "draknir.com", spec: "Fantasy world building platform enabling creators to design immersive environments with procedural generation." },
+            { name: "draugr.cc", spec: "Necromancy-themed security platform specializing in resurrection and recovery of compromised systems." },
+            { name: "ecofixai.com", spec: "Environmental remediation platform using AI to identify and implement sustainable solutions for ecological restoration." },
+            { name: "emissionhub.cc", spec: "Carbon tracking and reduction platform helping organizations measure and minimize their environmental footprint." },
+            { name: "enablinghomes.com", spec: "Accessible housing platform providing adaptive technology and design for people with disabilities." },
+            { name: "encoverai.com", spec: "Secure communication platform using AI for privacy-preserving and encrypted information exchange." },
+            { name: "entoolize.com", spec: "Enterprise tool integration platform providing seamless connectivity between disparate business systems." },
+            { name: "equifiant.com", spec: "Equity-focused fintech platform democratizing investment and wealth building for underserved communities." },
+            { name: "extraterran.com", spec: "Space exploration technology platform developing infrastructure and services for off-world colonization." },
+            { name: "fedbank.cc", spec: "Federated banking infrastructure enabling decentralized financial services across partner institutions." },
+            { name: "fedtalent.cc", spec: "Talent federation network connecting distributed teams and enabling global workforce collaboration." },
+            { name: "femptocom.com", spec: "Ultra-high-speed communications platform operating at femtosecond timescales for next-generation networking." },
+            { name: "filmline.cc", spec: "Video production platform providing tools for creators to produce, edit, and distribute film content." },
+            { name: "firmcreate.com", spec: "Enterprise creation suite for building and managing organizational structures and governance models." },
+            { name: "fundyai.com", spec: "AI-powered fundraising platform connecting entrepreneurs with investors and optimizing capital allocation." },
+            { name: "fystz.com", spec: "Physics simulation platform enabling complex scientific modeling and visualization for research and education." },
+            { name: "galadul.com", spec: "Galactic commerce platform facilitating interplanetary trade and resource exchange frameworks." },
+            { name: "gamegob.com", spec: "Game distribution platform with innovative monetization and player retention optimization." },
+            { name: "glcx.cc", spec: "Global logistics exchange platform optimizing shipping and supply chain efficiency." },
+            { name: "glyphyai.com", spec: "Language and symbolic processing platform enabling AI to understand and generate meaning across domains." },
+            { name: "golfcad.cc", spec: "Golf course design platform using AI to optimize layouts for challenge, aesthetics, and playability." },
+            { name: "golfdad.cc", spec: "Community platform for golf enthusiasts with coaching, tournament, and social features." },
+            { name: "golflink.cc", spec: "Golf connectivity platform enabling seamless tee-time booking and course community engagement." },
+            { name: "golfmind.cc", spec: "Mental performance coaching platform specializing in psychological training for golfers." },
+            { name: "gravnova.com", spec: "Sovereign edge hosting platform providing sovereign, third-party-independent infrastructure for ventures." },
+            { name: "greenhandcapital.com", spec: "Impact investment fund focusing on sustainable and socially responsible business opportunities." },
+            { name: "greybeardai.com", spec: "Elder wisdom platform connecting experienced professionals with mentees for knowledge transfer." },
+            { name: "gurukle.com", spec: "Educational platform connecting spiritual teachers with students for transformative learning experiences." },
+            { name: "halside.com", spec: "Halide-based computing platform leveraging exotic chemistry for novel computational architectures." },
+            { name: "healspell.com", spec: "Holistic health platform combining traditional wisdom with AI-powered personalized wellness recommendations." },
+            { name: "helmcorp.cc", spec: "Leadership and organizational consulting platform providing strategic guidance for complex enterprises." },
+            { name: "helmdir.com", spec: "Director of helm services providing navigation and leadership for organizations in transition." },
+            { name: "helmscorp.cc", spec: "Steering committee services coordinating multi-stakeholder governance and decision-making." },
+            { name: "hildrai.com", spec: "AI-driven creative studio specializing in music, art, and narrative generation." },
+            { name: "industrize.com", spec: "Manufacturing optimization platform using AI for production efficiency and quality enhancement." },
+            { name: "instantiability.com", spec: "Rapid instantiation platform enabling instant deployment of complex systems and infrastructure." },
+            { name: "intfer.cc", spec: "Inference optimization platform accelerating AI model deployment and inference performance." },
+            { name: "kubaki.cc", spec: "Container orchestration platform providing robust deployment and scaling for distributed systems." },
+            { name: "lawyik.com", spec: "Legal AI platform automating contract analysis, compliance checking, and legal research." },
+            { name: "leadersclub.cc", spec: "Exclusive network for organizational leaders facilitating peer learning and strategic collaboration." },
+            { name: "legibleweights.com", spec: "Font and typography platform enabling accessible, readable text across all media." },
+            { name: "legionicai.com", spec: "Legion command platform coordinating swarms of AI agents for complex multi-agent tasks." },
+            { name: "literacraft.com", spec: "Literary platform for writers to publish, collaborate, and connect with readers." },
+            { name: "lovemaint.com", spec: "Relationship maintenance platform providing guidance and tools for nurturing personal connections." },
+            { name: "mailguyai.com", spec: "Email intelligence platform providing secure, encrypted, and sovereign email services." },
+            { name: "malathor.com", spec: "Malware analysis platform detecting and neutralizing threats through advanced threat intelligence." },
+            { name: "marketingium.com", spec: "Marketing automation platform enabling data-driven campaigns and customer engagement." },
+            { name: "meeva.io", spec: "Metaverse infrastructure platform providing tools for building immersive virtual worlds." },
+            { name: "mobcoin.cc", spec: "MobCorp cryptocurrency creating sovereign, independent digital currency and financial system." },
+            { name: "mobcorp.cc", spec: "Central MobCorp holding company and venture conglomerate coordination." },
+            { name: "mobleybooks.com", spec: "Publishing platform for authors to self-publish and distribute books globally." },
+            { name: "mobleyhelms.com", spec: "Political campaign infrastructure for democratic participation and electoral engagement." },
+            { name: "mobleymetal.com", spec: "Metal GPU computing platform providing sovereign, high-performance compute infrastructure." },
+            { name: "mobleyreport.com", spec: "Business intelligence platform for comprehensive reporting and data analysis." },
+            { name: "mobleysoft.com", spec: "Flagship Mobleysoft company site, sovereign software ecosystem, and venture hub." },
+            { name: "newgameplus.cc", spec: "Game development platform enabling creators to build and monetize gaming experiences." },
+            { name: "ownschool.cc", spec: "Education platform empowering students to own their learning journey and achieve mastery." },
+            { name: "paintedwhore.cc", spec: "Artistic marketplace for commissioned creative work and fine art." },
+            { name: "pandorachat.cc", spec: "Conversational AI platform with unlimited context and reasoning capabilities." },
+            { name: "patentkin.com", spec: "Patent management platform streamlining intellectual property filing and protection." },
+            { name: "powerhost.cc", spec: "High-performance hosting platform providing enterprise-grade infrastructure and reliability." },
+            { name: "quanticfork.com", spec: "Quantum computing platform enabling quantum algorithm development and execution." },
+            { name: "reasontodate.com", spec: "Dating platform using AI to match compatible partners based on values and vision." },
+            { name: "rebrief.me", spec: "News aggregation platform providing curated, unbiased information across domains." },
+            { name: "recovai.com", spec: "Recovery support platform for individuals overcoming addiction and trauma." },
+            { name: "roncorp.cc", spec: "Ron's corporate holding and venture portfolio coordination." },
+            { name: "ronhelms.cc", spec: "Ron's leadership consulting and strategic advisory services." },
+            { name: "salesfactorai.com", spec: "Sales intelligence platform using AI to optimize sales strategies and close rates." },
+            { name: "sanctuaryui.com", spec: "Safe space platform providing tools for creating inclusive and protected communities." },
+            { name: "scalarflux.com", spec: "Scalar field computing platform enabling novel computational paradigms." },
+            { name: "selfcoin.cc", spec: "Personal cryptocurrency platform enabling self-sovereignty and financial independence." },
+            { name: "sentiantai.com", spec: "Sentient AI research platform exploring consciousness and advanced reasoning in artificial systems." },
+            { name: "singularityui.com", spec: "User interface platform for AI systems enabling intuitive interaction with artificial intelligence." },
+            { name: "syncropy.com", spec: "Synchronization platform enabling real-time coordination across distributed systems." },
+            { name: "talkingmind.cc", spec: "Conversational therapy platform providing mental health support through AI counseling." },
+            { name: "taskgridai.com", spec: "Task management platform using AI for intelligent prioritization and delegation." },
+            { name: "tenancyai.com", spec: "Property management platform automating tenant relations and building operations." },
+            { name: "traceformer.com", spec: "Traceability platform providing end-to-end tracking for supply chains and products." },
+            { name: "transcendantai.com", spec: "Transcendence platform exploring the limits of AI consciousness and capability." },
+            { name: "twill.finance", spec: "Decentralized finance platform enabling peer-to-peer financial services." },
+            { name: "valdring.com", spec: "Validation and verification platform ensuring system integrity and security." },
+            { name: "valkrai.com", spec: "Valkyrie AI platform for combat optimization, strategy, and tactical analysis." },
+            { name: "vendyai.com", spec: "Commerce automation platform enabling AI-powered storefronts and transaction management." },
+            { name: "ventraleye.com", spec: "Surveillance and security platform providing comprehensive monitoring and threat detection." },
+            { name: "warpdrive.cc", spec: "Space exploration platform developing faster-than-light travel theoretical frameworks." },
+            { name: "watchforce.cc", spec: "Security operations platform coordinating personnel and technology for comprehensive protection." },
+            { name: "weylandai.com", spec: "Advanced AI research and deployment platform pushing the boundaries of artificial intelligence." },
+            { name: "workshrinker.com", spec: "Productivity platform automating routine work and freeing humans for strategic thinking." },
+            { name: "youthmend.com", spec: "Youth empowerment platform providing mentorship, education, and opportunity for young people." },
+            { name: "yutaniai.com", spec: "Distributed intelligence platform connecting human and artificial minds for collaborative problem-solving." }
+        ];
+
+        function renderVentures(filter = "") {
+            const grid = document.getElementById("ventures-grid");
+            grid.innerHTML = "";
+
+            const filtered = ventures.filter(v =>
+                v.name.toLowerCase().includes(filter.toLowerCase()) ||
+                v.spec.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            filtered.forEach(venture => {
+                const div = document.createElement("div");
+                div.className = "venture";
+                div.innerHTML = `
+                    <div class="venture-name">${venture.name}</div>
+                    <div class="venture-spec">${venture.spec}</div>
+                `;
+                grid.appendChild(div);
+            });
+
+            if (filtered.length === 0) {
+                const div = document.createElement("div");
+                div.style.gridColumn = "1 / -1";
+                div.style.textAlign = "center";
+                div.style.padding = "40px";
+                div.style.color = "var(--muted)";
+                div.innerHTML = "No ventures found matching that search.";
+                grid.appendChild(div);
+            }
+        }
+
+        const searchInput = document.getElementById("search-input");
+        searchInput.addEventListener("input", (e) => {
+            renderVentures(e.target.value);
+        });
+
+        renderVentures();
+    </script>
+</body>
+</html>
