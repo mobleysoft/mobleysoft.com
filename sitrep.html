@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobleysoft Situation Report - August 24, 2026</title>
+    <title>Mobleysoft Situation Report - August 25, 2026</title>
     <style>
         * {
             margin: 0;
@@ -186,7 +186,7 @@
     <div class="container">
         <header>
             <h1>Mobleysoft Situation Report</h1>
-            <div class="meta"><strong>Date:</strong> August 24, 2026, 22:44 UTC</div>
+            <div class="meta"><strong>Date:</strong> August 25, 2026, 04:15 UTC</div>
             <div class="meta"><strong>Prepared for:</strong> Cofounders & Leadership</div>
             <div class="classification">Internal - Strategic Initiative Update</div>
         </header>
@@ -325,6 +325,23 @@
                 <li>Identified platform → product patterns</li>
                 <li>Ready for implementation (not yet applied)</li>
             </ul>
+
+            <h3>August 25 - Deployment & Infrastructure</h3>
+            <p><span class="status-badge status-done">✅ DONE</span> <strong>mascom-edge Zone Routing Configuration</strong></p>
+            <ul>
+                <li>Configured mobleysoft.com zone (ID: e17efaddd583d50675429a1ba50cf949) to route through mascom-edge worker via Cloudflare API</li>
+                <li>Established: Johnmobley99 is the canonical Cloudflare account for all domain routing</li>
+                <li>Route pattern: <code>mobleysoft.com/*</code> → mascom-edge worker</li>
+                <li>Status: ✅ Live and verified (sitrep.html accessible at mobleysoft.com/sitrep.html)</li>
+            </ul>
+
+            <p><span class="status-badge status-done">✅ DONE</span> <strong>Situation Report Deployment</strong></p>
+            <ul>
+                <li>sitrep.html published to GitHub Pages (mobleysoft.github.io/mobleysoft.com/sitrep.html)</li>
+                <li>Routed through mascom-edge worker to mobleysoft.com/sitrep.html</li>
+                <li>Verified live in browser with correct title and content rendering</li>
+                <li>Updated CLAUDE.md with critical zone configuration details for future deployments</li>
+            </ul>
         </section>
 
         <section>
@@ -408,7 +425,7 @@
             <p><strong>Prepared by:</strong> Claude Code<br>
             <strong>Status:</strong> Approved for cofounder review<br>
             <strong>Distribution:</strong> Leadership team<br>
-            <strong>Last Updated:</strong> August 24, 2026, 22:50 UTC</p>
+            <strong>Last Updated:</strong> August 25, 2026, 04:15 UTC</p>
         </div>
     </div>
 </body>
