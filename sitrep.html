@@ -150,10 +150,7 @@
 
       // Update progress section
       const progressHtml = `
-        <h3>August 25 - Mobley Active (${currentHour} hrs, ${improvements.length} improvements)</h3>
-        <p><span class="status status-active">🔄 LIVE</span> Autonomous Improvement Wave</p>
-        <p>Real-time progress: ${improvements.length} improvements across ventures. Updated: ${new Date().toISOString().split('T')[0]}</p>
-        <pre>${logsToShow}</pre>
+        
       `;
       document.getElementById('progress-section').innerHTML = progressHtml;
 
