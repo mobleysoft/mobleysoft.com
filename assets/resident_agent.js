@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
         
         // Attempt local adapter first, fallback to the secure edge tunnel endpoint, then edge-gateway
-        fetch('http://localhost:11435/v1/chat/completions', {
+        fetch('/v1/chat/completions', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

@@ -49,7 +49,7 @@ SESSION_TTL_SECONDS = int(os.environ.get("MOBLEY_DEMO_SESSION_TTL", "3600"))
 MAX_PROMPT_CHARACTERS = 1_200
 MAX_MESSAGES = 16
 COOKIE_NAME = "__Host-mobley_demo"
-MODEL_BASE_URL = os.environ.get("MOBLEY_LLM_BASE_URL", "http://127.0.0.1:18086").rstrip("/")
+MODEL_BASE_URL = os.environ.get("MOBLEY_LLM_BASE_URL", "").rstrip("/")
 MODEL_NAME = os.environ.get("MOBLEY_LLM_MODEL", "qwen2.5-0.5b-instruct-q4_k_m.gguf")
 STATE_ROOT = Path.home() / ".local/state/mobley/valuation-demo"
 INBOX_PATH = STATE_ROOT / "handoffs.jsonl"
@@ -65,8 +65,8 @@ WEBAUTHN_ORIGINS = ["https://mobleysoft.com", "https://www.mobleysoft.com"]
 ALLOWED_ORIGINS = {
     "https://mobleysoft.com",
     "https://www.mobleysoft.com",
-    "http://127.0.0.1:7791",
-    "http://localhost:7791",
+    "",
+    "",
 }
 
 SESSIONS: dict[str, dict[str, Any]] = {}

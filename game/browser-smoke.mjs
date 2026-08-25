@@ -24,7 +24,7 @@ async function waitForTarget(port, timeout = 10000) {
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(`http://127.0.0.1:${port}/json`);
+      const response = await fetch(`${port}/json`);
       const targets = await response.json();
       const page = targets.find((target) => target.type === "page");
       if (page) return page;
