@@ -1,38 +1,172 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Mobleysoft Sitrep - Live</title>
+<title>Mobleysoft Sitrep - Live Autonomous Improvement Wave</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body { font-family: sans-serif; margin: 40px; }
-h1 { color: #333; }
-.live { background: #e8f5e9; padding: 20px; border-radius: 8px; }
-pre { background: #f5f5f5; padding: 15px; border-radius: 6px; overflow-x: auto; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #04040a;
+    color: #f0ead6;
+    padding: 40px 20px;
+    line-height: 1.6;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  header {
+    border-bottom: 2px solid #c9a227;
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  h1 { font-size: 2em; margin-bottom: 10px; }
+  .meta { font-size: 0.9em; color: #999; }
+  h2 { font-size: 1.5em; margin: 30px 0 20px 0; color: #c9a227; }
+  h3 { font-size: 1.2em; margin: 20px 0 15px 0; }
+  .status {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .status-active { background: #1e4620; color: #4ade80; }
+  .status-idle { background: #4a2436; color: #f87171; }
+  .progress-section {
+    background: #0f1419;
+    border-left: 3px solid #c9a227;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 4px;
+  }
+  pre {
+    background: #1a1f26;
+    padding: 15px;
+    border-radius: 4px;
+    overflow-x: auto;
+    max-height: 400px;
+    overflow-y: auto;
+    font-size: 0.85em;
+  }
+  .metric { display: inline-block; margin-right: 30px; margin-bottom: 15px; }
+  .metric-label { color: #999; font-size: 0.9em; }
+  .metric-value { font-size: 1.5em; font-weight: bold; color: #4ade80; }
+  .component-list li {
+    list-style: none;
+    padding: 5px 0;
+    padding-left: 20px;
+  }
+  .component-list li:before {
+    content: "✓ ";
+    color: #4ade80;
+    margin-left: -15px;
+    margin-right: 10px;
+  }
 </style>
 </head>
 <body>
-<h1>Mobleysoft 24-Hour Improvement Wave</h1>
-<div class="live">
-<h2>🔄 LIVE - Continuous Autonomous Improvements</h2>
-<p><strong>Status:</strong> Active</p>
-<p><strong>Date:</strong> August 25, 2026</p>
-<h3>System Components</h3>
-<ul>
-<li>✅ Main Loop: Continuous improvement cycles</li>
-<li>✅ Venture Improvements: Every odd cycle</li>
-<li>✅ Paper Ingestion: Every even cycle</li>
-<li>✅ Real-time Watcher: Updates pushed to GitHub</li>
-<li>✅ Feedback Loop: Awaiting guidance</li>
-</ul>
-<h3>Current Metrics</h3>
-<pre>
-Improvements made: 21+
-Ventures touched: 5+
-Cycles completed: 50+
-Papers discovered: Pending
-Products queued: Pending
-Feedback cycles: 0
-</pre>
-<p>Live dashboard updates every 2 seconds as improvements are discovered and executed.</p>
+<div class="container">
+  <header>
+    <h1>Mobleysoft 24-Hour Autonomous Improvement Wave</h1>
+    <div class="meta">
+      <strong>Last Updated:</strong> <span id="last-updated">Loading...</span> UTC
+    </div>
+  </header>
+
+  <section>
+    <h2>🔄 Live Status</h2>
+    <div class="status status-active">ACTIVE</div>
+    <p>Continuous autonomous improvement system active. Real-time progress updating below.</p>
+  </section>
+
+  <section id="progress-section" class="progress-section">
+    <h3>📊 Progress Tracker</h3>
+    <p>Loading real-time progress...</p>
+  </section>
+
+  <section>
+    <h2>System Components</h2>
+    <ul class="component-list">
+      <li>Main Loop: Continuous venture improvement cycles</li>
+      <li>Paper Ingestion: Research discovery and productization</li>
+      <li>Watcher: Real-time sitrep updates</li>
+      <li>Feedback Handler: Claude guidance integration</li>
+      <li>Venture Executor: Actual git commits and improvements</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Key Metrics</h2>
+    <div class="metric">
+      <div class="metric-label">Total Improvements</div>
+      <div class="metric-value" id="total-improvements">0</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Cycles Completed</div>
+      <div class="metric-value" id="cycles-completed">0</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Papers Assessed</div>
+      <div class="metric-value" id="papers-assessed">0</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Work Queue Size</div>
+      <div class="metric-value" id="work-queue-size">0</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Live Progress Log</h2>
+    <pre id="live-log">Waiting for improvements...</pre>
+  </section>
 </div>
+
+<script>
+  async function updateSitrep() {
+    try {
+      // Fetch work log from same server
+      const response = await fetch('/mobley_24h_work.json');
+      if (!response.ok) return;
+
+      const workLog = await response.json();
+      const improvements = workLog.improvements || [];
+      const currentHour = workLog.current_hour || 0;
+      const cyclesCompleted = workLog.cycles_completed || 0;
+
+      // Update metrics
+      document.getElementById('total-improvements').textContent = improvements.length;
+      document.getElementById('cycles-completed').textContent = cyclesCompleted;
+      document.getElementById('last-updated').textContent = new Date().toISOString().replace('Z', '');
+
+      // Format recent improvements for display
+      const recentHtml = improvements
+        .slice(-15)
+        .reverse()
+        .map(imp => `${imp.timestamp} | ${imp.venture}: ${imp.improvement} ✓ ${imp.metric_improvement}`)
+        .join('\n');
+
+      const logsToShow = recentHtml || 'Waiting for improvements...';
+      document.getElementById('live-log').textContent = logsToShow;
+
+      // Update progress section
+      const progressHtml = `
+        <h3>August 25 - Mobley Active (${currentHour} hrs, ${improvements.length} improvements)</h3>
+        <p><span class="status status-active">🔄 LIVE</span> Autonomous Improvement Wave</p>
+        <p>Real-time progress: ${improvements.length} improvements across ventures. Updated: ${new Date().toISOString().split('T')[0]}</p>
+        <pre>${logsToShow}</pre>
+      `;
+      document.getElementById('progress-section').innerHTML = progressHtml;
+
+    } catch (e) {
+      console.log('Sitrep update: waiting for data...');
+    }
+  }
+
+  // Initial update
+  updateSitrep();
+
+  // Refresh every 5 seconds
+  setInterval(updateSitrep, 5000);
+</script>
 </body>
 </html>
