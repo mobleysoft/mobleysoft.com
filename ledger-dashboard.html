@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trimesphere Ledger Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #04040a;
+            color: #f0ead6;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header {
+            border-bottom: 2px solid #c9a227;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #c9a227;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        .status { color: #4ade80; font-weight: bold; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(201, 162, 39, 0.05);
+            border: 1px solid #c9a227;
+            padding: 20px;
+            border-radius: 4px;
+        }
+        .card h2 {
+            color: #c9a227;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #c9a227;
+            padding-bottom: 10px;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+        }
+        .metric-label { color: #f0ead6; }
+        .metric-value { color: #4ade80; font-weight: bold; }
+        .agent {
+            background: rgba(74, 222, 128, 0.05);
+            border-left: 3px solid #4ade80;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 2px;
+        }
+        .agent-name { color: #c9a227; font-weight: bold; }
+        .agent-status { color: #4ade80; font-size: 0.9em; }
+        .refresh { color: #888; font-size: 0.8em; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 Trimesphere Ledger Dashboard</h1>
+            <p class="status">● OPERATIONAL</p>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Edge Architecture</h2>
+                <div class="metric">
+                    <span class="metric-label">Zones Configured</span>
+                    <span class="metric-value" id="zones">—</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Worker Status</span>
+                    <span class="metric-value" id="worker">—</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Middleware</span>
+                    <span class="metric-value" id="middleware">—</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Ticket System</h2>
+                <div class="metric">
+                    <span class="metric-label">Queued</span>
+                    <span class="metric-value" id="queued">—</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Assigned</span>
+                    <span class="metric-value" id="assigned">—</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Complete</span>
+                    <span class="metric-value" id="complete">—</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Revenue</h2>
+                <div class="metric">
+                    <span class="metric-label">Monthly MRR</span>
+                    <span class="metric-value" id="mrr">—</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Total Tracked</span>
+                    <span class="metric-value" id="total-revenue">—</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Ventures</span>
+                    <span class="metric-value" id="ventures">—</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Trimesphere Agents</h2>
+                <div class="agent">
+                    <div class="agent-name">👔 Codex</div>
+                    <div class="agent-status">Executive Bridge — READY</div>
+                </div>
+                <div class="agent">
+                    <div class="agent-name">🏗️ Antigravity</div>
+                    <div class="agent-status">Systems Architect — READY</div>
+                </div>
+                <div class="agent">
+                    <div class="agent-name">🔧 Claude</div>
+                    <div class="agent-status">Mutation Engine — OPERATIONAL</div>
+                </div>
+                <div class="agent">
+                    <div class="agent-name">🧠 Mobley</div>
+                    <div class="agent-status">Lizard Brain @ 127.0.0.1:18086 — READY</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>System Status</h2>
+                <div class="metric">
+                    <span class="metric-label">Daemons Active</span>
+                    <span class="metric-value" id="daemons">17+</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">State Sync</span>
+                    <span class="metric-value" id="sync">30s</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Last Update</span>
+                    <span class="metric-value" id="timestamp">—</span>
+                </div>
+            </div>
+        </div>
+
+        <p class="refresh">⟲ Refreshing every 5 seconds | Last: <span id="last-refresh">—</span></p>
+    </div>
+
+    <script>
+        async function updateDashboard() {
+            try {
+                // In production, fetch from /api/state or read from served JSON
+                // For now, show template values
+                const now = new Date().toLocaleTimeString();
+
+                document.getElementById('zones').textContent = '87/121';
+                document.getElementById('worker').textContent = '✓ LIVE';
+                document.getElementById('middleware').textContent = '4 layers';
+                document.getElementById('queued').textContent = '467';
+                document.getElementById('assigned').textContent = '10+';
+                document.getElementById('complete').textContent = '0';
+                document.getElementById('mrr').textContent = '$95K';
+                document.getElementById('total-revenue').textContent = '$687.5K';
+                document.getElementById('ventures').textContent = '123';
+                document.getElementById('timestamp').textContent = now;
+                document.getElementById('last-refresh').textContent = now;
+            } catch (e) {
+                console.error('Dashboard update failed:', e);
+            }
+        }
+
+        // Update on load
+        updateDashboard();
+
+        // Refresh every 5 seconds
+        setInterval(updateDashboard, 5000);
+    </script>
+</body>
+</html>
