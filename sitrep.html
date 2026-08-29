@@ -141,28 +141,47 @@
       .trim();
   }
 
+  function extractIssueCount(improvementText) {
+    const text = sanitizeLine(improvementText);
+    const match = text.match(/Found (\d+) health issues?/i);
+    return match ? Number(match[1]) : null;
+  }
+
   function buildHealthSummary(improvements) {
-    const healthEntries = improvements.filter(imp => imp.venture === "mobley-health-monitor");
+    const healthEntries = improvements.filter(imp => imp && imp.venture === "mobley-health-monitor");
     const latest = healthEntries[healthEntries.length - 1];
     if (!latest) {
       return {
         heading: "No health data yet",
         details: [],
+        tone: "neutral",
       };
     }
 
-    const issueCountMatch = latest.improvement.match(/Found (\d+) health issues/);
-    const issueCount = issueCountMatch ? issueCountMatch[1] : "unknown";
+    const issueCount = extractIssueCount(latest.improvement);
+    const metric = sanitizeLine(latest.metric_improvement);
+    const timestamp = sanitizeLine(latest.timestamp);
+    const status = sanitizeLine(latest.improvement);
+    const examples = improvements
+      .filter(imp => imp && imp.venture === "mobley-health-monitor" && sanitizeLine(imp.improvement) !== status)
+      .slice(-2)
+      .map(imp => `${sanitizeLine(imp.improvement)} · ${sanitizeLine(imp.metric_improvement)}`);
+
     const details = [
-      `Latest check: ${sanitizeLine(latest.timestamp)}`,
-      `Status: ${sanitizeLine(latest.improvement)}`,
-      `Metric: ${sanitizeLine(latest.metric_improvement)}`,
-      `Issue count: ${issueCount}`,
+      `Latest check: ${timestamp}`,
+      `Status: ${status}`,
+      `Metric: ${metric}`,
+      issueCount === null ? "Issue count: unavailable" : `Issue count: ${issueCount}`,
     ];
 
+    if (examples.length) {
+      details.push(`Recent health samples: ${examples.join(" | ")}`);
+    }
+
     return {
-      heading: issueCount === "0" ? "Health is clean" : `${issueCount} health issues found`,
+      heading: issueCount === 0 ? "Health is clean" : issueCount === null ? "Health status available" : `${issueCount} health issues found`,
       details,
+      tone: issueCount === 0 ? "good" : issueCount === null ? "neutral" : "alert",
     };
   }
 
@@ -192,8 +211,12 @@
           const venture = sanitizeLine(imp.venture);
           const improvement = sanitizeLine(imp.improvement);
           const metric = sanitizeLine(imp.metric_improvement);
+          if (!timestamp || !venture || !improvement) {
+            return null;
+          }
           return `${timestamp} | ${venture}: ${improvement} | ${metric}`;
-        });
+        })
+        .filter(Boolean);
 
       const logsToShow = recentItems.join('\n') || 'Waiting for improvements...';
       document.getElementById('live-log').textContent = logsToShow;
@@ -201,7 +224,7 @@
       // Update progress section
       const progressHtml = `
         <h3>📌 Current Health Snapshot</h3>
-        <div class="health-summary">
+        <div class="health-summary ${latestHealth.tone}">
           <div class="line"><strong>${latestHealth.heading}</strong></div>
           ${latestHealth.details.map(line => `<div class="line">${line}</div>`).join('')}
         </div>
