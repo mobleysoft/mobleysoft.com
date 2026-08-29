@@ -147,6 +147,16 @@
     return match ? Number(match[1]) : null;
   }
 
+  function issueSummaryText(issueCount) {
+    if (issueCount === null) {
+      return "Health status available";
+    }
+    if (issueCount === 0) {
+      return "Health Alert: 0 issues";
+    }
+    return `Health Alert: ${issueCount} issues`;
+  }
+
   function buildHealthSummary(improvements) {
     const healthEntries = improvements.filter(imp => imp && imp.venture === "mobley-health-monitor");
     const latest = healthEntries[healthEntries.length - 1];
@@ -161,7 +171,7 @@
     const issueCount = extractIssueCount(latest.improvement);
     const metric = sanitizeLine(latest.metric_improvement);
     const timestamp = sanitizeLine(latest.timestamp);
-    const status = sanitizeLine(latest.improvement);
+    const status = issueSummaryText(issueCount);
     const examples = improvements
       .filter(imp => imp && imp.venture === "mobley-health-monitor" && sanitizeLine(imp.improvement) !== status)
       .slice(-2)
@@ -170,6 +180,7 @@
     const details = [
       `Latest check: ${timestamp}`,
       `Status: ${status}`,
+      issueCount === null ? null : `Raw source: ${sanitizeLine(latest.improvement)}`,
       `Metric: ${metric}`,
       issueCount === null ? "Issue count: unavailable" : `Issue count: ${issueCount}`,
     ];
