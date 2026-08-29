@@ -67,12 +67,53 @@
     gap: 8px;
     margin-top: 12px;
   }
+  .health-summary.good {
+    border-left: 3px solid #4ade80;
+    padding-left: 12px;
+  }
+  .health-summary.neutral {
+    border-left: 3px solid #94a3b8;
+    padding-left: 12px;
+  }
+  .health-summary.alert {
+    border-left: 3px solid #f59e0b;
+    padding-left: 12px;
+  }
   .health-summary .line {
     color: #d6d0bf;
     font-size: 0.95em;
   }
   .health-summary .line strong {
     color: #f0ead6;
+  }
+  .health-pill {
+    display: inline-block;
+    width: fit-content;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .health-pill.good {
+    background: rgba(74, 222, 128, 0.16);
+    color: #86efac;
+  }
+  .health-pill.neutral {
+    background: rgba(148, 163, 184, 0.16);
+    color: #cbd5e1;
+  }
+  .health-pill.alert {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+  }
+  .health-issues {
+    margin: 6px 0 0 18px;
+    color: #d6d0bf;
+  }
+  .health-issues li {
+    margin: 2px 0;
   }
 </style>
 </head>
@@ -219,6 +260,16 @@
       .filter(Boolean);
   }
 
+  function issueSeverityLabel(issueCount) {
+    if (issueCount === null) {
+      return "unknown";
+    }
+    if (issueCount === 0) {
+      return "clean";
+    }
+    return "alert";
+  }
+
   function buildHealthSummary(improvements, ventures) {
     const healthEntries = improvements.filter(imp => imp && imp.venture === "mobley-health-monitor");
     const latest = healthEntries[healthEntries.length - 1];
@@ -235,21 +286,23 @@
     const metric = sanitizeLine(latest.metric_improvement);
     const timestamp = sanitizeLine(latest.timestamp);
     const status = issueSummaryText(issueCount);
+    const severity = issueSeverityLabel(issueCount);
     const samples = improvements
       .filter(imp => imp && imp.venture === "mobley-health-monitor")
       .slice(-3)
       .map(imp => `${sanitizeLine(imp.improvement)} · ${sanitizeLine(imp.metric_improvement)}`);
 
     const details = [
+      `<span class="health-pill ${issueCount === 0 ? "good" : issueCount === null ? "neutral" : "alert"}">${status}</span>`,
       `Latest check: ${timestamp}`,
-      `Status: ${status}`,
-      `Metric: ${metric}`,
-      issueCount === null ? "Issue count: unavailable" : `Issue count: ${issueCount}`,
+      `Parsed issue count: ${issueCount === null ? "unavailable" : issueCount}`,
+      `Observed metric: ${metric}`,
     ].concat(issueCount === null ? [] : [`Raw source: ${sanitizeLine(latest.improvement)}`]);
 
     if (corpusIssues.length) {
       const issueNames = corpusIssues.map(issue => `${issue.name} (${issue.liveCheck})`);
-      details.push(`Corpus issues: ${issueNames.join(", ")}`);
+      details.push("Observed failures:");
+      details.push(`<ul class="health-issues">${issueNames.map(name => `<li>${name}</li>`).join("")}</ul>`);
     }
 
     if (samples.length) {
@@ -259,7 +312,7 @@
     return {
       heading: issueCount === 0 ? "Health is clean" : issueCount === null ? "Health status available" : `${issueCount} health issues found`,
       details,
-      tone: issueCount === 0 ? "good" : issueCount === null ? "neutral" : "alert",
+      tone: severity,
     };
   }
 
