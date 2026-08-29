@@ -180,10 +180,9 @@
     const details = [
       `Latest check: ${timestamp}`,
       `Status: ${status}`,
-      issueCount === null ? null : `Raw source: ${sanitizeLine(latest.improvement)}`,
       `Metric: ${metric}`,
       issueCount === null ? "Issue count: unavailable" : `Issue count: ${issueCount}`,
-    ];
+    ].concat(issueCount === null ? [] : [`Raw source: ${sanitizeLine(latest.improvement)}`]);
 
     if (examples.length) {
       details.push(`Recent health samples: ${examples.join(" | ")}`);
