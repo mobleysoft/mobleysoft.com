@@ -258,6 +258,10 @@ def main() -> int:
         {"name": "disk_space", "ok": True, "detail": "22GB free"},
     ]
     failed_checks = [check for check in checks if not check["ok"]]
+    failed_check_names = [check["name"] for check in failed_checks]
+    issue_summary = "; ".join(
+        f"{check['name']}: {check['detail']}" for check in failed_checks
+    )
     result = {
         "status": "passed" if not errors else "failed",
         "fleet_count": fleet.get("count"),
@@ -270,7 +274,9 @@ def main() -> int:
         "unlost_release_sha256": product.get("release", {}).get("sha256"),
         "errors": errors,
         "failed_checks": failed_checks,
+        "failed_check_names": failed_check_names,
         "failed_check_count": len(failed_checks),
+        "issue_summary": issue_summary,
     }
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if not errors else 1
