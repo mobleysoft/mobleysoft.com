@@ -62,6 +62,18 @@
     margin-left: -15px;
     margin-right: 10px;
   }
+  .health-summary {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .health-summary .line {
+    color: #d6d0bf;
+    font-size: 0.95em;
+  }
+  .health-summary .line strong {
+    color: #f0ead6;
+  }
 </style>
 </head>
 <body>
@@ -122,6 +134,38 @@
 </div>
 
 <script>
+  function sanitizeLine(value) {
+    return String(value || "")
+      .replace(/\s+/g, " ")
+      .replace(/[^\x20-\x7E]/g, "")
+      .trim();
+  }
+
+  function buildHealthSummary(improvements) {
+    const healthEntries = improvements.filter(imp => imp.venture === "mobley-health-monitor");
+    const latest = healthEntries[healthEntries.length - 1];
+    if (!latest) {
+      return {
+        heading: "No health data yet",
+        details: [],
+      };
+    }
+
+    const issueCountMatch = latest.improvement.match(/Found (\d+) health issues/);
+    const issueCount = issueCountMatch ? issueCountMatch[1] : "unknown";
+    const details = [
+      `Latest check: ${sanitizeLine(latest.timestamp)}`,
+      `Status: ${sanitizeLine(latest.improvement)}`,
+      `Metric: ${sanitizeLine(latest.metric_improvement)}`,
+      `Issue count: ${issueCount}`,
+    ];
+
+    return {
+      heading: issueCount === "0" ? "Health is clean" : `${issueCount} health issues found`,
+      details,
+    };
+  }
+
   async function updateSitrep() {
     try {
       // Fetch work log from same server
@@ -132,30 +176,40 @@
       const improvements = workLog.improvements || [];
       const currentHour = workLog.current_hour || 0;
       const cyclesCompleted = workLog.cycles_completed || 0;
+      const latestHealth = buildHealthSummary(improvements);
 
       // Update metrics
       document.getElementById('total-improvements').textContent = improvements.length;
-      document.getElementById('cycles-completed').textContent = cyclesCompleted;
-      document.getElementById('last-updated').textContent = new Date().toISOString().replace('Z', '');
+      document.getElementById('cycles-completed').textContent = cyclesCompleted || currentHour;
+      const lastUpdate = improvements.length ? improvements[improvements.length - 1].timestamp : new Date().toISOString();
+      document.getElementById('last-updated').textContent = lastUpdate.replace('Z', '');
 
-      // Format recent improvements for display
-      const recentHtml = improvements
-        .slice(-15)
+      const recentItems = improvements
+        .slice(-12)
         .reverse()
-        .map(imp => `${imp.timestamp} | ${imp.venture}: ${imp.improvement} ✓ ${imp.metric_improvement}`)
-        .join('\n');
+        .map(imp => {
+          const timestamp = sanitizeLine(imp.timestamp);
+          const venture = sanitizeLine(imp.venture);
+          const improvement = sanitizeLine(imp.improvement);
+          const metric = sanitizeLine(imp.metric_improvement);
+          return `${timestamp} | ${venture}: ${improvement} | ${metric}`;
+        });
 
-      const logsToShow = recentHtml || 'Waiting for improvements...';
+      const logsToShow = recentItems.join('\n') || 'Waiting for improvements...';
       document.getElementById('live-log').textContent = logsToShow;
 
       // Update progress section
       const progressHtml = `
-        
+        <h3>📌 Current Health Snapshot</h3>
+        <div class="health-summary">
+          <div class="line"><strong>${latestHealth.heading}</strong></div>
+          ${latestHealth.details.map(line => `<div class="line">${line}</div>`).join('')}
+        </div>
       `;
       document.getElementById('progress-section').innerHTML = progressHtml;
 
     } catch (e) {
-      console.log('Sitrep update: waiting for data...');
+      document.getElementById('progress-section').innerHTML = '<h3>📌 Current Health Snapshot</h3><p>Waiting for data...</p>';
     }
   }
 
