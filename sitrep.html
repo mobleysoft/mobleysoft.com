@@ -151,7 +151,13 @@
     if (lowered.includes("wversion") || lowered.includes("dd-result")) {
       return "";
     }
+    if (/(?:bplist00|NS\.rangeval|NSMutableData|NSData|DDScannerResult|__kIM|WebURL|WebText|attributedBody)/i.test(line)) {
+      return "";
+    }
     if (line.includes("$")) {
+      return "";
+    }
+    if (/^[A-Z]{4,}[A-Za-z0-9$._-]*$/.test(line) && !/^[A-Z][a-z]/.test(line)) {
       return "";
     }
     if (!line.includes(" ") && line.length >= 12) {
@@ -163,6 +169,9 @@
       if (/[A-Z].*[a-z].*[A-Z]/.test(line)) {
         return "";
       }
+    }
+    if (/[A-Za-z].*\$.*[A-Za-z]/.test(line)) {
+      return "";
     }
     return line;
   }
