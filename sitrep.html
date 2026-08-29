@@ -135,10 +135,36 @@
 
 <script>
   function sanitizeLine(value) {
-    return String(value || "")
+    const line = String(value || "")
       .replace(/\s+/g, " ")
       .replace(/[^\x20-\x7E]/g, "")
       .trim();
+
+    if (!line) {
+      return "";
+    }
+
+    const lowered = line.toLowerCase();
+    if (line.length < 8) {
+      return line;
+    }
+    if (lowered.includes("wversion") || lowered.includes("dd-result")) {
+      return "";
+    }
+    if (line.includes("$")) {
+      return "";
+    }
+    if (!line.includes(" ") && line.length >= 12) {
+      const letters = (line.match(/[A-Za-z]/g) || []).length;
+      const vowels = (lowered.match(/[aeiou]/g) || []).length;
+      if (letters && vowels === 0) {
+        return "";
+      }
+      if (/[A-Z].*[a-z].*[A-Z]/.test(line)) {
+        return "";
+      }
+    }
+    return line;
   }
 
   function extractIssueCount(improvementText) {
