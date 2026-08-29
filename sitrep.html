@@ -157,9 +157,37 @@
     return `Health Alert: ${issueCount} issues`;
   }
 
-  function buildHealthSummary(improvements) {
+  function extractCorpusIssues(ventures) {
+    if (!Array.isArray(ventures)) {
+      return [];
+    }
+
+    return ventures
+      .map(venture => {
+        const evidence = sanitizeLine(venture?.insight?.evidence);
+        const liveCheckMatch = evidence.match(/live_check=(\d+)/i);
+        const liveCheck = liveCheckMatch ? Number(liveCheckMatch[1]) : null;
+        const name = sanitizeLine(venture?.name);
+        const stage = sanitizeLine(venture?.insight?.stage_name);
+        if (!name || liveCheck == null) {
+          return null;
+        }
+        if (liveCheck === 404 || liveCheck === 530) {
+          return {
+            name,
+            liveCheck,
+            stage,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  }
+
+  function buildHealthSummary(improvements, ventures) {
     const healthEntries = improvements.filter(imp => imp && imp.venture === "mobley-health-monitor");
     const latest = healthEntries[healthEntries.length - 1];
+    const corpusIssues = extractCorpusIssues(ventures);
     if (!latest) {
       return {
         heading: "No health data yet",
@@ -172,9 +200,9 @@
     const metric = sanitizeLine(latest.metric_improvement);
     const timestamp = sanitizeLine(latest.timestamp);
     const status = issueSummaryText(issueCount);
-    const examples = improvements
-      .filter(imp => imp && imp.venture === "mobley-health-monitor" && sanitizeLine(imp.improvement) !== status)
-      .slice(-2)
+    const samples = improvements
+      .filter(imp => imp && imp.venture === "mobley-health-monitor")
+      .slice(-3)
       .map(imp => `${sanitizeLine(imp.improvement)} · ${sanitizeLine(imp.metric_improvement)}`);
 
     const details = [
@@ -184,8 +212,13 @@
       issueCount === null ? "Issue count: unavailable" : `Issue count: ${issueCount}`,
     ].concat(issueCount === null ? [] : [`Raw source: ${sanitizeLine(latest.improvement)}`]);
 
-    if (examples.length) {
-      details.push(`Recent health samples: ${examples.join(" | ")}`);
+    if (corpusIssues.length) {
+      const issueNames = corpusIssues.map(issue => `${issue.name} (${issue.liveCheck})`);
+      details.push(`Corpus issues: ${issueNames.join(", ")}`);
+    }
+
+    if (samples.length) {
+      details.push(`Recent health samples: ${samples.join(" | ")}`);
     }
 
     return {
@@ -198,14 +231,18 @@
   async function updateSitrep() {
     try {
       // Fetch work log from same server
-      const response = await fetch('/mobley_24h_work.json');
-      if (!response.ok) return;
+      const [workResponse, venturesResponse] = await Promise.all([
+        fetch('/mobley_24h_work.json'),
+        fetch('/ventures.json'),
+      ]);
+      if (!workResponse.ok) return;
 
-      const workLog = await response.json();
+      const workLog = await workResponse.json();
+      const ventures = venturesResponse.ok ? await venturesResponse.json() : null;
       const improvements = workLog.improvements || [];
       const currentHour = workLog.current_hour || 0;
       const cyclesCompleted = workLog.cycles_completed || 0;
-      const latestHealth = buildHealthSummary(improvements);
+      const latestHealth = buildHealthSummary(improvements, ventures?.ventures || []);
 
       // Update metrics
       document.getElementById('total-improvements').textContent = improvements.length;
