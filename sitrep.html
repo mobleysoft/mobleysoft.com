@@ -219,8 +219,12 @@
 
   function extractIssueCount(improvementText) {
     const text = sanitizeLine(improvementText);
-    const match = text.match(/Found (\d+) health issues?/i);
+    const match = text.match(/(?:Found|Detected)\s+(\d+)\s+health issues?/i);
     return match ? Number(match[1]) : null;
+  }
+
+  function uniqueStrings(values) {
+    return Array.from(new Set((values || []).filter(Boolean)));
   }
 
   function issueSummaryText(issueCount) {
@@ -287,10 +291,12 @@
     const timestamp = sanitizeLine(latest.timestamp);
     const status = issueSummaryText(issueCount);
     const severity = issueSeverityLabel(issueCount);
-    const samples = improvements
+    const samples = uniqueStrings(improvements
       .filter(imp => imp && imp.venture === "mobley-health-monitor")
       .slice(-3)
-      .map(imp => `${sanitizeLine(imp.improvement)} · ${sanitizeLine(imp.metric_improvement)}`);
+      .map(imp => `${sanitizeLine(imp.improvement)} · ${sanitizeLine(imp.metric_improvement)}`));
+    const corpusIssueNames = uniqueStrings(corpusIssues.map(issue => `${issue.name} (${issue.liveCheck})`));
+    const issueNoun = issueCount === 1 ? "issue" : "issues";
 
     const details = [
       `<span class="health-pill ${issueCount === 0 ? "good" : issueCount === null ? "neutral" : "alert"}">${status}</span>`,
@@ -299,18 +305,21 @@
       `Observed metric: ${metric}`,
     ].concat(issueCount === null ? [] : [`Raw source: ${sanitizeLine(latest.improvement)}`]);
 
-    if (corpusIssues.length) {
-      const issueNames = corpusIssues.map(issue => `${issue.name} (${issue.liveCheck})`);
+    if (corpusIssueNames.length) {
       details.push("Observed failures:");
-      details.push(`<ul class="health-issues">${issueNames.map(name => `<li>${name}</li>`).join("")}</ul>`);
+      details.push(`<ul class="health-issues">${corpusIssueNames.map(name => `<li>${name}</li>`).join("")}</ul>`);
     }
 
     if (samples.length) {
       details.push(`Recent health samples: ${samples.join(" | ")}`);
     }
 
+    if (issueCount !== null && corpusIssueNames.length) {
+      details.unshift(`${corpusIssueNames.length} observed ${corpusIssueNames.length === 1 ? "domain" : "domains"} currently failing`);
+    }
+
     return {
-      heading: issueCount === 0 ? "Health is clean" : issueCount === null ? "Health status available" : `${issueCount} health issues found`,
+      heading: issueCount === 0 ? "Health is clean" : issueCount === null ? "Health status available" : `${issueCount} health ${issueNoun} found`,
       details,
       tone: severity,
     };
