@@ -237,6 +237,10 @@
     return `Health Alert: ${issueCount} issues`;
   }
 
+  function evidenceLabel(kind) {
+    return kind === "observed" ? "Observed" : "Inferred";
+  }
+
   function extractCorpusIssues(ventures) {
     if (!Array.isArray(ventures)) {
       return [];
@@ -297,12 +301,14 @@
       .map(imp => `${sanitizeLine(imp.improvement)} · ${sanitizeLine(imp.metric_improvement)}`));
     const corpusIssueNames = uniqueStrings(corpusIssues.map(issue => `${issue.name} (${issue.liveCheck})`));
     const issueNoun = issueCount === 1 ? "issue" : "issues";
+    const observedCountLabel = issueCount === null ? "Observed count unavailable" : `Observed count: ${issueCount}`;
 
     const details = [
       `<span class="health-pill ${issueCount === 0 ? "good" : issueCount === null ? "neutral" : "alert"}">${status}</span>`,
-      `Latest check: ${timestamp}`,
-      `Parsed issue count: ${issueCount === null ? "unavailable" : issueCount}`,
-      `Observed metric: ${metric}`,
+      `${evidenceLabel("observed")}: latest check ${timestamp}`,
+      `${evidenceLabel("observed")}: ${observedCountLabel}`,
+      `${evidenceLabel("inferred")}: parsed issue count ${issueCount === null ? "unavailable" : issueCount}`,
+      `${evidenceLabel("observed")}: metric ${metric}`,
     ].concat(issueCount === null ? [] : [`Raw source: ${sanitizeLine(latest.improvement)}`]);
 
     if (corpusIssueNames.length) {
