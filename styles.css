@@ -933,7 +933,7 @@ body.shell-visible .site-shell {
 }
 
 @media (max-width: 620px) {
-  .background-player { right: max(18px, env(safe-area-inset-right)); grid-template-columns: 1fr auto; }
+  .background-player { grid-template-columns: 1fr auto; }
   .background-state { display: none; }
   #background-toggle { min-width: 0; }
   .background-player small { display: none !important; }
@@ -943,11 +943,10 @@ body.shell-visible .site-shell {
   .product-theater { display: block; min-height: 0; }
   .theater-rail { display: none; }
   .product-slide { padding: 44px 20px 76px; }
-  .slide-copy h1, .slide-copy h2 { font-size: clamp(44px, 15vw, 68px); }
+  .slide-copy h1, .slide-copy h2 { font-size: clamp(34px, 9vw, 52px); }
   .slide-copy .lede { margin-top: 22px; font-size: 16px; }
-  .proof-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .proof-row span { min-width: 0; padding-inline: 9px; font-size: 8.5px; overflow-wrap: anywhere; }
-  .proof-row span:last-child { grid-column: 1 / -1; }
+  .proof-row { display: grid; grid-template-columns: 1fr; }
+  .proof-row span { min-width: 0; padding-inline: 12px; font-size: 10px; overflow-wrap: anywhere; }
   .action-row { align-items: stretch; }
   .primary-action { width: 100%; }
   .text-action { margin: 0 auto; }
