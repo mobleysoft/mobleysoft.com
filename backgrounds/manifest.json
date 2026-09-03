@@ -5,14 +5,6 @@
   "selected_candidate": "A",
   "canonical_release": "/backgrounds/canonical/blackhole-a-20260522/",
   "deduplication": "sha256",
-  "archived_runtimes": [
-    {
-      "artifact": "/backgrounds/candidates/live-adapted-e1a5de7a.js",
-      "bytes": 18161,
-      "classification": "superseded-single-canvas-game-runtime",
-      "sha256": "e1a5de7ae02166961defa349c3f47c7ff56ad96537da431d1e49041037c3a8a0"
-    }
-  ],
   "candidates": [
     {
       "id": "A",

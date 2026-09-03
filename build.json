@@ -1,13 +1,10 @@
 {
   "fleet_count": 123,
-  "generated_at": "2026-08-13T22:48:51+00:00",
-  "payment_status": "not-connected",
+  "generated_at": "2026-07-26T21:23:10+00:00",
+  "payment_status": "gated",
   "schema_version": "1.0",
-  "showbiz_canary_final_sha256": "82c202a92e59ac21ff32f5d344fa5649fb1a3652a793dfedeeb5708960818f10",
-  "showbiz_canary_stages": 9,
-  "showbiz_pipeline_stages": 9,
   "site": "mobleysoft.com",
   "source_root": "mobleysoft",
-  "timeline_frames": 1,
-  "unlost_status": "source-alpha"
+  "timeline_frames": 27,
+  "unlost_status": "usable-private-release-payment-gated"
 }

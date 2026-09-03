@@ -1,9 +1,9 @@
 {
   "count": 123,
-  "generated_at": "2026-08-13T22:48:51+00:00",
+  "generated_at": "2026-09-03T20:31:53.274865+00:00",
   "schema_version": "1.0",
   "source": "ventures.json",
-  "source_sha256": "92e902384155f14f1894c37e7fdc3c83bb28593784f155a1bcc163e8c841323d",
+  "source_sha256": "d5f80bcfc6ffc55bdbf951d1cd9e5a6bbac6ef7fbce5804a9296cb692913efec",
   "ventures": [
     {
       "domain": "abstergo.cc",
@@ -390,10 +390,6 @@
       "url": "https://reasontodate.com/"
     },
     {
-      "domain": "rebrief.me",
-      "url": "https://rebrief.me/"
-    },
-    {
       "domain": "recovai.com",
       "url": "https://recovai.com/"
     },
@@ -454,10 +450,6 @@
       "url": "https://transcendantai.com/"
     },
     {
-      "domain": "twill.finance",
-      "url": "https://twill.finance/"
-    },
-    {
       "domain": "valdring.com",
       "url": "https://valdring.com/"
     },
@@ -496,6 +488,14 @@
     {
       "domain": "yutaniai.com",
       "url": "https://yutaniai.com/"
+    },
+    {
+      "domain": "rebrief.me",
+      "url": "https://rebrief.me/"
+    },
+    {
+      "domain": "twill.finance",
+      "url": "https://twill.finance/"
     }
   ]
 }

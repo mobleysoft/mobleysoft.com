@@ -1,48 +1,62 @@
 {
+  "schema_version": "1.1",
+  "product": "Unlost",
+  "version": "0.3.1",
+  "status": "usable-private-release-payment-gated",
+  "generated_at": "2026-09-03T20:00:00Z",
+  "price_usd": 1,
+  "observed_baseline": {
+    "artifacts_indexed": 762947,
+    "indexed_logical_gib": 82.68,
+    "federated_shards": 1,
+    "search_median_seconds": 0.766023,
+    "find_median_seconds": 0.566968,
+    "apple_notes_indexed": 1689
+  },
   "connectors": {
+    "local_files": "available",
+    "dell_shard": "available",
     "antigravity_jsonl": "available",
     "codex_jsonl": "available",
-    "cross_device": "available",
-    "gmail_live": "not-installed",
-    "gmail_mbox": "available",
-    "google_drive_folder": "available",
-    "google_drive_live": "not-installed",
-    "local_files": "available",
+    "zip_tar": "available",
     "sqlite_read_only": "available",
-    "zip_tar": "available"
+    "apple_mail_envelopes": "available-zero-copy",
+    "apple_notes": "available-local-plaintext",
+    "gmail_mbox": "available-export-import",
+    "google_drive_mounted": "available",
+    "rclone_remotes": "available-pointer-inventory",
+    "github": "available-repository-pointers",
+    "cloudflare": "available-partial-resource-pointers",
+    "gmail_live_oauth": "not-installed",
+    "google_drive_live_oauth": "not-installed",
+    "youtube": "not-installed",
+    "amazon_kdp": "not-installed"
   },
-  "generated_at": "2026-08-13T22:48:51+00:00",
-  "observed_baseline": {
-    "benchmark_queries": null,
-    "federated_shards": 2,
-    "find_median_seconds": null,
-    "find_p95_seconds": null,
-    "frontier_queued": 9888,
-    "frontier_retryable_errors": 221,
-    "local_artifacts_indexed": 716540,
-    "search_median_seconds": null,
-    "search_p95_seconds": null
+  "release": {
+    "platform": "macOS",
+    "filename": "unlost-0.3.1-macos.zip",
+    "size": 106207,
+    "sha256": "b070b542338877303d0598ec6ab225356403b10b47693536cbd8bb68d48af7a9",
+    "clean_install_verified": true,
+    "first_search_verified": true,
+    "localhost_interface_verified": true,
+    "signed": false,
+    "notarized": false,
+    "distribution_ready": false,
+    "public_path": null
   },
   "payment": {
+    "provider": "Stripe via VendyAI",
+    "catalog_product_id": "unlost-launch",
+    "checkout_url": "https://vendyai.com/checkout.html?product=unlost-launch",
+    "status": "gated",
+    "checkout_ready": false,
     "public_download": false,
-    "reason": "Checkout and entitlement delivery require a verified payment route.",
-    "status": "not-connected"
-  },
-  "price_usd": 1,
-  "product": "Unlost",
-  "release": {
-    "artifact": null,
-    "clean_install_verified": false,
-    "first_search_verified": false,
-    "localhost_interface_verified": false,
-    "platform": "macOS",
-    "public_path": null,
-    "ready": false,
-    "sha256": null,
-    "signed": false,
-    "size": null
-  },
-  "schema_version": "1.0",
-  "status": "source-alpha",
-  "version": "0.5.0"
+    "blockers": [
+      "stripe_secret_key",
+      "stripe_webhook_secret",
+      "entitlement_secret",
+      "release_distribution_allowed"
+    ]
+  }
 }

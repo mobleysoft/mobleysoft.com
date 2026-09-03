@@ -1,16 +1,224 @@
 {
-  "count": 1,
+  "count": 27,
   "frames": [
     {
-      "commit": "source-6b39672c7f49ff1466999a66ff379ea5b83e32b10c866598dbbe843a6e70221d",
+      "commit": "c658e184d2e046c0100fcf1fd335550e31600825",
+      "id": "mutation-1784961358",
+      "image": "/genetic_timelapse/generation_1784961358.png",
+      "label": "Automated mutation 01",
+      "observed_at": "2026-07-25T06:36:01+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "d8f68adfc7fe89f756e457e4158c33d2ab34d571",
+      "id": "mutation-1784961922",
+      "image": "/genetic_timelapse/generation_1784961922.png",
+      "label": "Automated mutation 02",
+      "observed_at": "2026-07-25T06:45:24+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "b4f11e826f01a7084f058a3295baac3c78ec9cc0",
+      "id": "mutation-1784962546",
+      "image": "/genetic_timelapse/generation_1784962546.png",
+      "label": "Automated mutation 03",
+      "observed_at": "2026-07-25T06:55:48+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "b5337b5249143c2f3c4f7f6d130d5bd0803de776",
+      "id": "mutation-1784963156",
+      "image": "/genetic_timelapse/generation_1784963156.png",
+      "label": "Automated mutation 04",
+      "observed_at": "2026-07-25T07:05:59+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "2ceef06125c9aa06b143dbd33ed4f5380dc7f82c",
+      "id": "mutation-1784963756",
+      "image": "/genetic_timelapse/generation_1784963756.png",
+      "label": "Automated mutation 05",
+      "observed_at": "2026-07-25T07:15:58+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "cf7bacf017a6be300b8a08e2278b1a316849bc70",
+      "id": "mutation-1784964369",
+      "image": "/genetic_timelapse/generation_1784964369.png",
+      "label": "Automated mutation 06",
+      "observed_at": "2026-07-25T07:26:12+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "1aba041a4e62701b27d8aa7620dc8fdb05749f62",
+      "id": "mutation-1784965070",
+      "image": "/genetic_timelapse/generation_1784965070.png",
+      "label": "Automated mutation 07",
+      "observed_at": "2026-07-25T07:37:52+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "fee1064d699c171a42540cab358ccafb86fd4f95",
+      "id": "mutation-1784965745",
+      "image": "/genetic_timelapse/generation_1784965745.png",
+      "label": "Automated mutation 08",
+      "observed_at": "2026-07-25T07:49:07+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "90b1bc7770ed860afa6bd096820b1500813f89da",
+      "id": "mutation-1784972963",
+      "image": "/genetic_timelapse/generation_1784972963.png",
+      "label": "Automated mutation 09",
+      "observed_at": "2026-07-25T09:49:25+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "9ccf56ffe5823964fa3119d7c3cd9d8994dc8528",
+      "id": "mutation-1784979513",
+      "image": "/genetic_timelapse/generation_1784979513.png",
+      "label": "Automated mutation 10",
+      "observed_at": "2026-07-25T11:38:35+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "2196239d26aa3338dccdbdebefe29cb4ed4786d7",
+      "id": "mutation-1784979838",
+      "image": "/genetic_timelapse/generation_1784979838.png",
+      "label": "Automated mutation 11",
+      "observed_at": "2026-07-25T11:44:01+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "fea522dae818f04f9dd86d56a2954c38a2223916",
+      "id": "mutation-1784980169",
+      "image": "/genetic_timelapse/generation_1784980169.png",
+      "label": "Automated mutation 12",
+      "observed_at": "2026-07-25T11:49:31+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "f3f18891dd5e0ff8ab23f0ff8912991722e404df",
+      "id": "mutation-1784986713",
+      "image": "/genetic_timelapse/generation_1784986713.png",
+      "label": "Automated mutation 13",
+      "observed_at": "2026-07-25T13:38:36+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "19b3160d69eefe6f38522a3fb28c60a8550b8fa0",
+      "id": "mutation-1784987046",
+      "image": "/genetic_timelapse/generation_1784987046.png",
+      "label": "Automated mutation 14",
+      "observed_at": "2026-07-25T13:44:08+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "f5350e475d4b81800ec671f9d1c06cae4b28c3b6",
+      "id": "mutation-1784993825",
+      "image": "/genetic_timelapse/generation_1784993825.png",
+      "label": "Automated mutation 15",
+      "observed_at": "2026-07-25T15:37:07+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "b77ca6ac9fa4951549d0d0efd229885b10fe4a81",
+      "id": "mutation-1784994151",
+      "image": "/genetic_timelapse/generation_1784994151.png",
+      "label": "Automated mutation 16",
+      "observed_at": "2026-07-25T15:42:33+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "71a9a6c5de198743fec6bacf2f3df95623706d8a",
+      "id": "mutation-1784994462",
+      "image": "/genetic_timelapse/generation_1784994462.png",
+      "label": "Automated mutation 17",
+      "observed_at": "2026-07-25T15:47:45+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "eea22632955dce07a001ea9e1ded65a3d3edae67",
+      "id": "mutation-1785001522",
+      "image": "/genetic_timelapse/generation_1785001522.png",
+      "label": "Automated mutation 18",
+      "observed_at": "2026-07-25T17:45:24+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "c9f5b29d729b64ee5de4558f8120fd8b213ba11c",
+      "id": "mutation-1785008679",
+      "image": "/genetic_timelapse/generation_1785008679.png",
+      "label": "Automated mutation 19",
+      "observed_at": "2026-07-25T19:44:42+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "ae5c32203ef9b9ba4964ec0cf94fdf7f8b499fc4",
+      "id": "mutation-1785016132",
+      "image": "/genetic_timelapse/generation_1785016132.png",
+      "label": "Automated mutation 20",
+      "observed_at": "2026-07-25T21:48:55+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "79c9d06053edc872a54b46d199aaf1b5ea337bde",
+      "id": "mutation-1785016460",
+      "image": "/genetic_timelapse/generation_1785016460.png",
+      "label": "Automated mutation 21",
+      "observed_at": "2026-07-25T21:54:22+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "67faf47fd9c45cbcc174774457a0fd921edca69e",
+      "id": "mutation-1785023251",
+      "image": "/genetic_timelapse/generation_1785023251.png",
+      "label": "Automated mutation 22",
+      "observed_at": "2026-07-25T23:47:33+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "43a886d4d085a57388952da950f6a18a72be1d0c",
+      "id": "mutation-1785023585",
+      "image": "/genetic_timelapse/generation_1785023585.png",
+      "label": "Automated mutation 23",
+      "observed_at": "2026-07-25T23:53:08+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "e0fea9b25f9cb3cdc9380a5b174188ae2f7997c7",
+      "id": "mutation-1785030082",
+      "image": "/genetic_timelapse/generation_1785030082.png",
+      "label": "Automated mutation 24",
+      "observed_at": "2026-07-26T01:41:25+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "3f869ecd66f9bc16f24c5f0fe396e5a977235996",
+      "id": "mutation-1785037590",
+      "image": "/genetic_timelapse/generation_1785037590.png",
+      "label": "Automated mutation 25",
+      "observed_at": "2026-07-26T03:46:32+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "a251ea0074cb881be5199407085c6030688fc4ec",
+      "id": "mutation-1785037923",
+      "image": "/genetic_timelapse/generation_1785037923.png",
+      "label": "Automated mutation 26",
+      "observed_at": "2026-07-26T03:52:06+00:00",
+      "tier": "mutation-archive"
+    },
+    {
+      "commit": "source-c685203e2045650173e9c45d3bb3b90d653c050004a28c4ee5bafc45f4b0dc4b",
       "id": "current",
       "image": "/evolution/current.png",
       "label": "Unlost restoration working tree",
-      "observed_at": "2026-08-13T22:22:09+00:00",
+      "observed_at": "2026-07-26T15:11:43+00:00",
       "tier": "verified-release"
     }
   ],
-  "generated_at": "2026-08-13T22:48:51+00:00",
+  "generated_at": "2026-07-26T21:23:10+00:00",
   "mobile_trigger": "pi",
   "movie": "/genetic_timelapse/evolution_timelapse.mp4",
   "schema_version": "1.0",
