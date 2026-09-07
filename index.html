@@ -49,7 +49,7 @@
         <div class="theater-rail">
           <span id="slide-index">01</span>
           <span class="rail-line"></span>
-          <span id="slide-count">05</span>
+          <span id="slide-count">06</span>
         </div>
 
         <div class="product-stage" id="product-stage">
@@ -88,7 +88,7 @@ codex/.../rollout-2026-07-16.jsonl
 
           <article class="product-slide" data-product="publicos" aria-labelledby="publicos-title" aria-hidden="true">
             <div class="slide-copy">
-              <p class="eyebrow"><span>02</span> Public capability</p>
+              <p class="eyebrow"><span>03</span> Public capability</p>
               <h2 id="publicos-title">Creation without rent.</h2>
               <p class="lede">PublicOS is a family of free web tools aimed at replacing costly creative and productivity software, so art and work are not constrained by subscription access.</p>
               <div class="product-tags"><span>Creative tools</span><span>Productivity</span><span>Free web software</span></div>
@@ -97,9 +97,39 @@ codex/.../rollout-2026-07-16.jsonl
             <div class="symbol-card" aria-hidden="true"><span>PUBLIC</span><strong>OS</strong><small>CAPABILITY IS A COMMON GOOD</small></div>
           </article>
 
+          <article class="product-slide" data-product="mobley" aria-labelledby="mobley-title" aria-hidden="true">
+            <div class="slide-copy">
+              <p class="eyebrow"><span>02</span> Operator shell</p>
+              <h2 id="mobley-title">Mobley is the thin client.</h2>
+              <p class="lede">A published control surface for the estate: small enough to update quickly, explicit enough to trust, and thin enough to leave the real work to local search, connectors, and review gates.</p>
+              <div class="proof-row" aria-label="Observed development measurements">
+                <span><strong>JSON-driven</strong> copy</span>
+                <span><strong>Route</strong> local, connector, or human</span>
+                <span><strong>Static</strong> publish path</span>
+              </div>
+              <div class="action-row">
+                <a class="primary-action" href="/products/mobley/">Open Mobley <span>Thin client</span></a>
+                <a class="text-action" href="/products/mobley/product.json">Machine-readable manifest</a>
+              </div>
+              <p class="boundary-note">Mobley stays updateable by design: the route rules, status copy, and capability cards live in one manifest. The browser is only the shell.</p>
+            </div>
+            <div class="artifact-card" aria-label="Mobley route example">
+              <div class="artifact-topline">
+                <span>MOBLEY / ROUTER</span>
+                <span class="live-mark">THIN CLIENT</span>
+              </div>
+              <pre><code><span class="prompt">$</span> mobley route "Summarize the latest book drafts"
+<span class="result">route: local retrieval</span>
+
+<span class="prompt">$</span> mobley route "Publish a new live version"
+<span class="result">route: human review + deploy gate</span></code></pre>
+              <div class="artifact-footer"><span>Edit one manifest</span><span>No heavy client rebuild</span></div>
+            </div>
+          </article>
+
           <article class="product-slide" data-product="lumen" aria-labelledby="lumen-title" aria-hidden="true">
             <div class="slide-copy">
-              <p class="eyebrow"><span>03</span> Agent-first browser</p>
+              <p class="eyebrow"><span>04</span> Agent-first browser</p>
               <h2 id="lumen-title">The web, legible to agents.</h2>
               <p class="lede">Lumen is the browser surface built for agents that must inspect, reason over, and act on the web without pretending pages are plain text.</p>
               <div class="product-tags"><span>Browser runtime</span><span>Visual context</span><span>Agent API</span></div>
@@ -110,7 +140,7 @@ codex/.../rollout-2026-07-16.jsonl
 
           <article class="product-slide" data-product="goblin" aria-labelledby="goblin-title" aria-hidden="true">
             <div class="slide-copy">
-              <p class="eyebrow"><span>04</span> Game-development agent</p>
+              <p class="eyebrow"><span>05</span> Game-development agent</p>
               <h2 id="goblin-title">A creature in the build loop.</h2>
               <p class="lede">Goblin is an AI product for game developers: an endpoint for design exploration, implementation support, asset reasoning, and the repetitive work between idea and play.</p>
               <div class="product-tags"><span>Game design</span><span>Build agent</span><span>Developer API</span></div>
@@ -121,7 +151,7 @@ codex/.../rollout-2026-07-16.jsonl
 
           <article class="product-slide" data-product="vision" aria-labelledby="vision-title" aria-hidden="true">
             <div class="slide-copy">
-              <p class="eyebrow"><span>05</span> Vision endpoint</p>
+              <p class="eyebrow"><span>06</span> Vision endpoint</p>
               <h2 id="vision-title">Make sight callable.</h2>
               <p class="lede">Vision is the shared processing endpoint customers and Mobleysoft firms invoke when software needs to inspect, compare, understand, or transform visual information.</p>
               <div class="product-tags"><span>Image understanding</span><span>Visual QA</span><span>Fleet API</span></div>

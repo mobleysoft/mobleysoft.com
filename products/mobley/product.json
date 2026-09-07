@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "product": "Mobley",
+  "version": "0.1.0",
+  "status": "published-thin-client",
+  "published_at": "2026-09-07T00:00:00-04:00",
+  "tagline": "The thin client for the estate.",
+  "summary": "Mobley is the operator shell for the estate: a small, updateable web client that routes requests to local search, connectors, or human review without making the browser the source of truth.",
+  "launch": {
+    "primary_label": "Open Mobley",
+    "primary_href": "/#mobley",
+    "secondary_label": "Machine-readable manifest",
+    "secondary_href": "/products/mobley/product.json"
+  },
+  "routing_rules": [
+    {
+      "match": ["search", "find", "index", "summarize", "inspect"],
+      "route": "local retrieval",
+      "note": "Use local evidence or Unlost first."
+    },
+    {
+      "match": ["drive", "gmail", "mail", "cloudflare", "auth", "login", "kdp"],
+      "route": "connector bridge",
+      "note": "Use a real connector or a verified handoff."
+    },
+    {
+      "match": ["deploy", "publish", "delete", "purchase", "charge", "payment", "send"],
+      "route": "human review",
+      "note": "Require explicit operator approval."
+    }
+  ],
+  "capabilities": [
+    {
+      "title": "Thin client",
+      "description": "The browser stays small and updateable.",
+      "command": "Edit one manifest to revise copy, routes, and cards."
+    },
+    {
+      "title": "State visible",
+      "description": "Surface route, status, and published limits explicitly.",
+      "command": "Render from the manifest, not from hidden memory."
+    },
+    {
+      "title": "Action routing",
+      "description": "Classify each request before anything acts on it.",
+      "command": "Send local, connector, or human requests to the right path."
+    },
+    {
+      "title": "Easy publishing",
+      "description": "The app is a static route with no heavy client rebuild.",
+      "command": "Drop files into /products/mobley/ and republish."
+    }
+  ],
+  "contract": {
+    "source_of_truth": "product.json",
+    "update_model": "One manifest file controls the published copy and route rules.",
+    "deployment_model": "Static files served from mobleysoft.com/products/mobley/.",
+    "limits": "The thin client is not the model or the execution engine."
+  }
+}

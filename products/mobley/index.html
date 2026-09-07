@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#02060a">
+  <meta name="description" content="Mobley is the thin client for the estate: a small, updateable web client for routing requests to local search, connectors, or human review.">
+  <title>Mobley by Mobleysoft</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .mobley-app-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 20px;
+      padding: 0 0 32px;
+    }
+
+    .mobley-panel {
+      min-width: 0;
+      padding: clamp(24px, 4vw, 36px);
+      border: 1px solid var(--line);
+      background: rgba(4, 10, 14, 0.72);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+    }
+
+    .mobley-panel h2 {
+      margin: 18px 0 0;
+      font: 400 clamp(26px, 3vw, 42px)/1.02 var(--display);
+      letter-spacing: -0.04em;
+    }
+
+    .mobley-router-form {
+      display: grid;
+      gap: 16px;
+      margin-top: 26px;
+    }
+
+    .mobley-router-form textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      outline: 0;
+      resize: vertical;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--bone);
+      font: 13px/1.6 var(--mono);
+    }
+
+    .mobley-router-form textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px rgba(217, 164, 65, 0.14);
+    }
+
+    .mobley-route-output {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .mobley-route-output p {
+      margin: 0;
+      color: var(--muted);
+      font: 12px/1.7 var(--mono);
+    }
+
+    .mobley-route-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .route-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid var(--soft-line);
+      color: var(--gold-bright);
+      font: 10px/1 var(--mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .route-chip strong {
+      color: var(--bone);
+      font-weight: 600;
+    }
+
+    .mobley-rule-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .mobley-rule-card {
+      padding: 14px 16px;
+      border: 1px solid var(--soft-line);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .mobley-rule-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--bone);
+      font: 600 11px/1 var(--mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .mobley-rule-card p {
+      margin: 0;
+      color: var(--muted);
+      font: 12px/1.55 var(--mono);
+    }
+
+    .mobley-update-note {
+      color: var(--dim);
+      font: 11px/1.6 var(--mono);
+    }
+
+    @media (max-width: 700px) {
+      .mobley-app-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="product-detail-page mobley-product-page">
+  <main class="product-detail">
+    <header>
+      <a href="/#mobley" aria-label="Mobleysoft home">
+        <img src="/assets/logos/MobleysoftGothicLogoBarWithM.png" alt="Mobleysoft">
+      </a>
+      <a href="/#mobley">Back to products</a>
+    </header>
+
+    <section class="product-detail-hero">
+      <p class="eyebrow"><span id="mobley-version">MOBLEY 0.1.0</span> <span id="mobley-state">Published thin client</span></p>
+      <h1 id="mobley-title">Mobley is the thin client.</h1>
+      <p id="mobley-summary">Mobley is the operator shell for the estate: a small, updateable web client that routes requests to local search, connectors, or human review without making the browser the source of truth.</p>
+      <div class="action-row" id="mobley-actions">
+        <a class="primary-action" href="#mobley-router" id="mobley-primary-action">Open Mobley <span>Route a request</span></a>
+        <a class="text-action" href="/products/mobley/product.json" id="mobley-secondary-action">Machine-readable manifest</a>
+      </div>
+      <p class="boundary-note" id="mobley-tagline">The shell stays thin. The manifest stays editable. The real work stays in the tools behind it.</p>
+    </section>
+
+    <section class="mobley-app-grid" id="mobley-router">
+      <article class="mobley-panel">
+        <p class="eyebrow"><span>ROUTER</span> Request surface</p>
+        <h2>Ask Mobley what path a request should take.</h2>
+        <form class="mobley-router-form" id="mobley-router-form">
+          <textarea id="mobley-query" name="query" placeholder="Example: Summarize the latest book drafts and prepare a publish checklist."></textarea>
+          <div class="action-row">
+            <button class="primary-action" type="submit">Route request <span>Ctrl+Enter</span></button>
+            <button class="text-action" type="button" id="mobley-reset">Clear</button>
+          </div>
+        </form>
+        <div class="mobley-route-output" id="mobley-route-output" aria-live="polite">
+          <div class="mobley-route-head">
+            <span class="route-chip"><strong>READY</strong> Waiting for input</span>
+            <span class="route-chip">Default route: <strong>local analysis</strong></span>
+          </div>
+          <p>Type a request above to see how Mobley would route it across local retrieval, connector bridges, or human review.</p>
+        </div>
+      </article>
+
+      <article class="mobley-panel">
+        <p class="eyebrow"><span>THIN CLIENT</span> Update path</p>
+        <h2>One manifest away from new copy.</h2>
+        <p class="mobley-update-note" id="mobley-update-note">Change <code>/products/mobley/product.json</code> to revise the published copy, route rules, and capability cards. The browser is only the shell.</p>
+        <div class="mobley-rule-list" id="mobley-route-rules" aria-label="Routing rules"></div>
+      </article>
+    </section>
+
+    <section class="contract-grid" id="mobley-capabilities" aria-label="Mobley capabilities"></section>
+
+    <section class="contract-status">
+      <div>
+        <p class="eyebrow"><span>CONTRACT</span> Source of truth</p>
+        <h2>Manifest first, browser second.</h2>
+      </div>
+      <div>
+        <p class="eyebrow"><span>DEPLOYMENT</span> Static route</p>
+        <h2>Published from <code>/products/mobley/</code>.</h2>
+      </div>
+      <p id="mobley-contract-note">Mobley is a thin client by design. It exposes state, routes requests, and keeps the update path simple instead of hiding behavior inside the page.</p>
+    </section>
+  </main>
+
+  <script type="module" src="/products/mobley/app.js"></script>
+</body>
+</html>
