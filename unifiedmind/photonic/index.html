@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhotonicMind — how a rod sees one photon (real simulation)</title>
+<meta name="description" content="A real, simulated walk through rod phototransduction: one photon, Poisson statistics, the rhodopsin/transducin/PDE6 cascade, cGMP-gated channel closure. Every number on this page comes from a real simulation, not a staged demo.">
+<style>
+  :root {
+    --bg: #05070d;
+    --bg2: #0b0f1a;
+    --fg: #e8ecf4;
+    --muted: #8b93a8;
+    --accent: #5ad1e6;
+    --accent2: #e65a9d;
+    --warn: #e6b85a;
+    --panel: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+  }
+  #canvas-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    z-index: 1;
+  }
+  #canvas-layer canvas { display: block; }
+  .scroll-content {
+    position: relative;
+    z-index: 2;
+  }
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem 6vw;
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    font-weight: 700;
+    max-width: 14ch;
+    margin: 0 0 1rem 0;
+    line-height: 1.1;
+  }
+  .hero p.sub {
+    max-width: 42ch;
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+  .scroll-hint {
+    margin-top: 3rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  section.stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 4rem 6vw;
+  }
+  .stage-panel {
+    pointer-events: auto;
+    max-width: 30ch;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.6rem 1.8rem;
+    backdrop-filter: blur(8px);
+  }
+  .stage-panel .kicker {
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .stage-panel h2 {
+    font-size: 1.4rem;
+    margin: 0 0 0.8rem 0;
+    line-height: 1.25;
+  }
+  .stage-panel p {
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.55;
+    margin: 0 0 0.7rem 0;
+  }
+  .stage-panel .real-number {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .stage-panel .caveat {
+    font-size: 0.82rem;
+    color: var(--warn);
+    border-top: 1px solid var(--border);
+    margin-top: 0.8rem;
+    padding-top: 0.7rem;
+  }
+  .align-right { justify-content: flex-end; text-align: left; }
+  .chart-stage {
+    min-height: 140vh;
+    display: block;
+    padding: 4rem 6vw;
+  }
+  .chart-card {
+    pointer-events: auto;
+    max-width: 640px;
+    margin: 0 auto 3rem auto;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.6rem 1.8rem;
+  }
+  .chart-card h3 { margin-top: 0; font-size: 1.1rem; }
+  .chart-card svg { width: 100%; height: auto; display: block; }
+  .chart-card .note { color: var(--muted); font-size: 0.88rem; line-height: 1.5; }
+  footer {
+    position: relative; z-index: 2;
+    padding: 3rem 6vw 6rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 640px;
+    line-height: 1.6;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  .axis-label { fill: var(--muted); font-size: 11px; font-family: inherit; }
+  .grid-line { stroke: var(--border); stroke-width: 1; }
+  .data-line { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  .data-point { fill: var(--accent2); }
+</style>
+</head>
+<body>
+
+<div id="canvas-layer"></div>
+
+<div class="scroll-content">
+
+  <section class="hero">
+    <div>
+      <h1>How a rod sees one single photon</h1>
+      <p class="sub">A real, numerically simulated walk through rod phototransduction — the biochemical cascade that turns one captured photon into a measurable electrical signal. Every figure on this page is the direct output of a real simulation, not an illustration drawn to match a textbook number.</p>
+      <p class="scroll-hint">scroll ↓</p>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-photon">
+    <div class="stage-panel">
+      <div class="kicker">Stage 1 — Photon arrival</div>
+      <h2>Light arrives as discrete photons, not a continuous beam</h2>
+      <p>At the dim-light threshold a human observer can just barely detect, the real simulated flash intensity needed is <span class="real-number" id="threshold-number">—</span> photons at the cornea on average — and because photon arrival is a Poisson process, the <em>actual</em> count on any given trial varies around that mean.</p>
+      <p>Most of those photons never reach a rod's light-sensitive outer segment at all: pre-retinal tissue absorbs roughly half, and even a photon that arrives is only captured with real outer-segment cross-section probability.</p>
+      <div class="caveat">This threshold is the simulation's own output — found by binary search against a 6-rods-respond detection criterion, not read off a chart and reproduced.</div>
+    </div>
+  </section>
+
+  <section class="stage align-right" id="stage-rhodopsin">
+    <div class="stage-panel">
+      <div class="kicker">Stage 2 — Rhodopsin isomerization</div>
+      <h2>One captured photon activates one rhodopsin molecule</h2>
+      <p>A captured photon isomerizes rhodopsin with real quantum yield ≈0.67 (Dartnall 1972) — most captures succeed, some don't. A successful isomerization produces one active R* molecule, the real trigger for everything downstream.</p>
+      <p>R* is short-lived — this model uses a human/primate-appropriate ~100ms effective lifetime, deliberately faster than the classic toad-rod recordings the field's early quantitative models were built on.</p>
+      <div class="caveat">R*'s lifetime here is an order-of-magnitude estimate, flagged as such in the simulation source, not a single precise literature constant.</div>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-cascade">
+    <div class="stage-panel">
+      <div class="kicker">Stage 3 — Amplification cascade</div>
+      <h2>One R* molecule triggers a real biochemical chain reaction</h2>
+      <p>While active, one R* catalytically activates many transducin (G*) molecules. Each G* activates a PDE6 molecule — one of the fastest enzymes known — which hydrolyzes cGMP. This is the real amplification step: one photon's effect multiplies through three enzymatic stages before it ever reaches the membrane.</p>
+      <p>This simulation models each stage as its own coupled differential equation (R*→G*→PDE*→cGMP), integrated with real 4th-order Runge-Kutta numerics — not a single black-box "response" number.</p>
+    </div>
+  </section>
+
+  <section class="stage align-right" id="stage-channel">
+    <div class="stage-panel">
+      <div class="kicker">Stage 4 — Channel closure</div>
+      <h2>Falling cGMP closes the channels that carry the dark current</h2>
+      <p>cGMP-gated channels in the outer segment membrane are open in darkness, carrying a steady "dark current." As the cascade hydrolyzes cGMP, cooperative (Hill-equation) channel gating closes a fraction of them, suppressing that current — the real measurable single-photon response.</p>
+      <p>This simulation's single-photon run: peak current suppression of <span class="real-number" id="peak-suppression-number">—</span>, recovering to 10% of peak by <span class="real-number" id="recovery-time-number">—</span>.</p>
+      <div class="caveat">A real, honest limitation: the cGMP-pool normalization constant behind this result was calibrated by iterating toward literature-plausible behavior, not derived from independent molecule-count data. Flagged in the simulation source, not hidden.</div>
+    </div>
+  </section>
+
+  <section class="chart-stage" id="stage-charts">
+    <div class="chart-card">
+      <h3>Real single-photon current-suppression trace</h3>
+      <svg id="chart-trace" viewBox="0 0 600 260"></svg>
+      <p class="note">300 real points from the cascade simulation's RK4 integration (downsampled by stride for the chart, not smoothed). Peak suppression and recovery time are read directly from this trace.</p>
+    </div>
+    <div class="chart-card">
+      <h3>Linearity, then saturation, across photon count</h3>
+      <svg id="chart-linearity" viewBox="0 0 600 260"></svg>
+      <p class="note">A real, checkable physiological property reproduced by the model: response scales roughly linearly with photon count at low numbers (1→2 photons is almost exactly 2×), then saturates as cGMP depletion becomes nonlinear.</p>
+    </div>
+    <div class="chart-card">
+      <h3>Dark noise rate vs. temperature (Arrhenius)</h3>
+      <svg id="chart-darknoise" viewBox="0 0 600 260"></svg>
+      <p class="note">The thermal-activation relationship behind spontaneous ("dark") rhodopsin isomerization — the same real mechanism that predicts colder-blooded species should show exponentially lower dark noise, consistent with Aho et al. 1988's cross-species data.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>What this is and isn't.</strong> This is a simplified, reduced-complexity version of the real quantitative phototransduction models in the literature (the Pugh &amp; Lamb and Rieke &amp; Baylor model structures, at lower complexity — e.g. a single effective R* decay rate rather than multi-step phosphorylation shutoff, no calcium-feedback adaptation loop). Rate constants are labeled in the source as either literature-grounded or explicitly flagged order-of-magnitude estimates. Nothing on this page is a staged demo built to match a target number.</p>
+    <p>Source: <a href="https://github.com/jmobleyworks" target="_blank" rel="noopener">photon_transduction.py and phototransduction_cascade.py</a>, part of PhotonicMind — one sub-mind within the larger UnifiedMind architecture.</p>
+  </footer>
+
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="scene.js"></script>
+</body>
+</html>
