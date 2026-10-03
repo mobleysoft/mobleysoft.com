@@ -1,0 +1,15 @@
+{
+  "title": "ANNUAL GALA ATELIER",
+  "date": "October 2026",
+  "venue": "The Jefferson Hotel • Richmond, Virginia",
+  "default_filter": "clean_color",
+  "print_copies_default": 2,
+  "enable_2inch_cut": true,
+  "brand": {
+    "name": "Mobley Photo Booth Co.",
+    "tagline": "Studio-Grade Open-Air Portrait Activations",
+    "contact": "events@mobleybooth.com",
+    "phone": "804-503-5161",
+    "website": "https://mobleybooth.com"
+  }
+}

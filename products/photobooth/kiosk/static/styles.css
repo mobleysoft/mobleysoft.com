@@ -1,0 +1,290 @@
+/* Mobley Photo Booth Co. - Kiosk Dark Mode Theme */
+:root {
+    --bg-dark: #09090b;
+    --card-dark: #18181b;
+    --border-dark: #27272a;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent: #f1f5f9;
+    --gold: #d97706;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Simulated Studio Flash */
+.flash-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: opacity 0.05s ease-out;
+}
+.flash-overlay.active {
+    opacity: 1;
+    transition: none;
+}
+
+/* Screen Management */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    text-align: center;
+}
+.screen.active {
+    display: flex;
+}
+
+/* Attractor Screen */
+#screen-attractor {
+    background: radial-gradient(circle at center, #18181b 0%, #09090b 100%);
+    cursor: pointer;
+}
+.brand-sub {
+    font-size: 18px;
+    letter-spacing: 4px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+.brand-title {
+    font-size: 64px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #ffffff;
+    margin-bottom: 16px;
+}
+.event-meta {
+    font-size: 24px;
+    color: #94a3b8;
+    margin-bottom: 60px;
+}
+.pulse-ring {
+    animation: pulse 2.5s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+.btn-touch {
+    background: #ffffff;
+    color: #09090b;
+    border: none;
+    padding: 24px 60px;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-radius: 60px;
+    box-shadow: 0 10px 40px rgba(255,255,255,0.25);
+    cursor: pointer;
+}
+.brand-footer {
+    position: absolute;
+    bottom: 30px;
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: #64748b;
+}
+
+/* Filter Screen */
+.prompt-title {
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+}
+.filter-grid {
+    display: flex;
+    gap: 40px;
+}
+.filter-card {
+    background: var(--card-dark);
+    border: 2px solid var(--border-dark);
+    border-radius: 20px;
+    padding: 30px;
+    width: 320px;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.filter-card:hover {
+    transform: translateY(-8px);
+    border-color: #ffffff;
+}
+.filter-preview {
+    width: 100%;
+    height: 220px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+.color-preview {
+    background: linear-gradient(135deg, #f59e0b, #ec4899, #3b82f6);
+}
+.bw-preview {
+    background: linear-gradient(135deg, #18181b, #71717a, #ffffff);
+}
+.filter-name {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.filter-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+/* Countdown & Capture Screen */
+.pose-indicator {
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+.countdown-number {
+    font-size: 180px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 20px;
+    text-shadow: 0 0 50px rgba(255,255,255,0.4);
+}
+.pose-instruction {
+    font-size: 24px;
+    color: #94a3b8;
+}
+
+/* Processing Spinner */
+.spinner {
+    width: 80px;
+    height: 80px;
+    border: 6px solid var(--border-dark);
+    border-top: 6px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 30px;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.process-sub {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+}
+
+/* Review & Delivery Screen */
+.review-layout {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    max-width: 1100px;
+    width: 100%;
+}
+.strip-preview-box {
+    flex: 1;
+    max-width: 400px;
+    background: #000000;
+    padding: 12px;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+}
+.strip-preview-box img {
+    width: 100%;
+    border-radius: 8px;
+    display: block;
+}
+.delivery-panel {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.review-title {
+    font-size: 36px;
+    font-weight: 800;
+}
+.qr-box {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.qr-box img {
+    width: 180px;
+    height: 180px;
+}
+.qr-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 1px;
+}
+.print-actions {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+.btn-print {
+    flex: 1;
+    background: #ffffff;
+    color: #09090b;
+    border: none;
+    padding: 18px 24px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-print.secondary {
+    background: var(--card-dark);
+    color: #ffffff;
+    border: 1px solid var(--border-dark);
+}
+.status-msg {
+    font-size: 16px;
+    color: #10b981;
+    min-height: 24px;
+}
+.btn-done {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-dark);
+    padding: 14px 28px;
+    font-size: 15px;
+    border-radius: 30px;
+    cursor: pointer;
+}

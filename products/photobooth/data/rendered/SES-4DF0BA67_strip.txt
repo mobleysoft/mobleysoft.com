@@ -1,0 +1,12 @@
+MOBLEY PHOTO BOOTH CO. // LIVE TETHER COMPOSITE
+Product: Mobleysoft Event Systems
+Event: The Jefferson Hotel Gala
+Session: SES-4DF0BA67 | Time: 20261003_092600
+--------------------------------------------------
+[ FRAME 1: Pose A (Wide Atrium Flash)           ]
+[ FRAME 2: Pose B (Rotunda Architecture Backing) ]
+[ FRAME 3: Pose C (Champagne Toast Group)       ]
+--------------------------------------------------
+Graphic Overlay: 2026 Jefferson Gala Gold Foil
+Cloudflare R2 Direct Link: https://r2.mobleybooth.com/the-jefferson-hotel-gala/strips/SES-4DF0BA67.jpg
+Guest SMS Share URL: https://mobleybooth.com/s/ses-4df0ba67

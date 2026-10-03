@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mobley Photo Booth Co. // Kiosk Controller</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div id="flash-overlay" class="flash-overlay"></div>
+
+    <!-- 1. ATTRACTOR / STANDBY SCREEN -->
+    <section id="screen-attractor" class="screen active" onclick="app.startFlow()">
+        <div class="brand-sub">Mobley Photo Booth Co.</div>
+        <h1 class="brand-title" id="event-title-display">GALA PORTRAIT ATELIER</h1>
+        <div class="event-meta" id="event-meta-display">The Jefferson Hotel • Richmond, Virginia</div>
+        
+        <div class="pulse-ring">
+            <button class="btn-touch">TOUCH SCREEN TO BEGIN</button>
+        </div>
+        <div class="brand-footer">STUDIO-GRADE OPTICS • INSTANT PRINTS</div>
+    </section>
+
+    <!-- 2. FILTER SELECTION SCREEN -->
+    <section id="screen-filter" class="screen">
+        <h2 class="prompt-title">SELECT YOUR PORTRAIT STYLE</h2>
+        <div class="filter-grid">
+            <div class="filter-card" onclick="app.selectFilter('clean_color')">
+                <div class="filter-preview color-preview"></div>
+                <div class="filter-name">STUDIO COLOR</div>
+                <div class="filter-desc">Vibrant, balanced strobe illumination</div>
+            </div>
+            <div class="filter-card" onclick="app.selectFilter('glam_bw')">
+                <div class="filter-preview bw-preview"></div>
+                <div class="filter-name">GLAM BLACK & WHITE</div>
+                <div class="filter-desc">High-contrast, smooth celebrity portrait tone</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. COUNTDOWN & CAPTURE SCREEN -->
+    <section id="screen-capture" class="screen">
+        <div class="pose-indicator" id="pose-indicator">POSE 1 OF 3</div>
+        <div class="countdown-number" id="countdown-number">3</div>
+        <div class="pose-instruction">GET READY & LOOK AT THE LENS!</div>
+    </section>
+
+    <!-- 4. PROCESSING SCREEN -->
+    <section id="screen-processing" class="screen">
+        <div class="spinner"></div>
+        <h2 class="prompt-title">DEVELOPING YOUR STRIP...</h2>
+        <div class="process-sub">Compositing 300 DPI studio master & generating QR</div>
+    </section>
+
+    <!-- 5. REVIEW & DELIVERY SCREEN -->
+    <section id="screen-review" class="screen">
+        <div class="review-layout">
+            <!-- Left: Strip Preview -->
+            <div class="strip-preview-box">
+                <img id="rendered-strip-img" src="" alt="Your Photo Strip">
+            </div>
+
+            <!-- Right: Actions & QR -->
+            <div class="delivery-panel">
+                <h2 class="review-title">YOUR PHOTOS ARE READY!</h2>
+                
+                <div class="qr-box">
+                    <img id="qr-code-img" src="" alt="Scan for Digital Copy">
+                    <div class="qr-label">SCAN TO SAVE TO YOUR PHONE</div>
+                </div>
+
+                <div class="print-actions">
+                    <button class="btn-print" onclick="app.dispatchPrint(2)">PRINT 2 COPIES</button>
+                    <button class="btn-print secondary" onclick="app.dispatchPrint(4)">PRINT 4 COPIES</button>
+                </div>
+
+                <div class="status-msg" id="print-status-msg"></div>
+
+                <button class="btn-done" onclick="app.resetToAttractor()">FINISH / NEXT GUEST (<span id="reset-timer">25</span>s)</button>
+            </div>
+        </div>
+    </section>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
