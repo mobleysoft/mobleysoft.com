@@ -25,7 +25,12 @@
     playing: false,
     started: false,
     speed: 1,
+    kills: 0,
   };
+  // Bursts (2026-10-05): a shot that lands blows the ship up - a glow sprite
+  // that flares and fades - and the ship comes back from deep space. Before
+  // this, firing only drew a line toward the nearest ship and nothing happened.
+  const bursts = [];
   const input = { x: 0, y: 0, targetX: 0, targetY: 0, keys: new Set() };
   const lasers = [];
   let randomState = 0x417b9edc;
@@ -309,6 +314,27 @@
     });
   }
 
+  function spawnBurst(position, color, size) {
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: glowTexture, color, transparent: true, opacity: 1, blending: THREE.AdditiveBlending, depthWrite: false,
+    }));
+    sprite.position.copy(position);
+    sprite.scale.set(size, size, 1);
+    scene.add(sprite);
+    bursts.push({ sprite, life: 0.55, duration: 0.55, size });
+  }
+
+  function destroyEnemy(enemy) {
+    spawnBurst(enemy.position, 0xffb347, 26);
+    spawnBurst(enemy.position, 0xff4b35, 14);
+    clockState.kills += 1;
+    // Respawn far down the lane with a fresh phase so the lane never empties.
+    enemy.userData.depth = -150 - random() * 90;
+    enemy.userData.phase = random() * Math.PI * 2;
+    enemy.position.z = enemy.userData.depth;
+    emitState();
+  }
+
   function firePlayer() {
     if (!clockState.playing || !enemies.length) return;
     const target = enemies.reduce((nearest, enemy) => (
@@ -317,6 +343,9 @@
         : nearest
     ), enemies[0]);
     createLaser(player.position, target.position, 0x67efff, 0.18);
+    // A shot lands when the ship is inside the lane ahead (within 190 units):
+    // the laser is drawn to the ship, so the hit is what the player sees.
+    if (target.position.distanceTo(player.position) < 190) destroyEnemy(target);
   }
 
   function updateInput(delta) {
@@ -376,6 +405,19 @@
       nextPlayerShot = time + 1.25;
     }
 
+    for (let index = bursts.length - 1; index >= 0; index -= 1) {
+      const burst = bursts[index];
+      burst.life -= delta;
+      const t = 1 - burst.life / burst.duration;
+      burst.sprite.material.opacity = Math.max(0, 1 - t);
+      burst.sprite.scale.setScalar(burst.size * (1 + t * 1.8));
+      if (burst.life <= 0) {
+        scene.remove(burst.sprite);
+        burst.sprite.material.dispose();
+        bursts.splice(index, 1);
+      }
+    }
+
     for (let index = lasers.length - 1; index >= 0; index -= 1) {
       const laser = lasers[index];
       laser.life -= delta;
@@ -420,6 +462,7 @@
     window.dispatchEvent(new CustomEvent("mobley:blackhole-state", {
       detail: {
         elapsed: clockState.elapsed,
+        kills: clockState.kills,
         playing: clockState.playing,
         release: "blackhole-a-20260522",
         speed: clockState.speed,
@@ -439,6 +482,8 @@
     input.targetX = 0;
     input.targetY = 0;
     clearLasers();
+    bursts.splice(0).forEach(({ sprite }) => { scene.remove(sprite); sprite.material.dispose(); });
+    clockState.kills = 0;
     player.position.set(24, -46, 42);
     player.rotation.set(0, 0, 0);
     warpAperture.visible = false;

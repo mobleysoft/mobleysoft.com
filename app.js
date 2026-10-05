@@ -35,7 +35,21 @@
   let timelinePosition = 0;
   let timelineReturnFocus = null;
 
-  function reveal() {
+  // The X (2026-10-05): once the visitor closes the site view, ambient
+  // pointer/touch/key activity must not pull it back - only the reveal hint
+  // (an explicit click) does. Closing also starts the encounter so the
+  // screen behind the site is a running game, not a frozen frame.
+  let dismissed = false;
+  function dismissShell() {
+    dismissed = true;
+    window.clearTimeout(idleTimer);
+    body.classList.add("shell-dismissed");
+    body.classList.remove("shell-visible");
+    if (!window.MobleyBlackhole?.getState().playing) window.MobleyBlackhole?.play();
+  }
+  function reveal(event) {
+    if (dismissed && !(event && event.type === "click" && event.currentTarget === revealHint)) return;
+    if (dismissed) { dismissed = false; body.classList.remove("shell-dismissed"); }
     body.classList.add("shell-visible");
     window.clearTimeout(idleTimer);
     if (!isCompact.matches && !timelinePanel.classList.contains("is-open")) {
@@ -235,6 +249,7 @@
   function initializeInteraction() {
     if (isCompact.matches) body.classList.add("shell-visible");
     revealHint.addEventListener("click", reveal);
+    document.getElementById("shell-close").addEventListener("click", dismissShell);
     ["pointermove", "pointerdown", "touchstart", "keydown"].forEach((eventName) => {
       document.addEventListener(eventName, reveal, { passive: eventName !== "keydown" });
     });
@@ -256,6 +271,7 @@
       if (event.key === "ArrowRight" && !timelinePanel.classList.contains("is-open") && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) updateProduct(activeSlide + 1);
     });
     isCompact.addEventListener("change", (event) => {
+      if (dismissed) return;
       if (event.matches) body.classList.add("shell-visible");
       else reveal();
     });
@@ -266,7 +282,8 @@
     backgroundToggle.setAttribute("aria-pressed", String(playing));
     backgroundToggleLabel.textContent = playing ? "Pause encounter" : "Play encounter";
     backgroundToggle.querySelector(".play-symbol").textContent = playing ? "II" : "\u25b6";
-    backgroundStatus.textContent = playing ? "PLAYING" : "FROZEN";
+    const kills = window.MobleyBlackhole?.getState().kills || 0;
+    backgroundStatus.textContent = (playing ? "PLAYING" : "FROZEN") + (kills ? " / " + kills + " DOWN" : "");
     document.body.classList.toggle("background-playing", playing);
   }
 

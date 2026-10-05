@@ -248,6 +248,25 @@ body.shell-visible .site-shell {
   box-shadow: 0 0 12px rgba(94,234,212,0.8);
 }
 
+/* The X (2026-10-05): closes the site view so the encounter behind it can be
+   played - phones never had a way to reach it. Reopen via the reveal hint. */
+.shell-close {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  margin-left: auto;
+  border: 1px solid rgba(217,164,65,0.55);
+  border-radius: 50%;
+  background: rgba(2,6,10,0.6);
+  color: var(--gold-bright);
+  cursor: pointer;
+  font: 400 22px/1 var(--sans);
+}
+.shell-close:hover, .shell-close:focus-visible { border-color: var(--gold-bright); background: rgba(217,164,65,0.16); outline: none; }
+body.shell-dismissed .site-shell { display: none !important; }
+body.shell-dismissed .reveal-hint { display: grid !important; opacity: 1; pointer-events: auto; transform: translateX(-50%); }
+body.shell-dismissed .background-player small { display: block; }
+
 .timeline-link {
   padding: 0;
   border: 0;
@@ -920,6 +939,7 @@ body.shell-visible .site-shell {
   .reveal-hint { display: none; }
   .shell-frame { border: 0; border-radius: 0; }
   .masthead { align-items: flex-start; min-height: 84px; padding: 17px 18px; }
+  .shell-close { order: 2; }
   .brand { width: min(430px, 68vw); }
   .masthead-meta { display: grid; justify-items: end; gap: 8px; }
   .desktop-only { display: none; }
