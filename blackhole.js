@@ -37,7 +37,6 @@
   let nextEnemyShot = 2.4;
   let nextPlayerShot = 4.2;
   let hiddenWasPlaying = false;
-  let lastBackgroundTap = 0;
 
   renderer.setClearColor(0x010205, 1);
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -547,17 +546,42 @@
     }
   });
   addEventListener("keyup", (event) => input.keys.delete(event.code));
-  addEventListener("touchend", (event) => {
-    if (event.target.closest("a, button, input, textarea, select, dialog")) return;
-    const now = performance.now();
-    if (now - lastBackgroundTap < 340) {
-      event.preventDefault();
-      clockState.playing ? firePlayer() : play();
-      lastBackgroundTap = 0;
-      return;
-    }
-    lastBackgroundTap = now;
+  // Touch (2026-10-05): a phone steers by dragging anywhere on the sky and
+  // fires with a plain tap - no double-tap, no press-and-hold, because iOS
+  // turns holds into text selection and link previews and a game must never
+  // depend on them. Touches that start on the site shell or a control are
+  // left alone so the page still scrolls and buttons still work.
+  const touch = { id: null, x: 0, y: 0, startX: 0, startY: 0, t: 0, moved: false };
+  const touchOnUi = (event) => event.target.closest("a, button, input, textarea, select, dialog, .site-shell, .background-player, .reveal-hint, .timeline-panel");
+  addEventListener("touchstart", (event) => {
+    if (touchOnUi(event) || event.touches.length !== 1) return;
+    const t = event.touches[0];
+    touch.id = t.identifier; touch.x = touch.startX = t.clientX; touch.y = touch.startY = t.clientY; touch.t = performance.now(); touch.moved = false;
+  }, { passive: true });
+  addEventListener("touchmove", (event) => {
+    if (touch.id === null) return;
+    const t = Array.from(event.changedTouches).find((c) => c.identifier === touch.id);
+    if (!t) return;
+    if (clockState.playing) event.preventDefault();
+    const dx = t.clientX - touch.x, dy = t.clientY - touch.y;
+    touch.x = t.clientX; touch.y = t.clientY;
+    if (Math.hypot(t.clientX - touch.startX, t.clientY - touch.startY) > 10) touch.moved = true;
+    if (!clockState.playing) return;
+    input.targetX = THREE.MathUtils.clamp(input.targetX + dx / innerWidth * 3.2, -1, 1);
+    input.targetY = THREE.MathUtils.clamp(input.targetY - dy / innerHeight * 3.2, -1, 1);
   }, { passive: false });
+  addEventListener("touchend", (event) => {
+    if (touch.id === null) return;
+    const t = Array.from(event.changedTouches).find((c) => c.identifier === touch.id);
+    if (!t) return;
+    const quick = performance.now() - touch.t < 450;
+    touch.id = null;
+    if (touch.moved || !quick) return;
+    if (touchOnUi(event)) return;
+    event.preventDefault();
+    clockState.playing ? firePlayer() : play();
+  }, { passive: false });
+  addEventListener("touchcancel", () => { touch.id = null; });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       hiddenWasPlaying = clockState.playing;

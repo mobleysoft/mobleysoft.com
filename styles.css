@@ -266,6 +266,8 @@ body.shell-visible .site-shell {
 body.shell-dismissed .site-shell { display: none !important; }
 body.shell-dismissed .reveal-hint { display: grid !important; opacity: 1; pointer-events: auto; transform: translateX(-50%); }
 body.shell-dismissed .background-player small { display: block; }
+body.shell-dismissed, body.shell-dismissed #blackhole-canvas { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; overscroll-behavior: none; }
+#blackhole-canvas { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
 .timeline-link {
   padding: 0;
