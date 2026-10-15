@@ -13,22 +13,40 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/styles.css?v=controls-safe-673d0e21-r1">
   <script src="/assets/vendor/three-r128.min.js?v=canon-a-e1a5de7a" defer></script>
-  <script src="/blackhole.js?v=original-417b9edc-r1" defer></script>
+  <script src="/manual-flight/destinations.js?v=manual-orbit-r1" defer></script>
+  <script src="/manual-flight/travel.js?v=manual-orbit-r1" defer></script>
+  <script src="/manual-flight/planets.js?v=manual-orbit-r1" defer></script>
+  <script src="/manual-flight/core.js?v=manual-orbit-r1" defer></script>
+  <script src="/manual-flight/mesh-sweep.js?v=manual-orbit-r1" defer></script>
+  <script src="/manual-flight/input.js?v=manual-orbit-r1" defer></script>
+  <script src="/blackhole.js?v=manual-orbit-r1" defer></script>
   <script src="/app.js?v=canon-a-e1a5de7a" defer></script>
 <script>(function(){var v='mobleysoft.com';(function(u,b){try{if(navigator.sendBeacon){navigator.sendBeacon(u,b)}else{fetch(u,{method:'POST',mode:'no-cors',keepalive:true,body:b}).catch(function(){})}}catch(e){}})('https://helmcorp.cc/api/beacon',JSON.stringify({v:v,p:location.pathname,t:Date.now(),r:document.referrer||''}))})()</script>
+  <link rel="stylesheet" href="/manual-flight/flight.css?v=manual-orbit-r1">
 </head>
 <body>
   <canvas id="blackhole-canvas" aria-hidden="true"></canvas>
+  <section class="flight-ui" aria-label="Manual flight controls">
+    <div id="flight-move" class="flight-stick" role="group" tabindex="0" aria-label="Strafe stick. Drag to move left, right, up or down. Keyboard W A S D."><span class="flight-thumb"></span><span class="flight-stick-label">STRAFE</span></div>
+    <div id="flight-look" class="flight-stick" role="group" tabindex="0" aria-label="Look stick. Drag to yaw and pitch. Short tap or Enter fires. Keyboard arrow keys look."><span class="flight-thumb"></span><span class="flight-stick-label">LOOK · TAP FIRE</span></div>
+    <div class="flight-lever"><span>THRUST +</span><div class="flight-lever-track"><input id="flight-throttle" type="range" min="-1" max="1" step="0.01" value="0" aria-label="Thrust and brake lever. Positive thrust, zero coast, negative brake." aria-valuetext="Neutral: coast"></div><span>BRAKE −</span><button id="flight-neutral" type="button" aria-label="Set thrust lever to neutral coast">0 COAST</button></div>
+    <div class="flight-travel"><select id="flight-destination" aria-label="Jump destination"></select><button id="flight-jump" type="button">ALIGN</button><small id="flight-nav-status">ORBITAL FLIGHT</small></div>
+    <div class="flight-jump-marker" aria-hidden="true"><span>◇</span><small id="flight-jump-label"></small></div><div class="flight-transit" aria-hidden="true"><strong>HYPERSPACE</strong></div>
+    <div class="flight-status" role="status" aria-live="off"><span id="flight-hull">HULL 100 · SPEED 0</span><span id="flight-throttle-label">COAST</span><span id="flight-message">MANUAL AIM · READY</span></div>
+    <button id="flight-view" type="button" aria-label="Switch camera view">VIEW · CHASE</button>
+    <div class="flight-reticle" aria-hidden="true"><span class="flight-hit"></span></div><div class="flight-radar" aria-hidden="true"><span></span><span></span><span></span></div><div class="flight-damage" aria-hidden="true"></div><div class="flight-frame" aria-hidden="true"></div>
+    <div class="flight-help">WASD strafe · Arrows / right-drag look · Space / click fire<br>Shift thrust · B brake · N neutral · V view · P pause</div>
+  </section>
   <div class="void-grain" aria-hidden="true"></div>
 
   <aside class="background-player" aria-label="Playable background controls">
     <div class="background-state"><span>CANON A / 417B9EDC</span><strong id="background-status">FROZEN</strong></div>
     <button id="background-toggle" type="button" aria-pressed="false"><span class="play-symbol">&#9654;</span><span id="background-toggle-label">Play encounter</span></button>
     <button id="background-replay" type="button">Replay</button>
-    <small>Tap to fire, drag to steer on a phone / Space fires, pointer or WASD steers on a desk / P pauses / X on the site clears the view</small>
+    <small>Left stick strafe / Right stick look, short tap fires / Lever: thrust +, coast 0, brake − / WASD strafe, arrows look, Space fires / V view, P pause</small>
   </aside>
 
-  <button class="reveal-hint" id="reveal-hint" type="button" aria-controls="site-shell">
+  <button class="reveal-hint" id="reveal-hint" aria-label="Reveal Mobleysoft website" type="button" aria-controls="site-shell">
     <span>Move, type, or touch</span>
     <strong>Reveal Mobleysoft</strong>
   </button>
