@@ -1080,3 +1080,31 @@ body.shell-dismissed, body.shell-dismissed #blackhole-canvas { touch-action: non
   .contract-grid, .contract-status { grid-template-columns: 1fr; }
   .contract-status > p { grid-column: auto; }
 }
+
+/* Local control-layout fix, independent of the renderer patch.
+   Keep reveal at the safe top edge and playback at the safe bottom edge.
+   No full-screen hit layer: the remaining sky continues receiving game input. */
+.reveal-hint,
+body.shell-dismissed .reveal-hint {
+  top: max(18px, env(safe-area-inset-top));
+  right: max(18px, env(safe-area-inset-right));
+  bottom: auto;
+  left: auto;
+  min-width: 0;
+  width: max-content;
+  max-width: calc(100vw - max(18px, env(safe-area-inset-left)) - max(18px, env(safe-area-inset-right)));
+  min-height: 44px;
+  transform: none;
+}
+.background-player {
+  max-width: calc(100vw - max(18px, env(safe-area-inset-left)) - max(18px, env(safe-area-inset-right)));
+}
+.background-player button { min-height: 44px; }
+/* Short landscape needs the same compact controls as a narrow phone.
+   Keeping instructions out of the grid prevents hover/focus from expanding it. */
+@media (max-width: 620px), (max-height: 500px) {
+  .background-player { grid-template-columns: minmax(0, 1fr) auto; }
+  .background-player .background-state { display: none; }
+  #background-toggle { min-width: 0; }
+  .background-player small { display: none !important; }
+}
