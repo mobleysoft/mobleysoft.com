@@ -1,0 +1,129 @@
+{
+  "recovered_at": "2026-10-15",
+  "original_site": "mobleysoft.com",
+  "versions": [
+    {
+      "id": "menger",
+      "title": "Hyperfractal cube",
+      "tag": "Closest cube match",
+      "description": "A dark, perforated Menger cube surrounded by a striped gold disk. Free-flight camera and rotating geometry.",
+      "source": "/Users/johnmobley/legacy-roots/mobleysoft/blackhole.html",
+      "date": "April 5, 2026 file timestamp; original site snapshot",
+      "sha256": "6ea4008a6760cae0e8220039f15dff03c45fa229e088cdc17804c5dd0cccf340",
+      "bytes": 14836,
+      "sourceURL": "sources/menger.html",
+      "preview": "previews/menger.html",
+      "still": "stills/menger.jpg"
+    },
+    {
+      "id": "current",
+      "title": "Current encounter",
+      "tag": "Live baseline",
+      "description": "The black hole currently behind the playable encounter: gold disk, black center, particles and spacecraft.",
+      "source": "/Users/johnmobley/mobleysoft.com/blackhole.js",
+      "date": "Live HTTP SHA-256 verified October 15, 2026; October 5 controls update",
+      "sha256": "2ff361812fb935fa46737911691fa68299900d445e6855c4a0ccddd6ea0f6f59",
+      "bytes": 21777,
+      "sourceURL": "sources/current.js",
+      "preview": "previews/current.html",
+      "still": "stills/current.jpg"
+    },
+    {
+      "id": "kerr",
+      "title": "Kerr geodesic r3",
+      "tag": "March 24 build",
+      "description": "Raytraced black body, dense disk bands, Doppler color and polar jets. Includes the original spin control.",
+      "source": "/Users/johnmobley/legacy-roots/mobleysoft/bg.js",
+      "date": "Build label 20260324-kerr-geodesic-r3; local legacy source",
+      "sha256": "549af08b639bf47425e470d4edfedbef7272f952c675a4f1b05a0b29b8e693d0",
+      "bytes": 22608,
+      "sourceURL": "sources/kerr.js",
+      "preview": "previews/kerr.html",
+      "still": "stills/kerr.jpg"
+    },
+    {
+      "id": "four",
+      "title": "Four black hole \u00b7 dark horizon",
+      "tag": "March 25 file",
+      "description": "Raymarched disk with a deliberately black central shadow, photon ring and Doppler-shifted light.",
+      "source": "/Users/johnmobley/legacy-roots/mobleysoft/four_blackhole.js",
+      "date": "March 25, 2026 file timestamp; local legacy source",
+      "sha256": "cc238a3f2e267af945dda09b8e17a8b7443981423587788d818b9b60342f3de5",
+      "bytes": 39492,
+      "sourceURL": "sources/four.js",
+      "preview": "previews/four.html",
+      "still": "stills/four.jpg"
+    },
+    {
+      "id": "four-early",
+      "title": "Four black hole \u00b7 early surface",
+      "tag": "March 15 snapshot",
+      "description": "Earlier Four renderer, before the center was changed to an absolute black shadow. Preserves its original horizon treatment.",
+      "source": "/Users/johnmobley/legacy-roots/mobleysoft/omega/four_blackhole.js",
+      "date": "Matching March 15 version snapshots dcbc77f9 / 325895af / 291380b5",
+      "sha256": "4cf5018e9eb497ead499d8eadcdfeed45eb0982de61112d03aea3fe7aa65aa1d",
+      "bytes": 38743,
+      "sourceURL": "sources/four-early.js",
+      "preview": "previews/four-early.html",
+      "still": "stills/four-early.jpg"
+    },
+    {
+      "id": "schwarzschild",
+      "title": "Schwarzschild accretion",
+      "tag": "March 15 snapshot",
+      "description": "Earlier Four-based background: orbiting camera, blue-gold accretion disk and a dark central body.",
+      "source": "/Users/johnmobley/legacy-roots/mobleysoft/omega/bg.js",
+      "date": "Matching March 15 version snapshots; renderer skips narrow viewports in original",
+      "sha256": "33b8b41a6b8eeec9f9d135169f52e924249da8cc4cfa9640e61d6a8ce96e1943",
+      "bytes": 12048,
+      "sourceURL": "sources/schwarzschild.js",
+      "preview": "previews/schwarzschild.html",
+      "still": "stills/schwarzschild.jpg"
+    },
+    {
+      "id": "email",
+      "title": "Three.js original",
+      "tag": "May 22 recovered source",
+      "description": "The original orange particle field and banded plane, with a freely orbiting camera. This predates the current encounter adaptation.",
+      "source": "/Users/johnmobley/mobleysoft.com/backgrounds/candidates/email-threejs.js",
+      "date": "May 22, 2026 mail recovery recorded in preserved manifest; Git 1a8e7c905",
+      "sha256": "417b9edc4e6e4c9c8857d96bbebb6ad305a516421b92e034b43a9c3627fe9f6d",
+      "bytes": 4398,
+      "sourceURL": "sources/email.js",
+      "preview": "previews/email.html",
+      "still": "stills/email.jpg"
+    },
+    {
+      "id": "canvas",
+      "title": "Canvas accretion field",
+      "tag": "July 26 backup",
+      "description": "A lightweight 2D accretion field preserved before the canonical Three.js selection.",
+      "source": "/Users/johnmobley/mobleysoft.com/backgrounds/candidates/current-canvas-2d.js",
+      "date": "July 26, 2026 preserved working copy / deployment backup; Git 1a8e7c905",
+      "sha256": "54a9b49f2564d905fc3223fa366ed90c06f0f52f4d1cfc45d8dea2894dd36547",
+      "bytes": 7065,
+      "sourceURL": "sources/canvas.js",
+      "preview": "previews/canvas.html",
+      "still": "stills/canvas.jpg"
+    },
+    {
+      "id": "rings",
+      "title": "Concentric horizon rings",
+      "tag": "Legacy fallback",
+      "description": "The minimal gold concentric-ring fallback recovered from an older venture snapshot.",
+      "source": "/Users/johnmobley/mobleysoft.com/backgrounds/candidates/legacy-rings.js",
+      "date": "Original date unknown; recovered by July 26 gallery; Git 1a8e7c905",
+      "sha256": "1906a7eca2ca5a466b65f868959e59b1e49821a2ebf16e64bce67644de20b207",
+      "bytes": 1137,
+      "sourceURL": "sources/rings.js",
+      "preview": "previews/rings.html",
+      "still": "stills/rings.jpg"
+    }
+  ],
+  "notes": [
+    "No new black-hole concepts were generated. Sources preserved byte-for-byte.",
+    "Preview-only adapter blocks network calls and adds pause/resume. Four remote SCADA polling is disabled.",
+    "The historical Void Computer blackhole.js is nonvisual and excluded from the rendering grid.",
+    "Dates marked file timestamp or snapshot are evidence labels, not proof of original deployment date."
+  ]
+}

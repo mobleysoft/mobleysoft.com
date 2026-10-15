@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MASCOM — Hyperfractal Black Hole</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;overflow:hidden;font-family:'SF Mono','Menlo',monospace}
+canvas{display:block;position:fixed;inset:0}
+#hud{position:fixed;top:0;left:0;padding:26px 34px;pointer-events:none;z-index:10}
+.ey{font-size:8px;letter-spacing:.45em;text-transform:uppercase;color:rgba(201,162,39,.3);margin-bottom:7px}
+.ti{font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:rgba(201,162,39,.65);margin-bottom:4px}
+.su{font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.16);line-height:2}
+#hud2{position:fixed;bottom:0;right:0;padding:26px 34px;pointer-events:none;z-index:10;text-align:right}
+.st{font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,162,39,.18);line-height:2.5}
+#hud3{position:fixed;bottom:26px;left:34px;pointer-events:none;z-index:10}
+.dh{font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.1)}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div class="ey">MASCOM · Fractal Hypercomputer</div>
+  <div class="ti">Hyperfractal Black Hole</div>
+  <div class="su">Menger Sponge · 4 Iterations<br>Rectangular Faceted · Sovereign Geometry</div>
+</div>
+<div id="hud2">
+  <div class="st">Schwarzschild R = 1.0</div>
+  <div class="st">Iteration 4 · 3¹² Faces</div>
+  <div class="st">The field computes by existing</div>
+</div>
+<div id="hud3"><div class="dh">wasd · space · shift · drag to look</div></div>
+
+<script>
+'use strict';
+const canvas = document.getElementById('c');
+const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+if (!gl) { document.body.innerHTML = '<p style="color:#c9a227;padding:40px;font-family:monospace">WebGL not available</p>'; throw 0; }
+
+const PR = Math.min(window.devicePixelRatio || 1, 1.5);
+function resize() {
+  canvas.width  = Math.floor(innerWidth  * PR * 0.82);
+  canvas.height = Math.floor(innerHeight * PR * 0.82);
+  canvas.style.width  = innerWidth  + 'px';
+  canvas.style.height = innerHeight + 'px';
+  gl.viewport(0, 0, canvas.width, canvas.height);
+}
+addEventListener('resize', resize); resize();
+
+// ── VERTEX SHADER — fullscreen quad ──────────────────────────────────
+const VS = `
+attribute vec2 aPos;
+void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }
+`;
+
+// ── FRAGMENT SHADER — ray marched Menger sponge ──────────────────────
+const FS = `
+precision highp float;
+uniform vec2  uRes;
+uniform float uT;
+uniform vec3  uCamPos;   // free-flight camera position
+uniform vec2  uLook;     // x=yaw, y=pitch
+
+// ── helpers ──────────────────────────────────────────────────────────
+mat3 mRotY(float a){
+  float c=cos(a),s=sin(a);
+  return mat3( c, 0.0, s,
+               0.0, 1.0, 0.0,
+              -s, 0.0, c);
+}
+mat3 mRotX(float a){
+  float c=cos(a),s=sin(a);
+  return mat3(1.0, 0.0, 0.0,
+              0.0,  c,   s,
+              0.0, -s,   c);
+}
+
+// Box SDF
+float sdBox(vec3 p, vec3 b){
+  vec3 q = abs(p) - b;
+  return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
+}
+
+// Menger sponge SDF — 4 iterations of rectangular cross-subtraction
+float menger(vec3 p){
+  float d = sdBox(p, vec3(1.0));
+  float s = 1.0;
+  for(int i = 0; i < 4; i++){
+    vec3 a = mod(p * s, 2.0) - 1.0;
+    s *= 3.0;
+    vec3 r = abs(1.0 - 3.0 * abs(a));
+    float da = max(r.x, r.y);
+    float db = max(r.y, r.z);
+    float dc = max(r.z, r.x);
+    d = max(d, (min(da, min(db, dc)) - 1.0) / s);
+  }
+  return d;
+}
+
+// Flat disk ring SDF (world space, XZ plane)
+float sdDisk(vec3 p){
+  float r = length(p.xz);
+  return max(abs(r - 2.1) - 0.42, abs(p.y) - 0.056);
+}
+
+// Central differences normal — computed in sponge local space
+vec3 mengerNormal(vec3 p){
+  float e = 0.004;
+  return normalize(vec3(
+    menger(p + vec3(e,0,0)) - menger(p - vec3(e,0,0)),
+    menger(p + vec3(0,e,0)) - menger(p - vec3(0,e,0)),
+    menger(p + vec3(0,0,e)) - menger(p - vec3(0,0,e))
+  ));
+}
+
+// AO in local space
+float ao(vec3 p, vec3 n){
+  float o = 0.0, sc = 1.0;
+  for(int i = 1; i <= 4; i++){
+    float h = 0.02 + 0.14 * float(i) / 4.0;
+    float d = menger(p + n * h);
+    o += (h - max(d, 0.0)) * sc;
+    sc *= 0.82;
+  }
+  return clamp(1.0 - 3.5 * o, 0.0, 1.0);
+}
+
+// Starfield
+float hashF(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+vec3 stars(vec3 rd){
+  vec2 uv = vec2(atan(rd.x, rd.z), asin(clamp(rd.y,-1.0,1.0))) * 3.0;
+  vec2 id = floor(uv * 48.0);
+  float h  = hashF(id);
+  float b  = step(0.966, h) * (0.3 + 0.7 * hashF(id + 0.5));
+  vec3  c  = vec3(b);
+  if(hashF(id + 7.1) > 0.5) c *= vec3(1.0, 0.84, 0.44);
+  return c * 0.55;
+}
+
+// Analytic disk glow — no secondary ray march needed
+vec3 diskGlow(vec3 ro, vec3 rd){
+  float denom = rd.y;
+  float tPlane = -ro.y / (abs(denom) > 0.0001 ? denom : 0.0001);
+  float valid = step(0.1, tPlane) * step(tPlane, 28.0);
+  vec3 pp = ro + rd * tPlane;
+  float pr = length(pp.xz);
+  float pa = atan(pp.z, pp.x);
+  float ring = exp(-abs(pr - 2.1) * 3.0);
+  float band = sin(pr * 14.0 - uT * 2.8) * 0.5 + 0.5;
+  float vel  = 0.35 / max(sqrt(pr), 0.5);
+  float dp   = cos(pa - uT * 0.4) * vel;
+  vec3  dc   = mix(vec3(0.5,0.18,0.02), vec3(1.0,0.82,0.45), clamp(dp+0.5,0.0,1.0));
+  float edge = smoothstep(1.3, 1.7, pr) * smoothstep(2.75, 2.2, pr);
+  return dc * ring * edge * (0.5 + 0.5 * band) * valid;
+}
+
+void main(){
+  vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
+
+  // ── Free-flight camera ────────────────────────────────────────────
+  vec3 ro = uCamPos;
+  float yaw   = uLook.x;
+  float pitch = clamp(uLook.y, -1.45, 1.45);
+  vec3 fw = normalize(vec3(sin(yaw)*cos(pitch), sin(pitch), cos(yaw)*cos(pitch)));
+  vec3 ri = normalize(cross(fw, vec3(0.0, 1.0, 0.0)));
+  vec3 up = cross(ri, fw);
+  vec3 rd = normalize(uv.x * ri + uv.y * up + 1.5 * fw);
+
+  // Sponge rotation: pure time-based auto-spin (no drag coupling)
+  mat3 rot = mRotX(0.22) * mRotY(uT * 0.11);
+
+  // ── RAY MARCH ────────────────────────────────────────────────────
+  float t     = 0.01;
+  float matId = -1.0;   // -1=miss, 0=menger, 1=disk
+
+  for(int i = 0; i < 80; i++){
+    vec3  p  = ro + rd * t;
+    float m  = menger(rot * p);    // sponge in local space
+    float d  = sdDisk(p);          // disk in world space
+    float sc = min(m, d);
+
+    if(sc < 0.002 * (1.0 + t * 0.06)){
+      matId = (m < d) ? 0.0 : 1.0;
+      break;
+    }
+    if(t > 28.0) break;
+    t += max(sc * 0.44, 0.001);
+  }
+
+  // ── BACKGROUND ───────────────────────────────────────────────────
+  vec3 col = vec3(0.01, 0.005, 0.022);
+  col += stars(rd);
+  col += diskGlow(ro, rd);
+
+  // ── MENGER SHADING ───────────────────────────────────────────────
+  if(matId < 0.5 && matId >= 0.0){
+    vec3 p  = ro + rd * t;
+    vec3 rp = rot * p;
+    vec3 n  = mengerNormal(rp);
+
+    vec3 L = rot * normalize(vec3(1.8, 2.5, 1.1));
+    vec3 V = rot * (-rd);
+
+    float oc   = ao(rp, n);
+    float diff = max(dot(n, L), 0.0);
+    float fr   = pow(max(1.0 - dot(n, V), 0.0), 3.0);
+
+    float eg = (1.0 - oc) * (1.0 - oc) * 2.6;
+
+    vec3 base    = vec3(0.028, 0.032, 0.054);
+    vec3 surface = base + vec3(0.072, 0.056, 0.014) * diff * oc;
+    vec3 glow    = vec3(0.76, 0.62, 0.16) * eg;
+    vec3 rim     = vec3(0.55, 0.43, 0.13) * fr * 0.30 * oc;
+
+    float nearDisk = smoothstep(3.0, 1.0, length(p.xz));
+    vec3 diskTint  = vec3(0.55, 0.26, 0.04) * nearDisk * 0.12 * (1.0 - oc * 0.4);
+
+    col  = surface + glow + rim + diskTint;
+    col *= oc * 0.58 + 0.42;
+    col *= exp(-t * 0.032);  // less fog — closer interior stays visible
+  }
+
+  // ── DISK SHADING ─────────────────────────────────────────────────
+  if(matId > 0.5){
+    vec3  p    = ro + rd * t;
+    float pr   = length(p.xz);
+    float pa   = atan(p.z, p.x);
+    float vel  = 0.35 / max(sqrt(pr), 0.5);
+    float dp   = cos(pa - uT * 0.4) * vel;
+    vec3  dc   = mix(vec3(0.62,0.26,0.03), vec3(1.0,0.85,0.5), clamp(dp+0.5,0.0,1.0));
+    float band = sin(pr * 14.0 - uT * 2.8) * 0.5 + 0.5;
+    float edge = smoothstep(1.3, 1.7, pr) * smoothstep(2.75, 2.2, pr);
+    col  = dc * edge * (0.55 + 0.6 * band) * 2.4;
+    col += col * col * 0.38;
+  }
+
+  // ── POST ──────────────────────────────────────────────────────────
+  col *= max(0.0, 1.0 - dot(uv, uv) * 1.08);
+  float ca = length(uv) * 0.009;
+  col.r *= 1.0 + ca; col.b *= 1.0 - ca * 0.4;
+  col  = col / (col + 0.72) * 1.52;
+  col  = pow(max(col, 0.0), vec3(0.42));
+
+  gl_FragColor = vec4(col, 1.0);
+}
+`;
+
+// ── compile ──────────────────────────────────────────────────────────
+function mkShader(type, src) {
+  const sh = gl.createShader(type);
+  gl.shaderSource(sh, src);
+  gl.compileShader(sh);
+  if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+    const err = gl.getShaderInfoLog(sh);
+    console.error('Shader compile error:', err);
+    document.body.innerHTML = '<pre style="color:#c9a227;padding:30px;font-size:11px;white-space:pre-wrap">SHADER ERROR:\n' + err + '</pre>';
+    throw new Error(err);
+  }
+  return sh;
+}
+
+const prog = gl.createProgram();
+gl.attachShader(prog, mkShader(gl.VERTEX_SHADER,   VS));
+gl.attachShader(prog, mkShader(gl.FRAGMENT_SHADER, FS));
+gl.linkProgram(prog);
+if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+  const err = gl.getProgramInfoLog(prog);
+  console.error('Program link error:', err);
+  document.body.innerHTML = '<pre style="color:#c9a227;padding:30px;font-size:11px">LINK ERROR:\n' + err + '</pre>';
+  throw new Error(err);
+}
+gl.useProgram(prog);
+
+// Fullscreen quad
+const quad = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+const aPos = gl.getAttribLocation(prog, 'aPos');
+gl.enableVertexAttribArray(aPos);
+gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+const uRes    = gl.getUniformLocation(prog, 'uRes');
+const uT      = gl.getUniformLocation(prog, 'uT');
+const uCamPos = gl.getUniformLocation(prog, 'uCamPos');
+const uLook   = gl.getUniformLocation(prog, 'uLook');
+
+// ── Flight state ──────────────────────────────────────────────────────
+// Start at original orbit position, looking toward origin
+const camPos = [0.0, 1.26, 4.2];
+let yaw   = Math.PI;   // looking toward -z (at origin)
+let pitch = -0.18;     // slight downward
+const SPEED = 0.055;
+
+// ── Keys ─────────────────────────────────────────────────────────────
+const keys = {};
+addEventListener('keydown', e => {
+  keys[e.code] = true;
+  // prevent space from scrolling page
+  if(e.code === 'Space') e.preventDefault();
+});
+addEventListener('keyup', e => { keys[e.code] = false; });
+
+// ── Mouse/touch look ─────────────────────────────────────────────────
+let dragging = false, lx = 0, ly = 0;
+canvas.addEventListener('mousedown',  e => { dragging=true; lx=e.clientX; ly=e.clientY; });
+addEventListener('mouseup',           () => { dragging=false; });
+addEventListener('mousemove', e => {
+  if (!dragging) return;
+  yaw   += (e.clientX - lx) * 0.006;
+  pitch  = Math.max(-1.45, Math.min(1.45, pitch + (e.clientY - ly) * 0.004));
+  lx = e.clientX; ly = e.clientY;
+});
+canvas.addEventListener('touchstart', e => { dragging=true; lx=e.touches[0].clientX; ly=e.touches[0].clientY; }, {passive:true});
+addEventListener('touchend', () => { dragging=false; });
+addEventListener('touchmove', e => {
+  if (!dragging) return;
+  yaw   += (e.touches[0].clientX - lx) * 0.006;
+  pitch  = Math.max(-1.45, Math.min(1.45, pitch + (e.touches[0].clientY - ly) * 0.004));
+  lx = e.touches[0].clientX; ly = e.touches[0].clientY;
+});
+
+// ── Vec3 helpers ─────────────────────────────────────────────────────
+function norm3(v) {
+  const l = Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]) || 1;
+  return [v[0]/l, v[1]/l, v[2]/l];
+}
+function cross3(a, b) {
+  return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+}
+
+const t0 = performance.now();
+function frame(ts) {
+  const t = (ts - t0) / 1000;
+
+  // ── compute camera basis from yaw/pitch ──────────────────────────
+  const fw = norm3([Math.sin(yaw)*Math.cos(pitch), Math.sin(pitch), Math.cos(yaw)*Math.cos(pitch)]);
+  const ri = norm3(cross3(fw, [0,1,0]));
+
+  // ── apply WASD + Space/Shift ─────────────────────────────────────
+  if (keys['KeyW'])     { camPos[0]+=fw[0]*SPEED; camPos[1]+=fw[1]*SPEED; camPos[2]+=fw[2]*SPEED; }
+  if (keys['KeyS'])     { camPos[0]-=fw[0]*SPEED; camPos[1]-=fw[1]*SPEED; camPos[2]-=fw[2]*SPEED; }
+  if (keys['KeyA'])     { camPos[0]-=ri[0]*SPEED; camPos[1]-=ri[1]*SPEED; camPos[2]-=ri[2]*SPEED; }
+  if (keys['KeyD'])     { camPos[0]+=ri[0]*SPEED; camPos[1]+=ri[1]*SPEED; camPos[2]+=ri[2]*SPEED; }
+  if (keys['Space'])    { camPos[1] += SPEED; }
+  if (keys['ShiftLeft'] || keys['ShiftRight']) { camPos[1] -= SPEED; }
+
+  // ── render ───────────────────────────────────────────────────────
+  gl.uniform2f(uRes, canvas.width, canvas.height);
+  gl.uniform1f(uT, t);
+  gl.uniform3f(uCamPos, camPos[0], camPos[1], camPos[2]);
+  gl.uniform2f(uLook, yaw, pitch);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
